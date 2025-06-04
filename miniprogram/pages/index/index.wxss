@@ -46,7 +46,7 @@ page {
   gap: 16rpx;
   position: relative;
   z-index: 1;
-  padding-right: 200rpx; /* 为右边建议留出空间 */
+  padding-right: 170rpx; /* 增加右边距适配更大的建议卡片 */
 }
 
 .rate-pair {
@@ -94,102 +94,141 @@ page {
 .rate-advice-fixed {
   position: absolute;
   top: 50%;
-  right: 32rpx;
+  right: 24rpx; /* 小屏幕调整右边距，但保持绝对定位 */
   transform: translateY(-50%);
   z-index: 2;
 }
 
-/* 建议卡片 - 固定在右边 */
+/* 建议卡片 - 与主题色协调的设计 */
 .rate-advice {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 8rpx;
-  min-width: 160rpx;
-  background: rgba(255, 255, 255, 0.15);
+  gap: 12rpx;
+  min-width: 150rpx; /* 小屏幕稍微缩小宽度 */
+  background: linear-gradient(135deg, #4c63d2 0%, #5a67d8 50%, #667eea 100%);
   backdrop-filter: blur(20px);
-  border-radius: 20rpx;
-  padding: 20rpx 16rpx;
-  border: 1rpx solid rgba(255, 255, 255, 0.2);
+  border-radius: 24rpx;
+  padding: 22rpx 16rpx;
+  border: 2rpx solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 12rpx 40rpx rgba(76, 99, 210, 0.3);
   transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.rate-advice::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+  animation: shimmer 4s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%, 100% { transform: translateX(-50%) translateY(-50%) rotate(0deg); opacity: 0.4; }
+  50% { transform: translateX(-30%) translateY(-30%) rotate(180deg); opacity: 0.7; }
 }
 
 .rate-advice:active {
   transform: scale(0.95);
-  background: rgba(255, 255, 255, 0.25);
+  background: linear-gradient(135deg, #3c54c7 0%, #4a5bd1 50%, #5a67d8 100%);
+  box-shadow: 0 8rpx 24rpx rgba(76, 99, 210, 0.5);
 }
 
-/* 状态指示器 */
+/* 状态指示器 - 协调配色 */
 .advice-status-dot {
-  width: 16rpx;
-  height: 16rpx;
-  border-radius: 8rpx;
-  background: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 2rpx 8rpx rgba(255, 255, 255, 0.3);
-  animation: pulse 2s ease-in-out infinite;
+  width: 18rpx;
+  height: 18rpx;
+  border-radius: 9rpx;
+  background: linear-gradient(45deg, #ffd700 0%, #ffeb3b 100%);
+  box-shadow: 0 4rpx 16rpx rgba(255, 215, 0, 0.5);
+  animation: pulse-bright 1.8s ease-in-out infinite;
+  position: relative;
+  z-index: 2;
 }
 
-@keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.7; transform: scale(1.1); }
+@keyframes pulse-bright {
+  0%, 100% { 
+    opacity: 1; 
+    transform: scale(1);
+    box-shadow: 0 4rpx 16rpx rgba(255, 215, 0, 0.5);
+  }
+  50% { 
+    opacity: 0.8; 
+    transform: scale(1.15);
+    box-shadow: 0 6rpx 24rpx rgba(255, 215, 0, 0.7);
+  }
 }
 
-/* 建议标题 */
+/* 建议标题 - 主要文案 */
 .advice-title-main {
   font-size: 24rpx;
-  font-weight: 700;
-  color: white;
+  font-weight: 800;
+  color: #fff;
   text-align: center;
-  letter-spacing: 0.5rpx;
-  text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
-  margin-bottom: 4rpx;
-  line-height: 1.2;
+  letter-spacing: 0.6rpx;
+  text-shadow: 0 3rpx 12rpx rgba(0, 0, 0, 0.2);
+  margin-bottom: 6rpx;
+  line-height: 1.3;
+  position: relative;
+  z-index: 2;
 }
 
-/* 建议描述 */
+/* 建议描述 - 详细说明 */
 .advice-brief {
   font-size: 20rpx;
-  font-weight: 500;
-  color: white;
-  opacity: 0.9;
+  font-weight: 600;
+  color: #e8f4fd;
   text-align: center;
-  line-height: 1.3;
-  letter-spacing: 0.3rpx;
-  margin-bottom: 8rpx;
+  line-height: 1.4;
+  letter-spacing: 0.4rpx;
+  margin-bottom: 10rpx;
+  text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.15);
+  position: relative;
+  z-index: 2;
 }
 
-/* 查看更多按钮 */
+/* 详细建议按钮 */
 .advice-more {
   font-size: 18rpx;
-  font-weight: 600;
-  color: white;
-  padding: 6rpx 12rpx;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 12rpx;
-  backdrop-filter: blur(10px);
-  border: 1rpx solid rgba(255, 255, 255, 0.3);
+  font-weight: 700;
+  color: #4c63d2;
+  padding: 8rpx 14rpx;
+  background: linear-gradient(135deg, #fff 0%, #f8fafc 100%);
+  border-radius: 14rpx;
+  border: 2rpx solid rgba(76, 99, 210, 0.1);
   transition: all 0.2s ease;
-  letter-spacing: 0.3rpx;
+  letter-spacing: 0.5rpx;
   display: flex;
   align-items: center;
-  gap: 4rpx;
+  gap: 8rpx;
+  box-shadow: 0 6rpx 16rpx rgba(0, 0, 0, 0.08);
+  position: relative;
+  z-index: 2;
 }
 
 .advice-more::after {
   content: '›';
-  font-size: 20rpx;
+  font-size: 22rpx;
   font-weight: bold;
+  color: #5a67d8;
   transition: transform 0.2s ease;
 }
 
 .advice-more:active {
-  background: rgba(255, 255, 255, 0.3);
+  background: linear-gradient(135deg, #f8fafc 0%, #edf2f7 100%);
   transform: scale(0.95);
+  box-shadow: 0 3rpx 12rpx rgba(0, 0, 0, 0.12);
 }
 
 .advice-more:active::after {
-  transform: translateX(2rpx);
+  transform: translateX(4rpx);
+  color: #4c63d2;
 }
 
 .advice-content-mobile {
@@ -205,7 +244,7 @@ page {
   margin-top: auto;
 }
 
-/* 计算器主卡片 - 正确的微信布局 */
+/* 计算器主卡片 - 更紧凑的布局 */
 .exchange-calculator {
   background: white;
   border-radius: 32rpx;
@@ -217,48 +256,48 @@ page {
 
 .calc-header {
   background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-  padding: 24rpx 32rpx;
+  padding: 20rpx 32rpx; /* 减少上下padding */
   text-align: center;
   border-bottom: 1rpx solid rgba(0, 0, 0, 0.05);
 }
 
 .calc-title {
   color: #334155;
-  font-size: 32rpx;
+  font-size: 30rpx; /* 稍微减小字体 */
   font-weight: 600;
   letter-spacing: 1rpx;
 }
 
-/* 计算器主体 - 仿微信左右布局 */
+/* 计算器主体 - 更紧凑的间距 */
 .calc-horizontal {
-  padding: 40rpx 32rpx;
+  padding: 28rpx 24rpx 20rpx; /* 小屏幕进一步减少padding */
   display: flex;
   flex-direction: column;
-  gap: 32rpx;
+  gap: 20rpx; /* 减少间距 */
 }
 
-/* 货币输入行 - 左侧货币选择器，右侧数字输入 */
+/* 货币输入行 - 更紧凑 */
 .currency-input-row {
   display: flex;
   align-items: center;
-  gap: 20rpx;
-  padding: 24rpx;
+  gap: 16rpx;
+  padding: 16rpx; /* 减少padding */
   background: #f8fafc;
   border-radius: 20rpx;
   border: 1rpx solid rgba(0, 0, 0, 0.05);
 }
 
-/* 左侧货币选择器 */
+/* 左侧货币选择器 - 稍微缩小 */
 .currency-selector-left {
   display: flex;
   align-items: center;
   gap: 12rpx;
-  padding: 16rpx 20rpx;
+  padding: 12rpx 16rpx; /* 减少padding */
   background: white;
   border-radius: 16rpx;
   box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
   transition: all 0.2s ease;
-  min-width: 140rpx;
+  min-width: 120rpx;
 }
 
 .currency-selector-left:active {
@@ -267,20 +306,20 @@ page {
 }
 
 .currency-selector-left .currency-flag {
-  font-size: 32rpx;
-  width: 40rpx;
+  font-size: 26rpx; /* 减小 */
+  width: 32rpx;
   text-align: center;
 }
 
 .currency-selector-left .currency-code {
-  font-size: 32rpx;
+  font-size: 26rpx; /* 减小 */
   font-weight: 600;
   color: #1e293b;
   letter-spacing: 1rpx;
 }
 
 .currency-selector-left .selector-arrow {
-  font-size: 20rpx;
+  font-size: 16rpx;
   color: #94a3b8;
   margin-left: 8rpx;
 }
@@ -290,12 +329,12 @@ page {
   flex: 1;
   background: transparent;
   border: none;
-  font-size: 56rpx;
+  font-size: 44rpx; /* 小屏幕减小字体 */
   font-weight: 300;
   text-align: right;
   color: #1e293b;
   letter-spacing: -1rpx;
-  padding: 8rpx;
+  padding: 4rpx;
 }
 
 .amount-input-right:focus {

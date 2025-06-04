@@ -1,0 +1,224 @@
+<view class="container">
+  <!-- 当前汇率显示 -->
+  <view class="rate-display">
+    <view class="rate-pair">
+      <text class="currency-info">{{currencies[fromCurrencyIndex].flag}} {{currencies[fromCurrencyIndex].name}}</text>
+      <text class="rate-arrow">→</text>
+      <text class="currency-info">{{currencies[toCurrencyIndex].flag}} {{currencies[toCurrencyIndex].name}}</text>
+    </view>
+    <text class="current-rate">{{currentRate}}</text>
+    <text class="rate-change">{{rateChange}}</text>
+    <text class="update-time">更新时间：{{updateTime}}</text>
+  </view>
+
+  <!-- AI 详细分析建议 -->
+  <view class="ai-analysis">
+    <view class="section-header">
+      <view class="header-icon">🤖</view>
+      <view class="header-content">
+        <text class="section-title">AI 智能分析</text>
+        <text class="section-desc">基于当前汇率走势的专业建议</text>
+      </view>
+    </view>
+    
+    <view class="analysis-content">
+      <view class="analysis-status">
+        <view class="status-indicator {{advice.status}}"></view>
+        <text class="status-text">{{advice.title}}</text>
+        <view class="confidence-score">
+          <text class="confidence-label">可信度</text>
+          <text class="confidence-value">{{advice.confidence}}%</text>
+        </view>
+      </view>
+      
+      <text class="analysis-summary">{{advice.summary}}</text>
+      
+      <view class="analysis-factors">
+        <text class="factors-title">分析要点：</text>
+        <view class="factor-item" wx:for="{{advice.factors}}" wx:key="index">
+          <text class="factor-icon">•</text>
+          <text class="factor-text">{{item}}</text>
+        </view>
+      </view>
+      
+      <view class="analysis-suggestion">
+        <text class="suggestion-title">建议操作：</text>
+        <text class="suggestion-text">{{advice.suggestion}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 目标汇率设置 -->
+  <view class="target-rate-section">
+    <view class="section-header">
+      <view class="header-icon">🎯</view>
+      <view class="header-content">
+        <text class="section-title">目标汇率设置</text>
+        <text class="section-desc">设置理想汇率，到达时自动提醒</text>
+      </view>
+    </view>
+    
+    <view class="target-inputs">
+      <view class="input-row">
+        <text class="input-label">买入目标</text>
+        <input 
+          class="target-input" 
+          type="digit" 
+          value="{{targetBuyRate}}" 
+          bindinput="onTargetBuyInput"
+          placeholder="{{currentRate}}"
+        />
+        <text class="input-unit">{{currencies[toCurrencyIndex].code}}</text>
+      </view>
+      
+      <view class="input-row">
+        <text class="input-label">卖出目标</text>
+        <input 
+          class="target-input" 
+          type="digit" 
+          value="{{targetSellRate}}" 
+          bindinput="onTargetSellInput"
+          placeholder="{{currentRate}}"
+        />
+        <text class="input-unit">{{currencies[toCurrencyIndex].code}}</text>
+      </view>
+      
+      <view class="quick-targets">
+        <text class="quick-title">快速设置：</text>
+        <view class="quick-buttons">
+          <button class="quick-btn" bindtap="setQuickTarget" data-type="buy" data-percent="-2">低2%</button>
+          <button class="quick-btn" bindtap="setQuickTarget" data-type="buy" data-percent="-5">低5%</button>
+          <button class="quick-btn" bindtap="setQuickTarget" data-type="sell" data-percent="2">高2%</button>
+          <button class="quick-btn" bindtap="setQuickTarget" data-type="sell" data-percent="5">高5%</button>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 长期监控设置 -->
+  <view class="monitoring-section">
+    <view class="section-header">
+      <view class="header-icon">📊</view>
+      <view class="header-content">
+        <text class="section-title">长期监控</text>
+        <text class="section-desc">追踪汇率趋势，获取定期报告</text>
+      </view>
+    </view>
+    
+    <view class="monitoring-options">
+      <view class="option-item">
+        <view class="option-left">
+          <text class="option-title">价格提醒</text>
+          <text class="option-desc">汇率达到目标时推送通知</text>
+        </view>
+        <switch 
+          class="option-switch" 
+          checked="{{isPriceAlertEnabled}}" 
+          bindchange="onPriceAlertChange"
+        />
+      </view>
+      
+      <view class="option-item">
+        <view class="option-left">
+          <text class="option-title">每日报告</text>
+          <text class="option-desc">每天汇率变化总结</text>
+        </view>
+        <switch 
+          class="option-switch" 
+          checked="{{isDailyReportEnabled}}" 
+          bindchange="onDailyReportChange"
+        />
+      </view>
+      
+      <view class="option-item">
+        <view class="option-left">
+          <text class="option-title">趋势分析</text>
+          <text class="option-desc">每周趋势变化分析</text>
+        </view>
+        <switch 
+          class="option-switch" 
+          checked="{{isTrendAnalysisEnabled}}" 
+          bindchange="onTrendAnalysisChange"
+        />
+      </view>
+    </view>
+    
+    <view class="monitoring-stats">
+      <text class="stats-title">监控统计</text>
+      <view class="stats-grid">
+        <view class="stat-item">
+          <text class="stat-value">{{monitoringDays}}</text>
+          <text class="stat-label">监控天数</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-value">{{alertCount}}</text>
+          <text class="stat-label">触发提醒</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-value">{{maxRate}}</text>
+          <text class="stat-label">最高汇率</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-value">{{minRate}}</text>
+          <text class="stat-label">最低汇率</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 币种设置区域 -->
+  <view class="currency-settings">
+    <view class="section-header-simple">
+      <text class="section-title">币种设置</text>
+    </view>
+    
+    <view class="setting-section">
+      <view class="section-header">
+        <text class="section-title">持有币种</text>
+        <text class="section-desc">选择您当前持有的货币</text>
+      </view>
+      <picker bindchange="onFromCurrencyChange" value="{{fromCurrencyIndex}}" range="{{currencies}}" range-key="name">
+        <view class="currency-picker">
+          <view class="picker-content">
+            <text class="currency-flag">{{currencies[fromCurrencyIndex].flag}}</text>
+            <view class="currency-details">
+              <text class="currency-name">{{currencies[fromCurrencyIndex].name}}</text>
+              <text class="currency-code">{{currencies[fromCurrencyIndex].code}}</text>
+            </view>
+          </view>
+          <text class="picker-arrow">›</text>
+        </view>
+      </picker>
+    </view>
+
+    <view class="setting-section">
+      <view class="section-header">
+        <text class="section-title">目标币种</text>
+        <text class="section-desc">选择您要兑换的目标货币</text>
+      </view>
+      <picker bindchange="onToCurrencyChange" value="{{toCurrencyIndex}}" range="{{currencies}}" range-key="name">
+        <view class="currency-picker">
+          <view class="picker-content">
+            <text class="currency-flag">{{currencies[toCurrencyIndex].flag}}</text>
+            <view class="currency-details">
+              <text class="currency-name">{{currencies[toCurrencyIndex].name}}</text>
+              <text class="currency-code">{{currencies[toCurrencyIndex].code}}</text>
+            </view>
+          </view>
+          <text class="picker-arrow">›</text>
+        </view>
+      </picker>
+    </view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="action-buttons">
+    <button class="swap-btn" bindtap="swapCurrencies">
+      <text class="swap-icon">⇄</text>
+      <text>交换币种</text>
+    </button>
+    <button class="save-btn" bindtap="saveSettings">
+      <text>保存设置</text>
+    </button>
+  </view>
+</view> 

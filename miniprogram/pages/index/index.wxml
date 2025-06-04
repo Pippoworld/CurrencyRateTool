@@ -1,7 +1,7 @@
 <!--index.wxml - 使用固定容器放置建议-->
 <view class="container">
   <!-- 汇率信息卡片 - 右边固定建议容器 -->
-  <view class="rate-header">
+  <view class="rate-header" bindtap="goToRateDetail">
     <view class="rate-info">
       <text class="rate-pair">{{currencies[fromCurrencyIndex].flag}} {{currencies[fromCurrencyIndex].code}} / {{currencies[toCurrencyIndex].flag}} {{currencies[toCurrencyIndex].code}}</text>
       <text class="rate-value">{{currentRate}}</text>
@@ -17,7 +17,7 @@
           <text class="advice-title-main">{{advice.title}}</text>
           <text class="advice-brief">{{advice.brief}}</text>
         </view>
-        <text class="advice-more">查看更多</text>
+        <text class="advice-more">详细建议</text>
       </view>
     </view>
   </view>
@@ -25,7 +25,7 @@
   <!-- 正确仿微信计算器 -->
   <view class="exchange-calculator">
     <view class="calc-header">
-      <text class="calc-title">智能汇率计算器</text>
+      <text class="calc-title">汇率计算</text>
     </view>
     
     <view class="calc-horizontal">
@@ -70,10 +70,7 @@
       </view>
     </view>
     
-    <!-- 汇率显示区域 -->
-    <view class="rate-display-horizontal">
-      <text class="rate-text-center">1 {{currencies[fromCurrencyIndex].code}} = {{exchangeRate}} {{currencies[toCurrencyIndex].code}}</text>
-    </view>
+    <!-- 汇率显示区域删除 -->
   </view>
 
   <!-- 快捷功能网格 -->

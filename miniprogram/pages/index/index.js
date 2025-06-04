@@ -157,28 +157,35 @@ Page({
     const fromCurrency = this.data.currencies[this.data.fromCurrencyIndex];
     const toCurrency = this.data.currencies[this.data.toCurrencyIndex];
     
-    // 模拟AI分析
+    // 模拟AI分析 - 简洁实用的建议
     const scenarios = [
       {
         icon: '●',
-        title: '适合购买',
+        title: '价格适中',
         status: 'good',
-        summary: `${fromCurrency.name}汇率近期呈下降趋势，当前价格适合购买。建议分批购买降低风险。`,
-        brief: '建议分批入场'
+        summary: `${fromCurrency.name}汇率处于合理区间，当前可以换汇。建议在此价位分批购买，降低风险。`,
+        brief: '可以换汇'
       },
       {
         icon: '●', 
-        title: '暂时观望',
+        title: '价格略高',
         status: 'warning',
-        summary: `${fromCurrency.name}汇率波动较大，建议等待更好的入场时机，设置目标价格提醒。`,
-        brief: '等待更好时机'
+        summary: `${fromCurrency.name}汇率偏高，建议观望。预计1-2周内可能回调，可设置价格提醒。`,
+        brief: '建议观望'
+      },
+      {
+        icon: '●',
+        title: '价格偏低',
+        status: 'excellent',
+        summary: `${fromCurrency.name}汇率偏低，是较好的换汇时机。建议尽快购买，但注意风险控制。`,
+        brief: '抓紧换汇'
       },
       {
         icon: '●',
         title: '价格偏高',
         status: 'danger',
-        summary: `${fromCurrency.name}汇率处于高位，不建议当前购买，等待回调机会。`,
-        brief: '建议等待回调'
+        summary: `${fromCurrency.name}汇率处于高位，不建议当前换汇。建议等待2-3周，观察回调机会。`,
+        brief: '等等再买'
       }
     ];
     
@@ -200,6 +207,24 @@ Page({
   goToAdvice() {
     wx.switchTab({
       url: '/pages/advice/advice'
+    });
+  },
+
+  // 跳转到汇率详情页设置
+  goToRateDetail() {
+    wx.navigateTo({
+      url: `/pages/rate-detail/rate-detail?fromIndex=${this.data.fromCurrencyIndex}&toIndex=${this.data.toCurrencyIndex}`,
+      success: () => {
+        console.log('跳转到汇率详情页');
+      },
+      fail: () => {
+        // 如果页面不存在，显示提示
+        wx.showToast({
+          title: '功能开发中',
+          icon: 'none',
+          duration: 2000
+        });
+      }
     });
   },
 
