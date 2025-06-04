@@ -1,0 +1,295 @@
+/* settings页面样式 */
+page {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  padding-bottom: 120rpx; /* 为底部tabBar留出空间 */
+}
+
+.container {
+  padding: 32rpx;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* 设置项样式 */
+.setting-section {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 24rpx;
+  margin-bottom: 24rpx;
+  overflow: hidden;
+  box-shadow: 0 8rpx 32rpx rgba(0,0,0,0.06);
+}
+
+/* 用户信息样式 */
+.user-profile {
+  display: flex;
+  gap: 32rpx;
+  align-items: center;
+}
+
+.avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.user-avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 60rpx;
+  background: #f0f0f0;
+}
+
+.avatar-btn {
+  padding: 12rpx 24rpx;
+  font-size: 24rpx;
+}
+
+.user-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.detail-label {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #1a1a1a;
+  min-width: 120rpx;
+}
+
+.detail-input {
+  flex: 1;
+  background: white;
+  border: 2rpx solid #f0f0f0;
+  border-radius: 12rpx;
+  padding: 16rpx 20rpx;
+  font-size: 28rpx;
+}
+
+.detail-picker {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  border: 2rpx solid #f0f0f0;
+  border-radius: 12rpx;
+  padding: 16rpx 20rpx;
+  font-size: 28rpx;
+}
+
+.picker-arrow {
+  color: #999;
+  font-size: 20rpx;
+}
+
+/* 设置列表样式 */
+.settings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.setting-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.04);
+}
+
+.setting-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  flex: 1;
+}
+
+.setting-title {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.setting-desc {
+  font-size: 24rpx;
+  color: #999;
+  line-height: 1.4;
+}
+
+.setting-value {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  background: rgba(102,126,234,0.05);
+  border-radius: 12rpx;
+  padding: 16rpx 20rpx;
+  font-size: 28rpx;
+  color: #667eea;
+  min-width: 200rpx;
+  justify-content: space-between;
+}
+
+.setting-switch {
+  transform: scale(0.8);
+}
+
+/* 数据管理样式 */
+.data-management {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.data-btn {
+  margin: 0;
+  text-align: left;
+  justify-content: flex-start;
+}
+
+/* 关于应用样式 */
+.about-section {
+  display: flex;
+  flex-direction: column;
+  gap: 48rpx;
+}
+
+.app-info {
+  display: flex;
+  align-items: center;
+  gap: 32rpx;
+}
+
+.app-logo {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 24rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.app-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.app-name {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.app-version {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.app-desc {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.4;
+  margin-top: 8rpx;
+}
+
+.about-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: white;
+  border-radius: 16rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.04);
+}
+
+.link-item {
+  display: flex;
+  align-items: center;
+  padding: 32rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+  transition: all 0.2s ease;
+}
+
+.link-item:last-child {
+  border-bottom: none;
+}
+
+.link-item:active {
+  background: rgba(102,126,234,0.05);
+}
+
+.link-icon {
+  font-size: 32rpx;
+  margin-right: 24rpx;
+}
+
+.link-text {
+  flex: 1;
+  font-size: 32rpx;
+  color: #1a1a1a;
+}
+
+.link-arrow {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 底部信息样式 */
+.footer-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16rpx;
+  padding: 48rpx 32rpx;
+  margin-top: 32rpx;
+}
+
+.copyright {
+  font-size: 24rpx;
+  color: #999;
+  text-align: center;
+}
+
+.disclaimer {
+  font-size: 20rpx;
+  color: #ccc;
+  text-align: center;
+  line-height: 1.4;
+}
+
+/* 响应式设计 */
+@media (max-width: 600rpx) {
+  .user-profile {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .user-details {
+    width: 100%;
+  }
+  
+  .detail-item {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .detail-label {
+    min-width: auto;
+  }
+  
+  .app-info {
+    flex-direction: column;
+    text-align: center;
+  }
+} 

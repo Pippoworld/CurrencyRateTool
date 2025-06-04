@@ -1,0 +1,411 @@
+/* advice页面样式 */
+page {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  padding-bottom: 120rpx; /* 为底部tabBar留出空间 */
+}
+
+.container {
+  padding: 32rpx;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* 货币概览样式 */
+.currency-overview {
+  margin-bottom: 32rpx;
+}
+
+.rate-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(102,126,234,0.05);
+  border-radius: 20rpx;
+  padding: 32rpx;
+  margin-bottom: 32rpx;
+}
+
+.current-rate {
+  display: flex;
+  flex-direction: column;
+}
+
+.rate-label {
+  font-size: 24rpx;
+  color: #999;
+  margin-bottom: 8rpx;
+}
+
+.rate-value {
+  font-size: 48rpx;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.rate-change {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 24rpx;
+  border-radius: 16rpx;
+}
+
+.rate-change.positive {
+  background: rgba(76, 175, 80, 0.1);
+  color: #4CAF50;
+}
+
+.rate-change.negative {
+  background: rgba(244, 67, 54, 0.1);
+  color: #F44336;
+}
+
+.rate-change.neutral {
+  background: rgba(255, 193, 7, 0.1);
+  color: #FFC107;
+}
+
+.change-icon {
+  font-size: 32rpx;
+  margin-right: 8rpx;
+}
+
+.change-text {
+  font-size: 28rpx;
+  font-weight: 600;
+}
+
+/* 图表样式 */
+.rate-chart {
+  background: white;
+  border-radius: 20rpx;
+  padding: 32rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0,0,0,0.04);
+}
+
+.chart-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 32rpx;
+  display: block;
+}
+
+.chart-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  height: 200rpx;
+  padding: 20rpx 0;
+}
+
+.chart-line {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.chart-point {
+  width: 16rpx;
+  border-radius: 8rpx;
+  margin-bottom: 16rpx;
+  transition: all 0.3s ease;
+}
+
+.chart-label {
+  font-size: 20rpx;
+  color: #999;
+  text-align: center;
+}
+
+/* AI分析样式 */
+.analysis-section {
+  space-y: 32rpx;
+}
+
+.analysis-item {
+  background: white;
+  border-radius: 20rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0,0,0,0.04);
+  border-left: 8rpx solid #667eea;
+}
+
+.analysis-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #667eea;
+  margin-bottom: 16rpx;
+  display: block;
+}
+
+.analysis-content {
+  font-size: 28rpx;
+  line-height: 1.6;
+  color: #333;
+}
+
+/* 时间线样式 */
+.advice-timeline {
+  position: relative;
+  padding-left: 48rpx;
+  margin-bottom: 48rpx;
+}
+
+.advice-timeline::before {
+  content: '';
+  position: absolute;
+  left: 24rpx;
+  top: 0;
+  bottom: 0;
+  width: 4rpx;
+  background: #e0e0e0;
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 48rpx;
+  padding: 32rpx;
+  background: white;
+  border-radius: 20rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0,0,0,0.04);
+}
+
+.timeline-item:last-child {
+  margin-bottom: 0;
+}
+
+.timeline-dot {
+  position: absolute;
+  left: -36rpx;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24rpx;
+  height: 24rpx;
+  border-radius: 50%;
+  background: #667eea;
+  border: 4rpx solid white;
+  box-shadow: 0 0 0 4rpx #e0e0e0;
+}
+
+.timeline-item.active .timeline-dot {
+  background: #4CAF50;
+  box-shadow: 0 0 0 4rpx rgba(76, 175, 80, 0.2);
+}
+
+.timeline-item.warning .timeline-dot {
+  background: #FFC107;
+  box-shadow: 0 0 0 4rpx rgba(255, 193, 7, 0.2);
+}
+
+.timeline-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.timeline-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.timeline-desc {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.5;
+}
+
+.timeline-rate {
+  font-size: 24rpx;
+  color: #667eea;
+  font-weight: 500;
+}
+
+/* 操作按钮 */
+.action-buttons {
+  display: flex;
+  gap: 24rpx;
+}
+
+.action-buttons .btn {
+  flex: 1;
+  margin: 0;
+}
+
+/* 换汇方式样式 */
+.exchange-methods {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.method-item {
+  background: white;
+  border-radius: 20rpx;
+  padding: 32rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0,0,0,0.04);
+  border: 2rpx solid transparent;
+  transition: all 0.3s ease;
+}
+
+.method-item.recommended {
+  border-color: #667eea;
+  background: linear-gradient(135deg, rgba(102,126,234,0.05) 0%, rgba(255,255,255,1) 100%);
+}
+
+.method-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.method-icon {
+  font-size: 48rpx;
+  margin-right: 16rpx;
+}
+
+.method-name {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #1a1a1a;
+  flex: 1;
+}
+
+.recommended-badge {
+  background: #667eea;
+  color: white;
+  font-size: 20rpx;
+  padding: 8rpx 16rpx;
+  border-radius: 12rpx;
+  font-weight: 500;
+}
+
+.method-details {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 24rpx;
+  padding: 24rpx;
+  background: rgba(102,126,234,0.03);
+  border-radius: 16rpx;
+}
+
+.method-rate, .method-fee, .method-time {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.rate-label, .fee-label, .time-label {
+  font-size: 24rpx;
+  color: #999;
+  margin-bottom: 8rpx;
+}
+
+.rate-value, .fee-value, .time-value {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.method-pros {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.pros-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #667eea;
+}
+
+.pros-content {
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.5;
+}
+
+/* 提醒设置样式 */
+.reminder-settings {
+  margin-bottom: 32rpx;
+}
+
+.setting-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx 32rpx;
+  background: white;
+  border-radius: 16rpx;
+  margin-bottom: 16rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.04);
+}
+
+.setting-item:last-child {
+  margin-bottom: 0;
+}
+
+.setting-label {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.setting-switch {
+  transform: scale(0.8);
+}
+
+.target-rate-setting {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  background: rgba(102,126,234,0.05);
+  border-radius: 16rpx;
+  padding: 24rpx;
+}
+
+.target-label {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #667eea;
+  min-width: 120rpx;
+}
+
+.target-input {
+  flex: 1;
+  background: white;
+  border: 2rpx solid #f0f0f0;
+  border-radius: 12rpx;
+  padding: 16rpx 20rpx;
+  font-size: 28rpx;
+}
+
+.btn-small {
+  padding: 16rpx 32rpx;
+  font-size: 24rpx;
+  border-radius: 16rpx;
+}
+
+/* 响应式设计 */
+@media (max-width: 600rpx) {
+  .rate-summary {
+    flex-direction: column;
+    gap: 24rpx;
+  }
+  
+  .method-details {
+    flex-direction: column;
+    gap: 16rpx;
+  }
+  
+  .target-rate-setting {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .target-label {
+    min-width: auto;
+  }
+} 

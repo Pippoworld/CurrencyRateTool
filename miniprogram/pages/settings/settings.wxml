@@ -1,0 +1,198 @@
+<view class="container">
+  <!-- 用户信息 -->
+  <view class="card">
+    <view class="card-header">
+      👤 个人信息
+    </view>
+    <view class="card-body">
+      <view class="user-profile">
+        <view class="avatar-section">
+          <image class="user-avatar" src="{{userInfo.avatar || '/images/default-avatar.png'}}" />
+          <button class="btn btn-secondary avatar-btn" bindtap="chooseAvatar">更换头像</button>
+        </view>
+        <view class="user-details">
+          <view class="detail-item">
+            <text class="detail-label">昵称</text>
+            <input class="detail-input" value="{{userInfo.nickname}}" bindinput="onNicknameInput" placeholder="请输入昵称"/>
+          </view>
+          <view class="detail-item">
+            <text class="detail-label">留学国家</text>
+            <picker bindchange="onCountryChange" value="{{countryIndex}}" range="{{countries}}" range-key="name">
+              <view class="detail-picker">
+                <text>{{countries[countryIndex].name}}</text>
+                <text class="picker-arrow">▼</text>
+              </view>
+            </picker>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 偏好设置 -->
+  <view class="card">
+    <view class="card-header">
+      ⚙️ 偏好设置
+    </view>
+    <view class="card-body">
+      <view class="settings-list">
+        <view class="setting-item">
+          <view class="setting-info">
+            <text class="setting-title">默认货币</text>
+            <text class="setting-desc">设置首页默认显示的货币</text>
+          </view>
+          <picker bindchange="onDefaultCurrencyChange" value="{{defaultCurrencyIndex}}" range="{{currencies}}" range-key="name">
+            <view class="setting-value">
+              <text>{{currencies[defaultCurrencyIndex].flag}} {{currencies[defaultCurrencyIndex].name}}</text>
+              <text class="picker-arrow">▼</text>
+            </view>
+          </picker>
+        </view>
+        
+        <view class="setting-item">
+          <view class="setting-info">
+            <text class="setting-title">汇率精度</text>
+            <text class="setting-desc">显示汇率的小数位数</text>
+          </view>
+          <picker bindchange="onPrecisionChange" value="{{precisionIndex}}" range="{{precisionOptions}}" range-key="label">
+            <view class="setting-value">
+              <text>{{precisionOptions[precisionIndex].label}}</text>
+              <text class="picker-arrow">▼</text>
+            </view>
+          </picker>
+        </view>
+        
+        <view class="setting-item">
+          <view class="setting-info">
+            <text class="setting-title">暗黑模式</text>
+            <text class="setting-desc">开启后界面将使用深色主题</text>
+          </view>
+          <switch class="setting-switch" checked="{{darkMode}}" bindchange="onDarkModeChange"/>
+        </view>
+        
+        <view class="setting-item">
+          <view class="setting-info">
+            <text class="setting-title">震动反馈</text>
+            <text class="setting-desc">操作时提供触觉反馈</text>
+          </view>
+          <switch class="setting-switch" checked="{{vibrationFeedback}}" bindchange="onVibrationChange"/>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 提醒设置 -->
+  <view class="card">
+    <view class="card-header">
+      🔔 提醒设置
+    </view>
+    <view class="card-body">
+      <view class="reminder-config">
+        <view class="setting-item">
+          <view class="setting-info">
+            <text class="setting-title">汇率提醒</text>
+            <text class="setting-desc">当汇率达到目标价位时通知</text>
+          </view>
+          <switch class="setting-switch" checked="{{notifications.rateAlert}}" bindchange="onRateNotificationChange"/>
+        </view>
+        
+        <view class="setting-item">
+          <view class="setting-info">
+            <text class="setting-title">每日分析</text>
+            <text class="setting-desc">每天推送汇率分析报告</text>
+          </view>
+          <switch class="setting-switch" checked="{{notifications.dailyReport}}" bindchange="onDailyReportChange"/>
+        </view>
+        
+        <view class="setting-item">
+          <view class="setting-info">
+            <text class="setting-title">重要事件</text>
+            <text class="setting-desc">影响汇率的重要经济事件提醒</text>
+          </view>
+          <switch class="setting-switch" checked="{{notifications.importantEvents}}" bindchange="onEventsNotificationChange"/>
+        </view>
+        
+        <view class="setting-item" wx:if="{{notifications.dailyReport}}">
+          <view class="setting-info">
+            <text class="setting-title">推送时间</text>
+            <text class="setting-desc">设置每日报告推送时间</text>
+          </view>
+          <picker mode="time" value="{{pushTime}}" bindchange="onPushTimeChange">
+            <view class="setting-value">
+              <text>{{pushTime}}</text>
+              <text class="picker-arrow">▼</text>
+            </view>
+          </picker>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 数据管理 -->
+  <view class="card">
+    <view class="card-header">
+      📊 数据管理
+    </view>
+    <view class="card-body">
+      <view class="data-management">
+        <button class="btn btn-secondary data-btn" bindtap="exportData">
+          📤 导出历史数据
+        </button>
+        <button class="btn btn-secondary data-btn" bindtap="clearCache">
+          🗑️ 清理缓存
+        </button>
+        <button class="btn btn-secondary data-btn" bindtap="resetSettings">
+          🔄 重置设置
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 关于应用 -->
+  <view class="card">
+    <view class="card-header">
+      ℹ️ 关于应用
+    </view>
+    <view class="card-body">
+      <view class="about-section">
+        <view class="app-info">
+          <image class="app-logo" src="/images/logo.png" />
+          <view class="app-details">
+            <text class="app-name">汇率助手</text>
+            <text class="app-version">版本 1.0.0</text>
+            <text class="app-desc">专为留学生设计的智能汇率工具</text>
+          </view>
+        </view>
+        
+        <view class="about-links">
+          <view class="link-item" bindtap="showPrivacyPolicy">
+            <text class="link-icon">🔒</text>
+            <text class="link-text">隐私政策</text>
+            <text class="link-arrow">➤</text>
+          </view>
+          <view class="link-item" bindtap="showUserAgreement">
+            <text class="link-icon">📋</text>
+            <text class="link-text">用户协议</text>
+            <text class="link-arrow">➤</text>
+          </view>
+          <view class="link-item" bindtap="contactSupport">
+            <text class="link-icon">💬</text>
+            <text class="link-text">联系客服</text>
+            <text class="link-arrow">➤</text>
+          </view>
+          <view class="link-item" bindtap="rateApp">
+            <text class="link-icon">⭐</text>
+            <text class="link-text">给个好评</text>
+            <text class="link-arrow">➤</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部信息 -->
+  <view class="footer-info">
+    <text class="copyright">© 2024 汇率助手 · 让换汇更智能</text>
+    <text class="disclaimer">汇率数据仅供参考，实际交易请以银行报价为准</text>
+  </view>
+</view> 

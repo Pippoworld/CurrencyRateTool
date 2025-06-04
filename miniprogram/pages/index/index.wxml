@@ -1,0 +1,98 @@
+<!--index.wxml - 使用固定容器放置建议-->
+<view class="container">
+  <!-- 汇率信息卡片 - 右边固定建议容器 -->
+  <view class="rate-header">
+    <view class="rate-info">
+      <text class="rate-pair">{{currencies[fromCurrencyIndex].flag}} {{currencies[fromCurrencyIndex].code}} / {{currencies[toCurrencyIndex].flag}} {{currencies[toCurrencyIndex].code}}</text>
+      <text class="rate-value">{{currentRate}}</text>
+      <text class="rate-change {{rateChangeStatus}}">{{rateChange}}</text>
+      <text class="update-time">更新时间：{{updateTime}}</text>
+    </view>
+    
+    <!-- 右边固定建议容器 -->
+    <view class="rate-advice-fixed">
+      <view class="rate-advice" bindtap="goToAdvice">
+        <view class="advice-status-dot"></view>
+        <view class="advice-content-mobile">
+          <text class="advice-title-main">{{advice.title}}</text>
+          <text class="advice-brief">{{advice.brief}}</text>
+        </view>
+        <text class="advice-more">查看更多</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 正确仿微信计算器 -->
+  <view class="exchange-calculator">
+    <view class="calc-header">
+      <text class="calc-title">智能汇率计算器</text>
+    </view>
+    
+    <view class="calc-horizontal">
+      <!-- 第一个货币输入行 -->
+      <view class="currency-input-row">
+        <picker bindchange="onFromCurrencyChange" value="{{fromCurrencyIndex}}" range="{{currencies}}" range-key="name">
+          <view class="currency-selector-left">
+            <text class="currency-flag">{{currencies[fromCurrencyIndex].flag}}</text>
+            <text class="currency-code">{{currencies[fromCurrencyIndex].code}}</text>
+            <text class="selector-arrow">></text>
+          </view>
+        </picker>
+        <input 
+          class="amount-input-right" 
+          type="digit" 
+          value="{{fromAmount}}" 
+          bindinput="onFromAmountInput"
+          placeholder="100"
+          maxlength="15"
+          placeholder-style="color: #94a3b8; font-size: 56rpx; font-weight: 300;"
+        />
+      </view>
+      
+      <!-- 第二个货币输入行 -->
+      <view class="currency-input-row">
+        <picker bindchange="onToCurrencyChange" value="{{toCurrencyIndex}}" range="{{currencies}}" range-key="name">
+          <view class="currency-selector-left">
+            <text class="currency-flag">{{currencies[toCurrencyIndex].flag}}</text>
+            <text class="currency-code">{{currencies[toCurrencyIndex].code}}</text>
+            <text class="selector-arrow">></text>
+          </view>
+        </picker>
+        <input 
+          class="amount-input-right" 
+          type="digit" 
+          value="{{toAmount}}" 
+          bindinput="onToAmountInput"
+          placeholder="0.00"
+          maxlength="15"
+          placeholder-style="color: #94a3b8; font-size: 56rpx; font-weight: 300;"
+        />
+      </view>
+    </view>
+    
+    <!-- 汇率显示区域 -->
+    <view class="rate-display-horizontal">
+      <text class="rate-text-center">1 {{currencies[fromCurrencyIndex].code}} = {{exchangeRate}} {{currencies[toCurrencyIndex].code}}</text>
+    </view>
+  </view>
+
+  <!-- 快捷功能网格 -->
+  <view class="quick-actions">
+    <view class="action-item" bindtap="showRateHistory">
+      <text class="action-icon">📈</text>
+      <text class="action-label">汇率走势</text>
+    </view>
+    <view class="action-item" bindtap="showExchangeMethods">
+      <text class="action-icon">🏦</text>
+      <text class="action-label">换汇渠道</text>
+    </view>
+    <view class="action-item" bindtap="setTargetRate">
+      <text class="action-icon">🎯</text>
+      <text class="action-label">目标汇率</text>
+    </view>
+    <view class="action-item" bindtap="showMoreCurrencies">
+      <text class="action-icon">💱</text>
+      <text class="action-label">更多币种</text>
+    </view>
+  </view>
+</view>

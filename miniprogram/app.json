@@ -1,0 +1,39 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/advice/advice",
+    "pages/settings/settings"
+  ],
+  "window": {
+    "backgroundColor": "#f8f9fa",
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#667eea",
+    "navigationBarTitleText": "汇率助手",
+    "navigationBarTextStyle": "white"
+  },
+  "tabBar": {
+    "color": "#7A7E83",
+    "selectedColor": "#667eea",
+    "borderStyle": "white",
+    "backgroundColor": "#ffffff",
+    "position": "bottom",
+    "borderWidth": "1px",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "汇率"
+      },
+      {
+        "pagePath": "pages/advice/advice",
+        "text": "建议"
+      },
+      {
+        "pagePath": "pages/settings/settings",
+        "text": "设置"
+      }
+    ]
+  },
+  "sitemapLocation": "sitemap.json",
+  "style": "v2",
+  "lazyCodeLoading": "requiredComponents"
+}
