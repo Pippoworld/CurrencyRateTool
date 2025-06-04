@@ -179,7 +179,7 @@ page {
   z-index: 2;
 }
 
-/* 建议描述 - 详细说明 */
+/* 建议描述 - 操作建议 */
 .advice-brief {
   font-size: 20rpx;
   font-weight: 600;
@@ -187,8 +187,22 @@ page {
   text-align: center;
   line-height: 1.4;
   letter-spacing: 0.4rpx;
-  margin-bottom: 10rpx;
+  margin-bottom: 4rpx;
   text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.15);
+  position: relative;
+  z-index: 2;
+}
+
+/* 快速提示 */
+.advice-quick-tip {
+  font-size: 18rpx;
+  font-weight: 500;
+  color: #d1e7ff;
+  text-align: center;
+  line-height: 1.3;
+  letter-spacing: 0.3rpx;
+  margin-bottom: 10rpx;
+  text-shadow: 0 1rpx 4rpx rgba(0, 0, 0, 0.1);
   position: relative;
   z-index: 2;
 }

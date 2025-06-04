@@ -11,13 +11,14 @@
     
     <!-- 右边固定建议容器 -->
     <view class="rate-advice-fixed">
-      <view class="rate-advice" bindtap="goToAdvice">
+      <view class="rate-advice" bindtap="goToRateDetail">
         <view class="advice-status-dot"></view>
         <view class="advice-content-mobile">
           <text class="advice-title-main">{{advice.title}}</text>
           <text class="advice-brief">{{advice.brief}}</text>
+          <text class="advice-quick-tip">{{advice.quickTip}}</text>
         </view>
-        <text class="advice-more">详细建议</text>
+        <text class="advice-more">详细分析</text>
       </view>
     </view>
   </view>

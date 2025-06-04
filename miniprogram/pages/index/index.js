@@ -157,35 +157,35 @@ Page({
     const fromCurrency = this.data.currencies[this.data.fromCurrencyIndex];
     const toCurrency = this.data.currencies[this.data.toCurrencyIndex];
     
-    // 模拟AI分析 - 简洁实用的建议
+    // 简化为状态指示器 - 专注于快速判断
     const scenarios = [
       {
         icon: '●',
-        title: '价格适中',
+        title: '汇率正常',
         status: 'good',
-        summary: `${fromCurrency.name}汇率处于合理区间，当前可以换汇。建议在此价位分批购买，降低风险。`,
-        brief: '可以换汇'
+        brief: '适合换汇',
+        quickTip: '当前价位合理'
       },
       {
         icon: '●', 
-        title: '价格略高',
+        title: '略显偏高',
         status: 'warning',
-        summary: `${fromCurrency.name}汇率偏高，建议观望。预计1-2周内可能回调，可设置价格提醒。`,
-        brief: '建议观望'
+        brief: '建议观望',
+        quickTip: '可等待回调'
       },
       {
         icon: '●',
-        title: '价格偏低',
+        title: '相对偏低',
         status: 'excellent',
-        summary: `${fromCurrency.name}汇率偏低，是较好的换汇时机。建议尽快购买，但注意风险控制。`,
-        brief: '抓紧换汇'
+        brief: '抓紧换汇',
+        quickTip: '较好时机'
       },
       {
         icon: '●',
-        title: '价格偏高',
+        title: '明显偏高',
         status: 'danger',
-        summary: `${fromCurrency.name}汇率处于高位，不建议当前换汇。建议等待2-3周，观察回调机会。`,
-        brief: '等等再买'
+        brief: '暂缓操作',
+        quickTip: '等待更佳价位'
       }
     ];
     

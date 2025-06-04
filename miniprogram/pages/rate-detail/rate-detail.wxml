@@ -11,13 +11,13 @@
     <text class="update-time">更新时间：{{updateTime}}</text>
   </view>
 
-  <!-- AI 详细分析建议 -->
+  <!-- AI 专业技术分析 -->
   <view class="ai-analysis">
     <view class="section-header">
-      <view class="header-icon">🤖</view>
+      <view class="header-icon">📈</view>
       <view class="header-content">
-        <text class="section-title">AI 智能分析</text>
-        <text class="section-desc">基于当前汇率走势的专业建议</text>
+        <text class="section-title">专业技术分析</text>
+        <text class="section-desc">基于多项技术指标的深度市场分析</text>
       </view>
     </view>
     
