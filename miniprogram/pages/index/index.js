@@ -212,17 +212,18 @@ Page({
 
   // 跳转到汇率详情页设置
   goToRateDetail() {
-    wx.navigateTo({
-      url: `/pages/rate-detail/rate-detail?fromIndex=${this.data.fromCurrencyIndex}&toIndex=${this.data.toCurrencyIndex}`,
+    // 直接切换到详情页tab，确保始终能够访问
+    wx.switchTab({
+      url: '/pages/rate-detail/rate-detail',
       success: () => {
         console.log('跳转到汇率详情页');
       },
       fail: () => {
-        // 如果页面不存在，显示提示
+        // 如果还是失败，显示友好提示
         wx.showToast({
-          title: '功能开发中',
-          icon: 'none',
-          duration: 2000
+          title: '正在加载页面...',
+          icon: 'loading',
+          duration: 1000
         });
       }
     });
