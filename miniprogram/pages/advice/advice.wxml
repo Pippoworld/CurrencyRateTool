@@ -84,6 +84,9 @@
         <button class="btn btn-secondary" bindtap="shareAnalysis">
           分享分析
         </button>
+        <button class="btn btn-secondary" bindtap="refreshAIContent">
+          🤖 刷新AI分析
+        </button>
       </view>
     </view>
   </view>

@@ -1,3 +1,5 @@
+const geminiAPI = require('../../utils/gemini-api');
+
 Page({
   data: {
     selectedCurrency: {
@@ -20,33 +22,21 @@ Page({
       { height: 75, color: '#10b981', label: '今日' }
     ],
     
-    // AI分析内容
+    // AI分析内容 - 初始化为空，将通过AI生成
     analysis: {
-      trend: '美元兑人民币近期呈现震荡上行趋势，受美联储政策预期影响较大。技术面显示多头仍占主导，但需警惕短期回调风险。',
-      technical: 'MACD金叉信号确认，RSI指标处于65附近的强势区间。20日均线提供有效支撑，短期阻力位在7.25附近。',
-      fundamental: '美国经济数据表现强劲，通胀预期温和上升。中美贸易关系相对稳定，人民币基本面支撑仍存。',
-      risk: '关注美联储下次会议纪要，警惕突发地缘政治事件。建议分批建仓，控制单次仓位不超过总资金20%。'
+      trend: '正在分析趋势...',
+      technical: '正在分析技术指标...',
+      fundamental: '正在分析基本面...',
+      risk: '正在分析风险...'
     },
     
-    // 换汇建议时间线
+    // 换汇建议时间线 - 初始化为空，将通过AI生成
     timeline: [
       {
         status: 'current',
         title: '当前时点',
-        description: '汇率处于相对合理区间',
-        suggestedRate: '7.10-7.15'
-      },
-      {
-        status: 'upcoming',
-        title: '1-2周内',
-        description: '等待技术面确认突破',
-        suggestedRate: '7.05-7.20'
-      },
-      {
-        status: 'future',
-        title: '1个月内',
-        description: '关注基本面变化',
-        suggestedRate: '6.95-7.30'
+        description: '正在生成建议...',
+        suggestedRate: '分析中...'
       }
     ],
     
@@ -90,40 +80,33 @@ Page({
       }
     ],
 
-    // 市场资讯
+    // 市场资讯 - 初始化为空，将通过AI生成
     marketNews: [
       {
-        title: '美联储暗示年内可能再次加息',
-        summary: '美联储官员表示，如果通胀持续高于目标，可能考虑进一步收紧货币政策...',
-        source: '路透社',
-        time: '2小时前',
-        impact: '汇率上涨',
-        impactLevel: 'positive',
-        url: 'https://example.com/news1'
-      },
-      {
-        title: '中国出口数据超预期增长',
-        summary: '最新贸易数据显示，中国11月出口同比增长8.5%，远超市场预期的3.2%...',
-        source: '新华社',
-        time: '4小时前',
-        impact: '人民币走强',
-        impactLevel: 'positive',
-        url: 'https://example.com/news2'
-      },
-      {
-        title: '地缘政治紧张局势缓解',
-        summary: '国际关系专家认为，近期地缘政治风险有所下降，有利于全球资本市场稳定...',
-        source: '华尔街日报',
-        time: '6小时前',
-        impact: '市场稳定',
-        impactLevel: 'neutral',
-        url: 'https://example.com/news3'
+        title: '正在获取最新资讯...',
+        summary: 'AI正在分析当前市场情况，请稍候...',
+        source: 'AI分析',
+        time: '实时',
+        impact: '分析中',
+        impactLevel: 'neutral'
       }
-    ]
+    ],
+
+    // 加载状态
+    isLoadingAnalysis: true,
+    isLoadingAdvice: true,
+    isLoadingNews: true
   },
 
-  onLoad() {
+  async onLoad() {
     this.loadCurrencyData();
+    
+    // 并行加载AI生成的内容
+    await Promise.all([
+      this.loadAIAnalysis(),
+      this.loadAIAdvice(), 
+      this.loadAINews()
+    ]);
   },
 
   // 加载货币数据
@@ -141,6 +124,99 @@ Page({
     }
   },
 
+  // 加载AI分析
+  async loadAIAnalysis() {
+    try {
+      this.setData({ isLoadingAnalysis: true });
+      
+      const currencyPair = `${this.data.selectedCurrency.name}/人民币`;
+      const analysis = await geminiAPI.generateRateAnalysis(
+        currencyPair, 
+        this.data.currentRate, 
+        this.data.rateChange
+      );
+      
+      this.setData({ 
+        analysis: analysis,
+        isLoadingAnalysis: false 
+      });
+      
+      console.log('AI分析加载完成:', analysis);
+    } catch (error) {
+      console.error('加载AI分析失败:', error);
+      this.setData({ isLoadingAnalysis: false });
+    }
+  },
+
+  // 加载AI建议
+  async loadAIAdvice() {
+    try {
+      this.setData({ isLoadingAdvice: true });
+      
+      const currencyPair = `${this.data.selectedCurrency.name}/人民币`;
+      const advice = await geminiAPI.generateExchangeAdvice(
+        currencyPair,
+        this.data.currentRate
+      );
+      
+      this.setData({ 
+        timeline: advice,
+        isLoadingAdvice: false 
+      });
+      
+      console.log('AI建议加载完成:', advice);
+    } catch (error) {
+      console.error('加载AI建议失败:', error);
+      this.setData({ isLoadingAdvice: false });
+    }
+  },
+
+  // 加载AI新闻
+  async loadAINews() {
+    try {
+      this.setData({ isLoadingNews: true });
+      
+      const news = await geminiAPI.generateMarketNews(this.data.selectedCurrency.code || 'USD');
+      
+      this.setData({ 
+        marketNews: news,
+        isLoadingNews: false 
+      });
+      
+      console.log('AI新闻加载完成:', news);
+    } catch (error) {
+      console.error('加载AI新闻失败:', error);
+      this.setData({ isLoadingNews: false });
+    }
+  },
+
+  // 刷新AI内容
+  async refreshAIContent() {
+    wx.showLoading({
+      title: '正在刷新分析...'
+    });
+
+    try {
+      await Promise.all([
+        this.loadAIAnalysis(),
+        this.loadAIAdvice(),
+        this.loadAINews()
+      ]);
+      
+      wx.hideLoading();
+      wx.showToast({
+        title: 'AI分析已更新',
+        icon: 'success'
+      });
+    } catch (error) {
+      wx.hideLoading();
+      wx.showToast({
+        title: '刷新失败，请重试',
+        icon: 'none'
+      });
+    }
+  },
+
   // 跳转到汇率详情页进行监控设置
   goToRateDetail() {
     wx.navigateTo({
@@ -153,9 +229,23 @@ Page({
 
   // 分享分析
   shareAnalysis() {
-    wx.showShareMenu({
-      withShareTicket: true,
-      menus: ['shareAppMessage', 'shareTimeline']
+    const shareContent = `${this.data.selectedCurrency.name}汇率AI分析
+💰 当前汇率：${this.data.currentRate}
+📈 变化：${this.data.rateChange}
+
+🤖 AI分析摘要：
+${this.data.analysis.trend}
+
+来自汇率助手的专业AI分析`;
+
+    wx.setClipboardData({
+      data: shareContent,
+      success: () => {
+        wx.showToast({
+          title: '分析内容已复制',
+          icon: 'success'
+        });
+      }
     });
   },
 
@@ -163,17 +253,26 @@ Page({
   openNewsDetail(e) {
     const url = e.currentTarget.dataset.url;
     // 在实际应用中，这里应该跳转到新闻详情页或使用webview
-    wx.showToast({
-      title: '功能开发中',
-      icon: 'none'
+    wx.showModal({
+      title: '新闻详情',
+      content: '此功能将在后续版本中完善，敬请期待！',
+      showCancel: false
     });
   },
 
   // 页面分享
   onShareAppMessage() {
     return {
-      title: `${this.data.selectedCurrency.name}汇率分析 - 当前汇率 ${this.data.currentRate}`,
-      path: '/pages/advice/advice'
+      title: `${this.data.selectedCurrency.name}汇率AI分析 - 当前汇率 ${this.data.currentRate}`,
+      path: '/pages/advice/advice',
+      imageUrl: '/images/share-cover.png' // 可以添加分享封面图
     };
+  },
+
+  // 下拉刷新
+  onPullDownRefresh() {
+    this.refreshAIContent().then(() => {
+      wx.stopPullDownRefresh();
+    });
   }
 }); 

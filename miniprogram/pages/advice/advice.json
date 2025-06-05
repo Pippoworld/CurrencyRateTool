@@ -1,3 +1,6 @@
 {
-  "usingComponents": {}
+  "usingComponents": {},
+  "navigationBarTitleText": "智能建议",
+  "enablePullDownRefresh": true,
+  "backgroundTextStyle": "dark"
 }

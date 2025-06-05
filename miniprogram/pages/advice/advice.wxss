@@ -244,21 +244,24 @@ page {
 /* 操作按钮 - 进一步增大尺寸 */
 .action-buttons {
   display: flex;
-  gap: 40rpx;
+  gap: 24rpx; /* 减小间距以适应三个按钮 */
   margin-top: 48rpx;
+  flex-wrap: wrap; /* 允许换行 */
 }
 
 .action-buttons .btn {
   flex: 1;
+  min-width: 200rpx; /* 设置最小宽度 */
   margin: 0;
-  padding: 28rpx 36rpx; /* 进一步增大按钮 */
-  font-size: 36rpx;
+  padding: 28rpx 20rpx; /* 调整内边距 */
+  font-size: 32rpx;
   font-weight: 600;
   border-radius: 24rpx;
   min-height: 96rpx;
   display: flex;
   align-items: center;
   justify-content: center;
+  text-align: center;
 }
 
 /* 换汇方式样式 - 进一步增大尺寸 */
