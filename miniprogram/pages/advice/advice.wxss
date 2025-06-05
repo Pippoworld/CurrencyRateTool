@@ -1,28 +1,30 @@
-/* advice页面样式 */
+/* advice页面样式 - 移动端优化版本 */
 page {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   min-height: 100vh;
-  padding-bottom: 120rpx; /* 为底部tabBar留出空间 */
+  padding-bottom: 160rpx; /* 增加底部间距 */
 }
 
 .container {
-  padding: 32rpx;
+  padding: 40rpx 24rpx; /* 优化左右间距 */
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
 }
 
-/* 货币概览样式 */
+/* 货币概览样式 - 增大尺寸 */
 .currency-overview {
-  margin-bottom: 32rpx;
+  margin-bottom: 40rpx;
 }
 
 .rate-summary {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgba(102,126,234,0.05);
-  border-radius: 20rpx;
-  padding: 32rpx;
-  margin-bottom: 32rpx;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 28rpx;
+  padding: 48rpx 36rpx; /* 增大内边距 */
+  margin-bottom: 36rpx;
+  box-shadow: 0 12rpx 40rpx rgba(0,0,0,0.1);
 }
 
 .current-rate {
@@ -31,62 +33,65 @@ page {
 }
 
 .rate-label {
-  font-size: 24rpx;
-  color: #999;
-  margin-bottom: 8rpx;
+  font-size: 30rpx; /* 增大字体 */
+  color: #666;
+  margin-bottom: 12rpx;
+  font-weight: 500;
 }
 
 .rate-value {
-  font-size: 48rpx;
+  font-size: 56rpx; /* 增大主要数字 */
   font-weight: 700;
   color: #1a1a1a;
+  line-height: 1.2;
 }
 
 .rate-change {
   display: flex;
   align-items: center;
-  padding: 16rpx 24rpx;
-  border-radius: 16rpx;
+  padding: 20rpx 28rpx; /* 增大按钮尺寸 */
+  border-radius: 20rpx;
 }
 
 .rate-change.positive {
-  background: rgba(76, 175, 80, 0.1);
+  background: rgba(76, 175, 80, 0.15);
   color: #4CAF50;
 }
 
 .rate-change.negative {
-  background: rgba(244, 67, 54, 0.1);
+  background: rgba(244, 67, 54, 0.15);
   color: #F44336;
 }
 
 .rate-change.neutral {
-  background: rgba(255, 193, 7, 0.1);
+  background: rgba(255, 193, 7, 0.15);
   color: #FFC107;
 }
 
 .change-icon {
-  font-size: 32rpx;
-  margin-right: 8rpx;
+  font-size: 38rpx; /* 增大图标 */
+  margin-right: 12rpx;
 }
 
 .change-text {
-  font-size: 28rpx;
+  font-size: 32rpx; /* 增大变化文字 */
   font-weight: 600;
 }
 
-/* 图表样式 */
+/* 图表样式 - 增大尺寸 */
 .rate-chart {
-  background: white;
-  border-radius: 20rpx;
-  padding: 32rpx;
-  box-shadow: 0 8rpx 24rpx rgba(0,0,0,0.04);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 28rpx;
+  padding: 40rpx 36rpx;
+  box-shadow: 0 12rpx 40rpx rgba(0,0,0,0.08);
 }
 
 .chart-title {
-  font-size: 32rpx;
+  font-size: 38rpx; /* 增大标题 */
   font-weight: 600;
   color: #1a1a1a;
-  margin-bottom: 32rpx;
+  margin-bottom: 40rpx;
   display: block;
 }
 
@@ -94,8 +99,8 @@ page {
   display: flex;
   justify-content: space-between;
   align-items: end;
-  height: 200rpx;
-  padding: 20rpx 0;
+  height: 240rpx; /* 增大图表高度 */
+  padding: 24rpx 0;
 }
 
 .chart-line {
@@ -106,70 +111,73 @@ page {
 }
 
 .chart-point {
-  width: 16rpx;
-  border-radius: 8rpx;
-  margin-bottom: 16rpx;
+  width: 20rpx; /* 增大数据点 */
+  border-radius: 10rpx;
+  margin-bottom: 20rpx;
   transition: all 0.3s ease;
 }
 
 .chart-label {
-  font-size: 20rpx;
+  font-size: 24rpx; /* 增大标签字体 */
   color: #999;
   text-align: center;
 }
 
-/* AI分析样式 */
+/* AI分析样式 - 增大间距和字体 */
 .analysis-section {
-  space-y: 32rpx;
+  margin-bottom: 48rpx;
 }
 
 .analysis-item {
-  background: white;
-  border-radius: 20rpx;
-  padding: 32rpx;
-  margin-bottom: 24rpx;
-  box-shadow: 0 8rpx 24rpx rgba(0,0,0,0.04);
-  border-left: 8rpx solid #667eea;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 28rpx;
+  padding: 44rpx 36rpx; /* 增大内边距 */
+  margin-bottom: 32rpx;
+  box-shadow: 0 12rpx 40rpx rgba(0,0,0,0.08);
+  border-left: 10rpx solid #667eea; /* 增大边框 */
 }
 
 .analysis-title {
-  font-size: 32rpx;
+  font-size: 38rpx; /* 增大标题字体 */
   font-weight: 600;
   color: #667eea;
-  margin-bottom: 16rpx;
+  margin-bottom: 20rpx;
   display: block;
 }
 
 .analysis-content {
-  font-size: 28rpx;
-  line-height: 1.6;
+  font-size: 32rpx; /* 增大内容字体 */
+  line-height: 1.7; /* 增大行高 */
   color: #333;
 }
 
-/* 时间线样式 */
+/* 时间线样式 - 增大尺寸 */
 .advice-timeline {
   position: relative;
-  padding-left: 48rpx;
-  margin-bottom: 48rpx;
+  padding-left: 60rpx; /* 增大左边距 */
+  margin-bottom: 56rpx;
 }
 
 .advice-timeline::before {
   content: '';
   position: absolute;
-  left: 24rpx;
+  left: 30rpx;
   top: 0;
   bottom: 0;
-  width: 4rpx;
+  width: 6rpx; /* 增大时间线宽度 */
   background: #e0e0e0;
+  border-radius: 3rpx;
 }
 
 .timeline-item {
   position: relative;
-  margin-bottom: 48rpx;
-  padding: 32rpx;
-  background: white;
-  border-radius: 20rpx;
-  box-shadow: 0 8rpx 24rpx rgba(0,0,0,0.04);
+  margin-bottom: 56rpx; /* 增大间距 */
+  padding: 40rpx 36rpx; /* 增大内边距 */
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 28rpx;
+  box-shadow: 0 12rpx 40rpx rgba(0,0,0,0.08);
 }
 
 .timeline-item:last-child {
@@ -178,96 +186,116 @@ page {
 
 .timeline-dot {
   position: absolute;
-  left: -36rpx;
+  left: -45rpx; /* 调整位置 */
   top: 50%;
   transform: translateY(-50%);
-  width: 24rpx;
-  height: 24rpx;
+  width: 30rpx; /* 增大圆点 */
+  height: 30rpx;
   border-radius: 50%;
   background: #667eea;
-  border: 4rpx solid white;
-  box-shadow: 0 0 0 4rpx #e0e0e0;
+  border: 6rpx solid white;
+  box-shadow: 0 0 0 6rpx #e0e0e0;
 }
 
-.timeline-item.active .timeline-dot {
+.timeline-item.current .timeline-dot {
   background: #4CAF50;
-  box-shadow: 0 0 0 4rpx rgba(76, 175, 80, 0.2);
+  box-shadow: 0 0 0 6rpx rgba(76, 175, 80, 0.2);
 }
 
-.timeline-item.warning .timeline-dot {
+.timeline-item.upcoming .timeline-dot {
   background: #FFC107;
-  box-shadow: 0 0 0 4rpx rgba(255, 193, 7, 0.2);
+  box-shadow: 0 0 0 6rpx rgba(255, 193, 7, 0.2);
+}
+
+.timeline-item.future .timeline-dot {
+  background: #9E9E9E;
+  box-shadow: 0 0 0 6rpx rgba(158, 158, 158, 0.2);
 }
 
 .timeline-content {
   display: flex;
   flex-direction: column;
-  gap: 12rpx;
+  gap: 16rpx; /* 增大间距 */
 }
 
 .timeline-title {
-  font-size: 32rpx;
+  font-size: 38rpx; /* 增大标题 */
   font-weight: 600;
   color: #1a1a1a;
 }
 
 .timeline-desc {
-  font-size: 28rpx;
+  font-size: 32rpx; /* 增大描述字体 */
   color: #666;
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
 .timeline-rate {
-  font-size: 24rpx;
+  font-size: 28rpx; /* 增大汇率字体 */
   color: #667eea;
-  font-weight: 500;
+  font-weight: 600;
+  background: rgba(102,126,234,0.1);
+  padding: 12rpx 20rpx;
+  border-radius: 16rpx;
+  display: inline-block;
+  margin-top: 8rpx;
 }
 
-/* 操作按钮 */
+/* 操作按钮 - 增大尺寸 */
 .action-buttons {
   display: flex;
-  gap: 24rpx;
+  gap: 32rpx;
+  margin-top: 40rpx;
 }
 
 .action-buttons .btn {
   flex: 1;
   margin: 0;
+  padding: 24rpx 32rpx; /* 增大按钮 */
+  font-size: 32rpx;
+  font-weight: 600;
+  border-radius: 20rpx;
+  min-height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* 换汇方式样式 */
+/* 换汇方式样式 - 增大尺寸 */
 .exchange-methods {
   display: flex;
   flex-direction: column;
-  gap: 24rpx;
+  gap: 32rpx;
 }
 
 .method-item {
-  background: white;
-  border-radius: 20rpx;
-  padding: 32rpx;
-  box-shadow: 0 8rpx 24rpx rgba(0,0,0,0.04);
-  border: 2rpx solid transparent;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 28rpx;
+  padding: 40rpx 36rpx; /* 增大内边距 */
+  box-shadow: 0 12rpx 40rpx rgba(0,0,0,0.08);
+  border: 3rpx solid transparent;
   transition: all 0.3s ease;
 }
 
 .method-item.recommended {
   border-color: #667eea;
-  background: linear-gradient(135deg, rgba(102,126,234,0.05) 0%, rgba(255,255,255,1) 100%);
+  background: linear-gradient(135deg, rgba(102,126,234,0.08) 0%, rgba(255,255,255,0.95) 100%);
 }
 
 .method-header {
   display: flex;
   align-items: center;
-  margin-bottom: 24rpx;
+  margin-bottom: 32rpx;
 }
 
 .method-icon {
-  font-size: 48rpx;
-  margin-right: 16rpx;
+  font-size: 54rpx; /* 增大图标 */
+  margin-right: 20rpx;
 }
 
 .method-name {
-  font-size: 36rpx;
+  font-size: 40rpx; /* 增大名称字体 */
   font-weight: 600;
   color: #1a1a1a;
   flex: 1;
@@ -276,19 +304,19 @@ page {
 .recommended-badge {
   background: #667eea;
   color: white;
-  font-size: 20rpx;
-  padding: 8rpx 16rpx;
-  border-radius: 12rpx;
-  font-weight: 500;
+  font-size: 24rpx; /* 增大徽章字体 */
+  padding: 12rpx 20rpx;
+  border-radius: 16rpx;
+  font-weight: 600;
 }
 
 .method-details {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 24rpx;
-  padding: 24rpx;
-  background: rgba(102,126,234,0.03);
-  border-radius: 16rpx;
+  margin-bottom: 28rpx;
+  padding: 32rpx; /* 增大内边距 */
+  background: rgba(102,126,234,0.05);
+  border-radius: 20rpx;
 }
 
 .method-rate, .method-fee, .method-time {
@@ -298,13 +326,13 @@ page {
 }
 
 .rate-label, .fee-label, .time-label {
-  font-size: 24rpx;
+  font-size: 26rpx; /* 增大标签字体 */
   color: #999;
-  margin-bottom: 8rpx;
+  margin-bottom: 10rpx;
 }
 
 .rate-value, .fee-value, .time-value {
-  font-size: 28rpx;
+  font-size: 32rpx; /* 增大数值字体 */
   font-weight: 600;
   color: #1a1a1a;
 }
@@ -312,100 +340,137 @@ page {
 .method-pros {
   display: flex;
   flex-direction: column;
-  gap: 8rpx;
+  gap: 12rpx;
 }
 
 .pros-title {
-  font-size: 28rpx;
+  font-size: 32rpx; /* 增大优势标题 */
   font-weight: 600;
   color: #667eea;
 }
 
 .pros-content {
-  font-size: 26rpx;
+  font-size: 30rpx; /* 增大优势内容字体 */
+  color: #666;
+  line-height: 1.6;
+}
+
+/* 市场资讯样式 - 新增 */
+.news-section {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.news-item {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 28rpx;
+  padding: 36rpx;
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  box-shadow: 0 12rpx 40rpx rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+}
+
+.news-item:active {
+  transform: scale(0.98);
+  opacity: 0.8;
+}
+
+.news-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.news-title {
+  font-size: 34rpx; /* 增大新闻标题 */
+  font-weight: 600;
+  color: #1a1a1a;
+  line-height: 1.4;
+}
+
+.news-summary {
+  font-size: 28rpx; /* 增大摘要字体 */
   color: #666;
   line-height: 1.5;
 }
 
-/* 提醒设置样式 */
-.reminder-settings {
-  margin-bottom: 32rpx;
-}
-
-.setting-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 24rpx 32rpx;
-  background: white;
-  border-radius: 16rpx;
-  margin-bottom: 16rpx;
-  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.04);
-}
-
-.setting-item:last-child {
-  margin-bottom: 0;
-}
-
-.setting-label {
-  font-size: 32rpx;
-  font-weight: 500;
-  color: #1a1a1a;
-}
-
-.setting-switch {
-  transform: scale(0.8);
-}
-
-.target-rate-setting {
+.news-meta {
   display: flex;
   align-items: center;
   gap: 16rpx;
-  background: rgba(102,126,234,0.05);
-  border-radius: 16rpx;
-  padding: 24rpx;
+  margin-top: 8rpx;
 }
 
-.target-label {
-  font-size: 28rpx;
-  font-weight: 500;
-  color: #667eea;
-  min-width: 120rpx;
-}
-
-.target-input {
-  flex: 1;
-  background: white;
-  border: 2rpx solid #f0f0f0;
-  border-radius: 12rpx;
-  padding: 16rpx 20rpx;
-  font-size: 28rpx;
-}
-
-.btn-small {
-  padding: 16rpx 32rpx;
+.news-source {
   font-size: 24rpx;
-  border-radius: 16rpx;
+  color: #999;
 }
 
-/* 响应式设计 */
+.news-time {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.news-impact {
+  font-size: 24rpx;
+  padding: 6rpx 12rpx;
+  border-radius: 12rpx;
+  font-weight: 500;
+}
+
+.news-impact.positive {
+  background: rgba(76, 175, 80, 0.1);
+  color: #4CAF50;
+}
+
+.news-impact.negative {
+  background: rgba(244, 67, 54, 0.1);
+  color: #F44336;
+}
+
+.news-impact.neutral {
+  background: rgba(158, 158, 158, 0.1);
+  color: #9E9E9E;
+}
+
+.news-arrow {
+  font-size: 32rpx; /* 增大箭头 */
+  color: #ccc;
+  font-weight: 300;
+}
+
+/* 响应式设计 - 优化小屏幕 */
 @media (max-width: 600rpx) {
+  .container {
+    padding: 32rpx 20rpx;
+  }
+  
   .rate-summary {
     flex-direction: column;
-    gap: 24rpx;
+    gap: 32rpx;
+    text-align: center;
   }
   
   .method-details {
     flex-direction: column;
-    gap: 16rpx;
+    gap: 24rpx;
   }
   
-  .target-rate-setting {
+  .action-buttons {
     flex-direction: column;
-    align-items: stretch;
+    gap: 20rpx;
   }
   
-  .target-label {
-    min-width: auto;
+  .news-item {
+    padding: 28rpx;
+  }
+  
+  .chart-container {
+    height: 200rpx;
   }
 } 
