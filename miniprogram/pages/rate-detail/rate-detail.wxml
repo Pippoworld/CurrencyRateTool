@@ -11,203 +11,375 @@
     <text class="update-time">更新时间：{{updateTime}}</text>
   </view>
 
-  <!-- AI 专业技术分析 -->
-  <view class="ai-analysis">
-    <view class="section-header">
-      <view class="header-icon">📈</view>
-      <view class="header-content">
-        <text class="section-title">专业技术分析</text>
-        <text class="section-desc">基于多项技术指标的深度市场分析</text>
+  <!-- AI 换汇建议 -->
+  <view class="card ai-analysis">
+    <view class="card-header">
+      <view class="card-icon">🤖</view>
+      <view>
+        <text class="card-title">AI 换汇建议</text>
+        <text class="card-desc">基于实时汇率的智能换汇分析</text>
       </view>
     </view>
     
-    <view class="analysis-content">
+    <view class="card-content">
       <view class="analysis-status">
-        <view class="status-indicator {{advice.status}}"></view>
-        <text class="status-text">{{advice.title}}</text>
+        <view class="status-indicator {{aiAnalysis.status}}"></view>
+        <text class="status-text">{{aiAnalysis.title}}</text>
         <view class="confidence-score">
           <text class="confidence-label">可信度</text>
-          <text class="confidence-value">{{advice.confidence}}%</text>
+          <text class="confidence-value">{{aiAnalysis.confidence}}%</text>
         </view>
       </view>
       
-      <text class="analysis-summary">{{advice.summary}}</text>
+      <text class="analysis-summary">{{aiAnalysis.summary}}</text>
       
       <view class="analysis-factors">
         <text class="factors-title">分析要点：</text>
-        <view class="factor-item" wx:for="{{advice.factors}}" wx:key="index">
+        <view class="factor-item" wx:for="{{aiAnalysis.factors}}" wx:key="index">
           <text class="factor-icon">•</text>
           <text class="factor-text">{{item}}</text>
         </view>
       </view>
       
       <view class="analysis-suggestion">
-        <text class="suggestion-title">建议操作：</text>
-        <text class="suggestion-text">{{advice.suggestion}}</text>
+        <text class="suggestion-title">换汇建议：</text>
+        <text class="suggestion-text">{{aiAnalysis.suggestion}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 智能提醒设置 -->
+  <view class="card alert-recommendations">
+    <view class="card-header">
+      <view class="card-icon">🔔</view>
+      <view>
+        <text class="card-title">智能提醒</text>
+        <text class="card-desc">AI 推荐的最佳换汇时机提醒</text>
+      </view>
+    </view>
+    
+    <view class="card-content">
+      <view class="recommendation-cards">
+        <!-- 买入提醒 -->
+        <view class="recommendation-card buy-alert">
+          <view class="rec-header">
+            <text class="rec-icon">📈</text>
+            <view class="rec-content">
+              <text class="rec-title">低位换汇提醒</text>
+              <text class="rec-desc">汇率回落至此价位时提醒换汇</text>
+            </view>
+          </view>
+          <view class="rec-price">
+            <text class="price-value">{{alertSuggestions.buyAlert.price}}</text>
+            <text class="price-reason">{{alertSuggestions.buyAlert.reason}}</text>
+          </view>
+          <button class="set-alert-btn buy" bindtap="quickSetAlert" data-type="buy" data-price="{{alertSuggestions.buyAlert.price}}">
+            设置提醒
+          </button>
+        </view>
+
+        <!-- 卖出提醒 -->
+        <view class="recommendation-card sell-alert">
+          <view class="rec-header">
+            <text class="rec-icon">📉</text>
+            <view class="rec-content">
+              <text class="rec-title">高位出手提醒</text>
+              <text class="rec-desc">汇率升至此价位时提醒换汇</text>
+            </view>
+          </view>
+          <view class="rec-price">
+            <text class="price-value">{{alertSuggestions.sellAlert.price}}</text>
+            <text class="price-reason">{{alertSuggestions.sellAlert.reason}}</text>
+          </view>
+          <button class="set-alert-btn sell" bindtap="quickSetAlert" data-type="sell" data-price="{{alertSuggestions.sellAlert.price}}">
+            设置提醒
+          </button>
+        </view>
+      </view>
+
+      <!-- 快速设置 -->
+      <view class="quick-alerts">
+        <text class="quick-title">快速设置其他提醒：</text>
+        <view class="quick-buttons-horizontal">
+          <button class="quick-alert-btn" bindtap="setQuickTarget" data-type="buy" data-percent="-1">低1%</button>
+          <button class="quick-alert-btn" bindtap="setQuickTarget" data-type="buy" data-percent="-3">低3%</button>
+          <button class="quick-alert-btn" bindtap="setQuickTarget" data-type="sell" data-percent="1">高1%</button>
+          <button class="quick-alert-btn" bindtap="setQuickTarget" data-type="sell" data-percent="3">高3%</button>
+        </view>
+      </view>
+
+      <!-- 我的提醒入口 -->
+      <view class="my-alerts-entry">
+        <button class="manage-alerts-btn" bindtap="goToMyAlerts">
+          <text class="manage-icon">⚙️</text>
+          <text class="manage-text">管理我的提醒</text>
+          <text class="manage-arrow">›</text>
+        </button>
       </view>
     </view>
   </view>
 
   <!-- 目标汇率设置 -->
-  <view class="target-rate-section">
-    <view class="section-header">
-      <view class="header-icon">🎯</view>
-      <view class="header-content">
-        <text class="section-title">目标汇率设置</text>
-        <text class="section-desc">设置理想汇率，到达时自动提醒</text>
+  <view class="card target-rate-section">
+    <view class="card-header">
+      <view class="card-icon">🎯</view>
+      <view>
+        <text class="card-title">目标汇率设置</text>
+        <text class="card-desc">设置理想汇率，到达时自动提醒</text>
       </view>
     </view>
     
-    <view class="target-inputs">
-      <view class="input-row">
-        <text class="input-label">买入目标</text>
-        <input 
-          class="target-input" 
-          type="digit" 
-          value="{{targetBuyRate}}" 
-          bindinput="onTargetBuyInput"
-          placeholder="{{currentRate}}"
-        />
-        <text class="input-unit">{{currencies[toCurrencyIndex].code}}</text>
+    <view class="card-content">
+      <view class="target-inputs">
+        <view class="input-row">
+          <text class="input-label">低位换汇</text>
+          <input 
+            class="target-input" 
+            type="digit" 
+            value="{{targetBuyRate}}" 
+            bindinput="onTargetBuyInput"
+            placeholder="{{currentRate}}"
+          />
+          <text class="input-unit">{{currencies[toCurrencyIndex].code}}</text>
+        </view>
+        
+        <view class="input-row">
+          <text class="input-label">高位提醒</text>
+          <input 
+            class="target-input" 
+            type="digit" 
+            value="{{targetSellRate}}" 
+            bindinput="onTargetSellInput"
+            placeholder="{{currentRate}}"
+          />
+          <text class="input-unit">{{currencies[toCurrencyIndex].code}}</text>
+        </view>
+        
+        <view class="quick-targets">
+          <text class="quick-title">快速设置：</text>
+          <view class="quick-buttons">
+            <button class="quick-btn" bindtap="setQuickTarget" data-type="buy" data-percent="-2">低2%</button>
+            <button class="quick-btn" bindtap="setQuickTarget" data-type="buy" data-percent="-5">低5%</button>
+            <button class="quick-btn" bindtap="setQuickTarget" data-type="sell" data-percent="2">高2%</button>
+            <button class="quick-btn" bindtap="setQuickTarget" data-type="sell" data-percent="5">高5%</button>
+          </view>
+        </view>
       </view>
-      
-      <view class="input-row">
-        <text class="input-label">卖出目标</text>
-        <input 
-          class="target-input" 
-          type="digit" 
-          value="{{targetSellRate}}" 
-          bindinput="onTargetSellInput"
-          placeholder="{{currentRate}}"
-        />
-        <text class="input-unit">{{currencies[toCurrencyIndex].code}}</text>
+    </view>
+  </view>
+
+  <!-- 银行汇率对比 -->
+  <view class="card" wx:if="{{bankRates.length > 0}}">
+    <view class="card-header">
+      <view class="card-icon">🏦</view>
+      <view>
+        <text class="card-title">银行汇率对比</text>
+        <text class="card-desc">主要银行{{currencies[toCurrencyIndex].name}}汇率参考</text>
       </view>
-      
-      <view class="quick-targets">
-        <text class="quick-title">快速设置：</text>
-        <view class="quick-buttons">
-          <button class="quick-btn" bindtap="setQuickTarget" data-type="buy" data-percent="-2">低2%</button>
-          <button class="quick-btn" bindtap="setQuickTarget" data-type="buy" data-percent="-5">低5%</button>
-          <button class="quick-btn" bindtap="setQuickTarget" data-type="sell" data-percent="2">高2%</button>
-          <button class="quick-btn" bindtap="setQuickTarget" data-type="sell" data-percent="5">高5%</button>
+    </view>
+    
+    <view class="card-content">
+      <view class="bank-rates">
+        <view class="bank-item" wx:for="{{bankRates}}" wx:key="name">
+          <view class="bank-info">
+            <text class="bank-name">{{item.name}}</text>
+            <text class="bank-type">{{item.type}}</text>
+          </view>
+          <view class="bank-prices">
+            <view class="price-item buy">
+              <text class="price-label">买入</text>
+              <text class="price-value">{{item.buy}}</text>
+            </view>
+            <view class="price-item sell">
+              <text class="price-label">卖出</text>
+              <text class="price-value">{{item.sell}}</text>
+            </view>
+          </view>
         </view>
       </view>
     </view>
   </view>
 
   <!-- 长期监控设置 -->
-  <view class="monitoring-section">
-    <view class="section-header">
-      <view class="header-icon">📊</view>
-      <view class="header-content">
-        <text class="section-title">长期监控</text>
-        <text class="section-desc">追踪汇率趋势，获取定期报告</text>
+  <view class="card monitoring-section">
+    <view class="card-header">
+      <view class="card-icon">📊</view>
+      <view>
+        <text class="card-title">长期监控</text>
+        <text class="card-desc">追踪汇率趋势，获取定期报告</text>
       </view>
     </view>
     
-    <view class="monitoring-options">
-      <view class="option-item">
-        <view class="option-left">
-          <text class="option-title">价格提醒</text>
-          <text class="option-desc">汇率达到目标时推送通知</text>
+    <view class="card-content">
+      <view class="monitoring-options">
+        <view class="option-item">
+          <view class="option-left">
+            <text class="option-title">价格提醒</text>
+            <text class="option-desc">汇率达到目标时推送通知</text>
+          </view>
+          <switch 
+            class="option-switch" 
+            checked="{{isPriceAlertEnabled}}" 
+            bindchange="onPriceAlertChange"
+          />
         </view>
-        <switch 
-          class="option-switch" 
-          checked="{{isPriceAlertEnabled}}" 
-          bindchange="onPriceAlertChange"
-        />
+        
+        <view class="option-item">
+          <view class="option-left">
+            <text class="option-title">每日报告</text>
+            <text class="option-desc">每天汇率变化总结</text>
+          </view>
+          <switch 
+            class="option-switch" 
+            checked="{{isDailyReportEnabled}}" 
+            bindchange="onDailyReportChange"
+          />
+        </view>
+        
+        <view class="option-item">
+          <view class="option-left">
+            <text class="option-title">趋势分析</text>
+            <text class="option-desc">每周趋势变化分析</text>
+          </view>
+          <switch 
+            class="option-switch" 
+            checked="{{isTrendAnalysisEnabled}}" 
+            bindchange="onTrendAnalysisChange"
+          />
+        </view>
       </view>
       
-      <view class="option-item">
-        <view class="option-left">
-          <text class="option-title">每日报告</text>
-          <text class="option-desc">每天汇率变化总结</text>
-        </view>
-        <switch 
-          class="option-switch" 
-          checked="{{isDailyReportEnabled}}" 
-          bindchange="onDailyReportChange"
-        />
-      </view>
-      
-      <view class="option-item">
-        <view class="option-left">
-          <text class="option-title">趋势分析</text>
-          <text class="option-desc">每周趋势变化分析</text>
-        </view>
-        <switch 
-          class="option-switch" 
-          checked="{{isTrendAnalysisEnabled}}" 
-          bindchange="onTrendAnalysisChange"
-        />
-      </view>
-    </view>
-    
-    <view class="monitoring-stats">
-      <text class="stats-title">监控统计</text>
-      <view class="stats-grid">
-        <view class="stat-item">
-          <text class="stat-value">{{monitoringDays}}</text>
-          <text class="stat-label">监控天数</text>
-        </view>
-        <view class="stat-item">
-          <text class="stat-value">{{alertCount}}</text>
-          <text class="stat-label">触发提醒</text>
-        </view>
-        <view class="stat-item">
-          <text class="stat-value">{{maxRate}}</text>
-          <text class="stat-label">最高汇率</text>
-        </view>
-        <view class="stat-item">
-          <text class="stat-value">{{minRate}}</text>
-          <text class="stat-label">最低汇率</text>
+      <view class="monitoring-stats">
+        <text class="stats-title">监控统计</text>
+        <view class="stats-grid">
+          <view class="stat-item">
+            <text class="stat-value">{{monitoringDays}}</text>
+            <text class="stat-label">监控天数</text>
+          </view>
+          <view class="stat-item">
+            <text class="stat-value">{{alertCount}}</text>
+            <text class="stat-label">触发提醒</text>
+          </view>
+          <view class="stat-item">
+            <text class="stat-value">{{maxRate}}</text>
+            <text class="stat-label">最高汇率</text>
+          </view>
+          <view class="stat-item">
+            <text class="stat-value">{{minRate}}</text>
+            <text class="stat-label">最低汇率</text>
+          </view>
         </view>
       </view>
     </view>
   </view>
 
   <!-- 币种设置区域 -->
-  <view class="currency-settings">
-    <view class="section-header-simple">
-      <text class="section-title">币种设置</text>
+  <view class="card currency-settings">
+    <view class="card-header">
+      <view class="card-icon">💱</view>
+      <view>
+        <text class="card-title">币种设置</text>
+        <text class="card-desc">选择持有和目标货币</text>
+      </view>
     </view>
     
-    <view class="setting-section">
-      <view class="section-header">
-        <text class="section-title">持有币种</text>
-        <text class="section-desc">选择您当前持有的货币</text>
-      </view>
-      <picker bindchange="onFromCurrencyChange" value="{{fromCurrencyIndex}}" range="{{currencies}}" range-key="name">
-        <view class="currency-picker">
-          <view class="picker-content">
-            <text class="currency-flag">{{currencies[fromCurrencyIndex].flag}}</text>
-            <view class="currency-details">
-              <text class="currency-name">{{currencies[fromCurrencyIndex].name}}</text>
-              <text class="currency-code">{{currencies[fromCurrencyIndex].code}}</text>
-            </view>
-          </view>
-          <text class="picker-arrow">›</text>
+    <view class="card-content">
+      <view class="setting-section">
+        <view class="section-header">
+          <text class="section-title">持有币种</text>
+          <text class="section-desc">选择您当前持有的货币</text>
         </view>
-      </picker>
-    </view>
+        <picker bindchange="onFromCurrencyChange" value="{{fromCurrencyIndex}}" range="{{currencies}}" range-key="name">
+          <view class="currency-picker">
+            <view class="picker-content">
+              <text class="currency-flag">{{currencies[fromCurrencyIndex].flag}}</text>
+              <view class="currency-details">
+                <text class="currency-name">{{currencies[fromCurrencyIndex].name}}</text>
+                <text class="currency-code">{{currencies[fromCurrencyIndex].code}}</text>
+              </view>
+            </view>
+            <text class="picker-arrow">›</text>
+          </view>
+        </picker>
+      </view>
 
-    <view class="setting-section">
-      <view class="section-header">
-        <text class="section-title">目标币种</text>
-        <text class="section-desc">选择您要兑换的目标货币</text>
-      </view>
-      <picker bindchange="onToCurrencyChange" value="{{toCurrencyIndex}}" range="{{currencies}}" range-key="name">
-        <view class="currency-picker">
-          <view class="picker-content">
-            <text class="currency-flag">{{currencies[toCurrencyIndex].flag}}</text>
-            <view class="currency-details">
-              <text class="currency-name">{{currencies[toCurrencyIndex].name}}</text>
-              <text class="currency-code">{{currencies[toCurrencyIndex].code}}</text>
-            </view>
-          </view>
-          <text class="picker-arrow">›</text>
+      <view class="setting-section">
+        <view class="section-header">
+          <text class="section-title">目标币种</text>
+          <text class="section-desc">选择您要兑换的目标货币</text>
         </view>
-      </picker>
+        <picker bindchange="onToCurrencyChange" value="{{toCurrencyIndex}}" range="{{currencies}}" range-key="name">
+          <view class="currency-picker">
+            <view class="picker-content">
+              <text class="currency-flag">{{currencies[toCurrencyIndex].flag}}</text>
+              <view class="currency-details">
+                <text class="currency-name">{{currencies[toCurrencyIndex].name}}</text>
+                <text class="currency-code">{{currencies[toCurrencyIndex].code}}</text>
+              </view>
+            </view>
+            <text class="picker-arrow">›</text>
+          </view>
+        </picker>
+      </view>
+    </view>
+  </view>
+
+  <!-- 留学小贴士 -->
+  <view class="card tips-section">
+    <view class="card-header">
+      <view class="card-icon">💡</view>
+      <view>
+        <text class="card-title">换汇小贴士</text>
+        <text class="card-desc">留学生换汇实用建议</text>
+      </view>
+    </view>
+    
+    <view class="card-content">
+      <view class="tip-card">
+        <view class="tip-header">
+          <text class="tip-icon">💰</text>
+          <text class="tip-title">换汇策略</text>
+        </view>
+        <view class="tip-content">
+          <text class="tip-text">建议分批换汇，避免汇率波动风险。每次换汇1-2个月的费用比较合适。</text>
+          <view class="tip-list">
+            <text class="tip-item">• 关注汇率趋势，在相对低位换汇</text>
+            <text class="tip-item">• 避免在汇率高点一次性大额换汇</text>
+            <text class="tip-item">• 紧急费用和日常费用分开换汇</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="tip-card">
+        <view class="tip-header">
+          <text class="tip-icon">🏦</text>
+          <text class="tip-title">换汇渠道</text>
+        </view>
+        <view class="tip-content">
+          <text class="tip-text">选择正规渠道换汇，确保资金安全。</text>
+          <view class="tip-list">
+            <text class="tip-item">• 银行：最安全，但汇率可能不是最优</text>
+            <text class="tip-item">• 外汇平台：汇率较好，注意选择有监管的平台</text>
+            <text class="tip-item">• 避免私人换汇，存在法律风险</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="tip-card warning">
+        <view class="tip-header">
+          <text class="tip-icon">⚠️</text>
+          <text class="tip-title">风险提醒</text>
+        </view>
+        <view class="warning-content">
+          <text class="warning-title">换汇注意事项：</text>
+          <view class="warning-list">
+            <text class="warning-item">• 注意个人年度购汇额度限制</text>
+            <text class="warning-item">• 保留换汇凭证，便于后续操作</text>
+            <text class="warning-item">• 了解目标国家的外汇管制政策</text>
+            <text class="warning-item">• 大额换汇需提前预约银行</text>
+          </view>
+        </view>
+      </view>
     </view>
   </view>
 
