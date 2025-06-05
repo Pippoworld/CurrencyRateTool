@@ -1,0 +1,50 @@
+<view class="container">
+  <view class="header">
+    <text class="title">🔧 功能测试面板</text>
+    <text class="subtitle">系统性检测小程序所有功能</text>
+  </view>
+
+  <view class="current-test" wx:if="{{isRunning}}">
+    <view class="loading-icon">⚡</view>
+    <text class="test-status">{{currentTest}}</text>
+  </view>
+
+  <view class="test-controls">
+    <button class="test-btn primary" bindtap="runAllTests" disabled="{{isRunning}}">
+      {{isRunning ? '正在测试...' : '🚀 运行所有测试'}}
+    </button>
+    
+    <view class="btn-row">
+      <button class="test-btn secondary" bindtap="testManualSync">📱 手动测试同步</button>
+      <button class="test-btn secondary" bindtap="checkGlobalData">📊 检查全局数据</button>
+    </view>
+    
+    <button class="test-btn clear" bindtap="clearResults">🗑️ 清空结果</button>
+  </view>
+
+  <view class="results-section" wx:if="{{testResults.length > 0}}">
+    <view class="section-header">
+      <text class="section-title">测试结果</text>
+      <text class="result-count">共{{testResults.length}}项</text>
+    </view>
+
+    <view class="test-results">
+      <view class="result-item {{item.type}}" wx:for="{{testResults}}" wx:key="index">
+        <view class="result-content">
+          <text class="result-message">{{item.message}}</text>
+          <text class="result-time">{{item.time}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="help-section">
+    <text class="help-title">💡 使用说明</text>
+    <view class="help-content">
+      <text class="help-item">• 运行所有测试：自动检测数据同步、存储、AI等功能</text>
+      <text class="help-item">• 手动测试同步：按步骤验证页面间数据同步</text>
+      <text class="help-item">• 检查全局数据：查看当前存储的设置状态</text>
+      <text class="help-item">• 绿色✅表示正常，红色❌表示有问题</text>
+    </view>
+  </view>
+</view> 

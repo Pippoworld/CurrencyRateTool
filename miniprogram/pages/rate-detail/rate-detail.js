@@ -105,10 +105,36 @@ Page({
     };
     
     try {
-      wx.setStorageSync('currencySettings', settings);
-      console.log('详情页已保存全局货币设置:', settings);
+      // 使用全局同步管理器
+      const app = getApp();
+      const success = app.globalData.syncCurrencySettings(settings);
+      
+      if (success) {
+        console.log('详情页已通过全局管理器同步货币设置:', settings);
+        
+        // 显示同步成功提示
+        wx.showToast({
+          title: '设置已同步',
+          icon: 'success',
+          duration: 1000
+        });
+      } else {
+        console.log('详情页货币设置同步失败');
+        
+        // 降级到本地保存
+        wx.setStorageSync('currencySettings', settings);
+        console.log('详情页已降级保存货币设置:', settings);
+      }
     } catch (error) {
-      console.log('保存全局货币设置失败:', error);
+      console.log('详情页保存全局货币设置失败:', error);
+      
+      // 降级到本地保存
+      try {
+        wx.setStorageSync('currencySettings', settings);
+        console.log('详情页已降级保存货币设置:', settings);
+      } catch (fallbackError) {
+        console.log('详情页降级保存也失败:', fallbackError);
+      }
     }
   },
 
@@ -231,6 +257,7 @@ Page({
   // 持有币种选择
   onFromCurrencyChange(e) {
     const newIndex = parseInt(e.detail.value);
+    console.log('详情页选择持有币种:', newIndex, this.data.currencies[newIndex]);
     this.setData({
       fromCurrencyIndex: newIndex
     });
@@ -242,6 +269,7 @@ Page({
   // 目标币种选择
   onToCurrencyChange(e) {
     const newIndex = parseInt(e.detail.value);
+    console.log('详情页选择目标币种:', newIndex, this.data.currencies[newIndex]);
     this.setData({
       toCurrencyIndex: newIndex
     });
@@ -342,11 +370,14 @@ Page({
     const fromIndex = this.data.fromCurrencyIndex;
     const toIndex = this.data.toCurrencyIndex;
     
+    console.log('详情页交换币种:', fromIndex, '←→', toIndex);
+    
     this.setData({
       fromCurrencyIndex: toIndex,
       toCurrencyIndex: fromIndex
     });
     
+    this.saveGlobalCurrencySettings(); // 保存全局设置
     this.updateExchangeRate();
     this.generateAdvice();
   }

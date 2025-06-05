@@ -1,169 +1,320 @@
-const geminiAPI = require('../../utils/gemini-api');
-
 Page({
   data: {
-    selectedCurrency: {
-      flag: '🇺🇸',
-      name: '美元'
-    },
-    currentRate: '7.12',
-    rateChange: '+0.05 (+0.70%)',
+    selectedCurrency: { code: 'USD', name: '美元', flag: '🇺🇸' },
+    currentRate: 7.12,
+    rateChange: '+0.05 (+0.7%)',
     changeStatus: 'positive',
-    changeIcon: '↗',
+    changeIcon: '📈',
     
-    // 7日走势图数据
+    // 7日汇率走势图数据
     chartData: [
-      { height: 60, color: '#ef4444', label: '周一' },
-      { height: 45, color: '#f59e0b', label: '周二' },
-      { height: 70, color: '#10b981', label: '周三' },
-      { height: 85, color: '#10b981', label: '周四' },
-      { height: 55, color: '#ef4444', label: '周五' },
-      { height: 65, color: '#10b981', label: '周六' },
-      { height: 75, color: '#10b981', label: '今日' }
+      { height: 60, color: '#4CAF50', label: '1/15' },
+      { height: 75, color: '#FFC107', label: '1/16' },
+      { height: 85, color: '#F44336', label: '1/17' },
+      { height: 70, color: '#4CAF50', label: '1/18' },
+      { height: 90, color: '#F44336', label: '1/19' },
+      { height: 65, color: '#4CAF50', label: '1/20' },
+      { height: 80, color: '#667eea', label: '今日' }
     ],
     
-    // AI分析内容 - 初始化为空，将通过AI生成
+    // AI分析数据
     analysis: {
-      trend: '🤖 AI分析中，请稍候...',
-      technical: '🤖 AI分析中，请稍候...',
-      fundamental: '🤖 AI分析中，请稍候...',
-      risk: '🤖 AI分析中，请稍候...'
+      trend: '美元兑人民币汇率近7日呈现震荡上行趋势，技术面显示短期内可能继续走强。建议关注美联储政策动向和中美贸易关系变化。',
+      technical: 'RSI指标显示超买信号，MACD金叉形成，布林带上轨压力明显。短期阻力位7.25，支撑位7.05。',
+      fundamental: '美国经济数据向好，通胀预期上升，美联储鹰派言论增多。中国经济复苏稳健，人民币基本面支撑较强。',
+      risk: '国际地缘政治风险、美联储货币政策转向、中美关系变化等因素可能导致汇率大幅波动，建议分散风险。'
     },
     
-    // 换汇建议时间线 - 初始化为空，将通过AI生成
+    // 换汇建议时间线
     timeline: [
       {
-        status: 'current',
-        title: '当前时点',
-        description: '🤖 正在生成AI建议，请稍候...',
-        suggestedRate: '分析中...'
+        status: 'active',
+        title: '立即换汇',
+        description: '当前汇率处于相对低位，适合小额换汇满足近期需求',
+        suggestedRate: '7.10-7.15'
+      },
+      {
+        status: 'warning',
+        title: '3-5天后',
+        description: '预计汇率可能小幅上升，如不急需建议等待回调',
+        suggestedRate: '7.05-7.12'
+      },
+      {
+        status: 'neutral',
+        title: '1-2周后',
+        description: '中期趋势不明确，建议关注重要经济数据和政策动向',
+        suggestedRate: '6.95-7.20'
       }
     ],
     
     // 换汇方式推荐
     exchangeMethods: [
       {
-        icon: '🏛️',
-        name: '中国银行',
-        rate: '7.118',
-        fee: '0.5%',
-        arrivalTime: '实时到账',
-        advantages: '网点多，汇率稳定，手续简便',
-        recommended: true
-      },
-      {
         icon: '🏦',
-        name: '工商银行',
-        rate: '7.115',
-        fee: '0.6%',
-        arrivalTime: '实时到账',
-        advantages: '服务优质，安全可靠',
-        recommended: false
+        name: '银行柜台',
+        rate: '7.12',
+        fee: '免费',
+        arrivalTime: '即时',
+        recommended: false,
+        advantages: '安全可靠，汇率透明，适合大额换汇'
       },
       {
         icon: '💳',
-        name: '招商银行',
-        rate: '7.120',
-        fee: '0.4%',
-        arrivalTime: '实时到账',
-        advantages: '手续费低，APP操作便利',
-        recommended: false
+        name: '手机银行',
+        rate: '7.10',
+        fee: '0.1%',
+        arrivalTime: '即时',
+        recommended: true,
+        advantages: '汇率优惠，操作便捷，24小时可用'
       },
       {
         icon: '📱',
         name: '支付宝',
-        rate: '7.125',
-        fee: '0.3%',
-        arrivalTime: '2小时内',
-        advantages: '操作简单，费率最低',
-        recommended: false
-      }
-    ],
-
-    // 市场资讯 - 初始化为空，将通过AI生成
-    marketNews: [
+        rate: '7.15',
+        fee: '0.2%',
+        arrivalTime: '即时',
+        recommended: false,
+        advantages: '操作简单，到账快速，适合小额换汇'
+      },
       {
-        title: '🤖 正在获取AI资讯...',
-        summary: 'AI正在分析当前市场情况，请稍候...',
-        source: 'AI分析',
-        time: '实时',
-        impact: '分析中',
-        impactLevel: 'neutral'
+        icon: '🌐',
+        name: '专业机构',
+        rate: '7.08',
+        fee: '0.3%',
+        arrivalTime: '1-2小时',
+        recommended: false,
+        advantages: '汇率最优，服务专业，适合频繁换汇'
       }
     ],
-
-    // 加载状态
-    isLoadingAnalysis: true,
-    isLoadingAdvice: true,
-    isLoadingNews: true,
-
-    // 调试信息
-    debugInfo: {
-      analysisTime: 0,
-      adviceTime: 0,
-      newsTime: 0,
-      lastUpdate: ''
-    }
+    
+    // 提醒设置
+    reminderSettings: {
+      rateAlert: true,
+      dailyAnalysis: false,
+      eventAlert: true
+    },
+    
+    targetRate: '7.05'
   },
 
-  async onLoad() {
-    console.log('建议页面开始加载...');
-    this.loadGlobalCurrencySettings(); // 加载全局货币设置
-    this.loadCurrencyData();
-    
-    // 记录开始时间
-    const startTime = Date.now();
-    
+  onLoad: function (options) {
+    // 从本地存储获取当前选择的货币
     try {
-      // 并行加载AI生成的内容
-      const [analysisResult, adviceResult, newsResult] = await Promise.allSettled([
-        this.loadAIAnalysis(),
-        this.loadAIAdvice(), 
-        this.loadAINews()
-      ]);
-      
-      const endTime = Date.now();
-      const totalTime = endTime - startTime;
-      
-      console.log('AI内容加载完成，总耗时:', totalTime, 'ms');
-      console.log('加载结果:', { analysisResult, adviceResult, newsResult });
-      
-      this.setData({
-        'debugInfo.lastUpdate': new Date().toLocaleTimeString()
-      });
-      
-      // 显示加载结果
-      const failedTasks = [];
-      if (analysisResult.status === 'rejected') failedTasks.push('分析');
-      if (adviceResult.status === 'rejected') failedTasks.push('建议');
-      if (newsResult.status === 'rejected') failedTasks.push('资讯');
-      
-      if (failedTasks.length > 0) {
-        wx.showToast({
-          title: `${failedTasks.join('、')}加载失败`,
-          icon: 'none',
-          duration: 2000
-        });
-      } else {
-        wx.showToast({
-          title: '🤖 AI内容加载完成',
-          icon: 'success'
-        });
+      const currentCurrency = wx.getStorageSync('currentCurrency')
+      if (currentCurrency) {
+        this.setData({
+          selectedCurrency: currentCurrency
+        })
+        this.loadCurrencyData(currentCurrency.code)
       }
-      
     } catch (error) {
-      console.error('加载AI内容时发生错误:', error);
-      wx.showToast({
-        title: '加载失败，请重试',
-        icon: 'none'
-      });
+      console.log('获取当前货币失败，使用默认货币')
     }
+    
+    this.generateChartData()
   },
 
-  // 页面显示时同步数据
-  onShow() {
+  onShow: function () {
+    console.log('建议页onShow - 开始同步数据');
     this.loadGlobalCurrencySettings();
     this.loadCurrencyData();
+    this.updateCurrencyDisplay();
+    console.log('建议页onShow - 数据同步完成');
+  },
+
+  // 加载特定货币的数据
+  loadCurrencyData(currencyCode) {
+    // 模拟加载不同货币的数据
+    const currencyData = {
+      'USD': {
+        currentRate: 7.12,
+        rateChange: '+0.05 (+0.7%)',
+        changeStatus: 'positive',
+        changeIcon: '📈'
+      },
+      'EUR': {
+        currentRate: 7.65,
+        rateChange: '-0.03 (-0.4%)',
+        changeStatus: 'negative',
+        changeIcon: '📉'
+      },
+      'GBP': {
+        currentRate: 8.92,
+        rateChange: '+0.12 (+1.4%)',
+        changeStatus: 'positive',
+        changeIcon: '📈'
+      },
+      'AUD': {
+        currentRate: 4.68,
+        rateChange: '-0.08 (-1.7%)',
+        changeStatus: 'negative',
+        changeIcon: '📉'
+      }
+    }
+
+    const data = currencyData[currencyCode] || currencyData['USD']
+    this.setData(data)
+    
+    this.updateExchangeMethods(currencyCode)
+    this.updateAnalysisForCurrency(currencyCode)
+  },
+
+  // 生成图表数据
+  generateChartData() {
+    const today = new Date()
+    const chartData = []
+    
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date(today)
+      date.setDate(date.getDate() - i)
+      
+      const height = 50 + Math.random() * 40 // 50-90之间的随机高度
+      const colors = ['#4CAF50', '#FFC107', '#F44336', '#667eea']
+      const color = colors[Math.floor(Math.random() * colors.length)]
+      
+      chartData.push({
+        height: height,
+        color: color,
+        label: i === 0 ? '今日' : `${date.getMonth() + 1}/${date.getDate()}`
+      })
+    }
+    
+    this.setData({ chartData })
+  },
+
+  // 更新分析内容
+  updateAnalysis() {
+    // 这里可以调用AI接口获取最新分析
+    console.log('更新AI分析内容')
+  },
+
+  // 更新特定货币的分析
+  updateAnalysisForCurrency(currencyCode) {
+    const analysisData = {
+      'USD': {
+        trend: '美元兑人民币汇率近期表现强势，技术面和基本面均支持进一步上涨。',
+        technical: 'RSI指标显示超买，但趋势依然向上，关注7.25阻力位。',
+        fundamental: '美联储政策收紧预期和美国经济数据向好支撑美元走强。',
+        risk: '关注中美贸易关系和地缘政治风险对汇率的影响。'
+      },
+      'EUR': {
+        trend: '欧元兑人民币汇率受欧央行政策和经济数据影响较大。',
+        technical: '技术指标显示震荡整理，短期方向不明确。',
+        fundamental: '欧洲经济复苏缓慢，通胀压力上升，政策前景不确定。',
+        risk: '欧洲政治风险和能源危机可能影响欧元走势。'
+      }
+    }
+
+    const analysis = analysisData[currencyCode] || analysisData['USD']
+    this.setData({ analysis })
+  },
+
+  // 更新换汇方式
+  updateExchangeMethods(currencyCode) {
+    // 根据不同货币更新汇率和推荐方式
+    const methods = this.data.exchangeMethods.map(method => {
+      // 模拟不同货币的汇率差异
+      const rate = this.data.currentRate
+      const adjustment = (Math.random() - 0.5) * 0.1
+      
+      return {
+        ...method,
+        rate: (rate + adjustment).toFixed(3)
+      }
+    })
+    
+    this.setData({ exchangeMethods: methods })
+  },
+
+  // 设置目标汇率
+  setTargetRate() {
+    wx.showModal({
+      title: '设置目标汇率',
+      content: '请输入您期望的汇率价位，达到后我们会及时提醒您。',
+      editable: true,
+      placeholderText: '输入目标汇率',
+      success: (res) => {
+        if (res.confirm && res.content) {
+          this.setData({ targetRate: res.content })
+          wx.showToast({
+            title: '目标汇率设置成功',
+            icon: 'success'
+          })
+        }
+      }
+    })
+  },
+
+  // 分享分析
+  shareAnalysis() {
+    wx.showActionSheet({
+      itemList: ['分享给微信好友', '分享到朋友圈', '复制分析内容'],
+      success: (res) => {
+        switch (res.tapIndex) {
+          case 0:
+            // 分享给好友
+            wx.showToast({ title: '功能开发中', icon: 'none' })
+            break
+          case 1:
+            // 分享到朋友圈
+            wx.showToast({ title: '功能开发中', icon: 'none' })
+            break
+          case 2:
+            // 复制内容
+            const content = `${this.data.selectedCurrency.name}汇率分析\n当前汇率: ${this.data.currentRate}\n变化: ${this.data.rateChange}\n\n趋势分析: ${this.data.analysis.trend}`
+            wx.setClipboardData({
+              data: content,
+              success: () => {
+                wx.showToast({ title: '已复制到剪贴板', icon: 'success' })
+              }
+            })
+            break
+        }
+      }
+    })
+  },
+
+  // 提醒设置变化
+  onRateAlertChange(e) {
+    this.setData({
+      'reminderSettings.rateAlert': e.detail.value
+    })
+  },
+
+  onDailyAnalysisChange(e) {
+    this.setData({
+      'reminderSettings.dailyAnalysis': e.detail.value
+    })
+  },
+
+  onEventAlertChange(e) {
+    this.setData({
+      'reminderSettings.eventAlert': e.detail.value
+    })
+  },
+
+  // 目标汇率输入
+  onTargetRateInput(e) {
+    this.setData({
+      targetRate: e.detail.value
+    })
+  },
+
+  // 保存目标汇率
+  saveTargetRate() {
+    if (!this.data.targetRate) {
+      wx.showToast({
+        title: '请输入目标汇率',
+        icon: 'none'
+      })
+      return
+    }
+
+    // 这里应该保存到后端或本地存储
+    wx.showToast({
+      title: '目标汇率保存成功',
+      icon: 'success'
+    })
   },
 
   // 加载全局货币设置
@@ -171,57 +322,39 @@ Page({
     try {
       const settings = wx.getStorageSync('currencySettings');
       if (settings) {
+        // 更新选中的货币信息
+        const fromCurrency = this.getCurrencyInfo(settings.fromCurrencyIndex);
         this.setData({
           selectedCurrency: {
-            flag: this.getCurrencyInfo(settings.fromCurrencyIndex).flag,
-            name: this.getCurrencyInfo(settings.fromCurrencyIndex).name,
-            code: this.getCurrencyInfo(settings.fromCurrencyIndex).code
+            flag: fromCurrency.flag,
+            name: fromCurrency.name,
+            code: fromCurrency.code
           }
         });
-        console.log('建议页已加载全局货币设置:', settings);
+        console.log('建议页已更新为全局货币设置:', fromCurrency);
       }
     } catch (error) {
       console.log('建议页加载全局货币设置失败:', error);
     }
   },
 
-  // 获取货币信息
-  getCurrencyInfo(index) {
-    const currencies = [
-      { code: 'CNY', name: '人民币', flag: '🇨🇳' },
-      { code: 'USD', name: '美元', flag: '🇺🇸' },
-      { code: 'EUR', name: '欧元', flag: '🇪🇺' },
-      { code: 'JPY', name: '日元', flag: '🇯🇵' },
-      { code: 'GBP', name: '英镑', flag: '🇬🇧' },
-      { code: 'AUD', name: '澳元', flag: '🇦🇺' }
-    ];
-    return currencies[index] || currencies[1]; // 默认美元
-  },
-
-  // 加载货币数据
-  loadCurrencyData() {
-    // 模拟获取当前页面选择的货币信息
-    const pages = getCurrentPages();
-    const prevPage = pages[pages.length - 2];
+  // 更新货币显示
+  updateCurrencyDisplay() {
+    // 更新页面标题或其他显示的货币信息
+    const currentCurrency = this.data.selectedCurrency;
+    console.log('建议页当前显示货币:', currentCurrency);
     
-    if (prevPage && prevPage.data) {
-      const fromCurrency = prevPage.data.currencies[prevPage.data.fromCurrencyIndex];
-      this.setData({
-        selectedCurrency: fromCurrency,
-        currentRate: prevPage.data.currentRate
-      });
-      console.log('货币数据已加载:', fromCurrency);
+    // 如果AI内容已加载，重新生成适合当前货币的内容
+    if (!this.data.isLoadingAnalysis) {
+      this.refreshAIAnalysisOnly();
     }
   },
 
-  // 加载AI分析
-  async loadAIAnalysis() {
+  // 仅刷新AI分析（不显示加载状态）
+  async refreshAIAnalysisOnly() {
     try {
-      const startTime = Date.now();
-      this.setData({ isLoadingAnalysis: true });
-      
       const currencyPair = `${this.data.selectedCurrency.name}/人民币`;
-      console.log('开始加载AI分析，货币对:', currencyPair);
+      console.log('静默刷新AI分析，货币对:', currencyPair);
       
       const analysis = await geminiAPI.generateRateAnalysis(
         currencyPair, 
@@ -229,201 +362,13 @@ Page({
         this.data.rateChange
       );
       
-      const endTime = Date.now();
-      const loadTime = endTime - startTime;
-      
       this.setData({ 
-        analysis: analysis,
-        isLoadingAnalysis: false,
-        'debugInfo.analysisTime': loadTime
+        analysis: analysis
       });
       
-      console.log('AI分析加载完成，耗时:', loadTime, 'ms', analysis);
-      return analysis;
+      console.log('AI分析静默更新完成');
     } catch (error) {
-      console.error('加载AI分析失败:', error);
-      this.setData({ isLoadingAnalysis: false });
-      throw error;
+      console.error('静默刷新AI分析失败:', error);
     }
   },
-
-  // 加载AI建议
-  async loadAIAdvice() {
-    try {
-      const startTime = Date.now();
-      this.setData({ isLoadingAdvice: true });
-      
-      const currencyPair = `${this.data.selectedCurrency.name}/人民币`;
-      console.log('开始加载AI建议，货币对:', currencyPair);
-      
-      const advice = await geminiAPI.generateExchangeAdvice(
-        currencyPair,
-        this.data.currentRate
-      );
-      
-      const endTime = Date.now();
-      const loadTime = endTime - startTime;
-      
-      this.setData({ 
-        timeline: advice,
-        isLoadingAdvice: false,
-        'debugInfo.adviceTime': loadTime
-      });
-      
-      console.log('AI建议加载完成，耗时:', loadTime, 'ms', advice);
-      return advice;
-    } catch (error) {
-      console.error('加载AI建议失败:', error);
-      this.setData({ isLoadingAdvice: false });
-      throw error;
-    }
-  },
-
-  // 加载AI新闻
-  async loadAINews() {
-    try {
-      const startTime = Date.now();
-      this.setData({ isLoadingNews: true });
-      
-      const currencyCode = this.data.selectedCurrency.code || 'USD';
-      console.log('开始加载AI新闻，货币代码:', currencyCode);
-      
-      const news = await geminiAPI.generateMarketNews(currencyCode);
-      
-      const endTime = Date.now();
-      const loadTime = endTime - startTime;
-      
-      this.setData({ 
-        marketNews: news,
-        isLoadingNews: false,
-        'debugInfo.newsTime': loadTime
-      });
-      
-      console.log('AI新闻加载完成，耗时:', loadTime, 'ms', news);
-      return news;
-    } catch (error) {
-      console.error('加载AI新闻失败:', error);
-      this.setData({ isLoadingNews: false });
-      throw error;
-    }
-  },
-
-  // 刷新AI内容
-  async refreshAIContent() {
-    console.log('手动刷新AI内容...');
-    
-    wx.showLoading({
-      title: '🤖 刷新中...'
-    });
-
-    try {
-      const startTime = Date.now();
-      
-      await Promise.all([
-        this.loadAIAnalysis(),
-        this.loadAIAdvice(),
-        this.loadAINews()
-      ]);
-      
-      const endTime = Date.now();
-      const totalTime = endTime - startTime;
-      
-      wx.hideLoading();
-      wx.showToast({
-        title: `🤖 AI内容已更新 (${Math.round(totalTime/1000)}s)`,
-        icon: 'success'
-      });
-      
-      this.setData({
-        'debugInfo.lastUpdate': new Date().toLocaleTimeString()
-      });
-      
-    } catch (error) {
-      console.error('刷新AI内容失败:', error);
-      wx.hideLoading();
-      wx.showToast({
-        title: '刷新失败，请重试',
-        icon: 'none'
-      });
-    }
-  },
-
-  // 显示调试信息
-  showDebugInfo() {
-    const { debugInfo } = this.data;
-    const debugText = `
-AI分析: ${debugInfo.analysisTime}ms
-AI建议: ${debugInfo.adviceTime}ms  
-AI资讯: ${debugInfo.newsTime}ms
-最后更新: ${debugInfo.lastUpdate}
-
-开发模式已启用，使用增强模拟数据
-如需真实AI，请配置合法域名后关闭DEV_MODE`;
-
-    wx.showModal({
-      title: '🛠️ 调试信息',
-      content: debugText,
-      showCancel: false,
-      confirmText: '确定'
-    });
-  },
-
-  // 跳转到汇率详情页进行监控设置
-  goToRateDetail() {
-    wx.navigateTo({
-      url: '/pages/rate-detail/rate-detail',
-      success: () => {
-        console.log('跳转到汇率详情页设置监控');
-      }
-    });
-  },
-
-  // 分享分析
-  shareAnalysis() {
-    const shareContent = `${this.data.selectedCurrency.name}汇率AI分析
-💰 当前汇率：${this.data.currentRate}
-📈 变化：${this.data.rateChange}
-
-🤖 AI分析摘要：
-${this.data.analysis.trend}
-
-来自汇率助手的专业AI分析`;
-
-    wx.setClipboardData({
-      data: shareContent,
-      success: () => {
-        wx.showToast({
-          title: '分析内容已复制',
-          icon: 'success'
-        });
-      }
-    });
-  },
-
-  // 打开新闻详情
-  openNewsDetail(e) {
-    const url = e.currentTarget.dataset.url;
-    // 在实际应用中，这里应该跳转到新闻详情页或使用webview
-    wx.showModal({
-      title: '新闻详情',
-      content: '此功能将在后续版本中完善，敬请期待！',
-      showCancel: false
-    });
-  },
-
-  // 页面分享
-  onShareAppMessage() {
-    return {
-      title: `${this.data.selectedCurrency.name}汇率AI分析 - 当前汇率 ${this.data.currentRate}`,
-      path: '/pages/advice/advice',
-      imageUrl: '/images/share-cover.png' // 可以添加分享封面图
-    };
-  },
-
-  // 下拉刷新
-  onPullDownRefresh() {
-    this.refreshAIContent().then(() => {
-      wx.stopPullDownRefresh();
-    });
-  }
-}); 
+}) 

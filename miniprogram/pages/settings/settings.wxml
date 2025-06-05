@@ -7,7 +7,7 @@
     <view class="card-body">
       <view class="user-profile">
         <view class="avatar-section">
-          <image class="user-avatar" src="{{userInfo.avatar || '/images/default-avatar.png'}}" />
+          <image class="user-avatar" src="{{userInfo.avatar || '/images/default-avatar.png'}}" bindlongpress="onAvatarLongPress" />
           <button class="btn btn-secondary avatar-btn" bindtap="chooseAvatar">更换头像</button>
         </view>
         <view class="user-details">

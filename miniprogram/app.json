@@ -3,33 +3,34 @@
     "pages/index/index",
     "pages/advice/advice",
     "pages/rate-detail/rate-detail",
-    "pages/settings/settings"
+    "pages/settings/settings",
+    "pages/debug/debug"
   ],
   "window": {
     "backgroundColor": "#f8f9fa",
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#667eea",
-    "navigationBarTitleText": "汇率助手",
-    "navigationBarTextStyle": "white",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "汇率工具",
+    "navigationBarTextStyle": "black",
     "enablePullDownRefresh": false
   },
   "tabBar": {
-    "color": "#999999",
-    "selectedColor": "#667eea",
+    "color": "#666666",
+    "selectedColor": "#4CAF50",
     "backgroundColor": "#ffffff",
     "borderStyle": "black",
     "list": [
       {
         "pagePath": "pages/index/index",
-        "text": "汇率转换"
+        "text": "汇率"
       },
       {
         "pagePath": "pages/advice/advice",
-        "text": "智能建议"
+        "text": "建议"
       },
       {
         "pagePath": "pages/rate-detail/rate-detail",
-        "text": "汇率详情"
+        "text": "详情"
       },
       {
         "pagePath": "pages/settings/settings",
@@ -41,12 +42,13 @@
   "style": "v2",
   "lazyCodeLoading": "requiredComponents",
   "networkTimeout": {
-    "request": 30000,
-    "downloadFile": 30000
+    "request": 60000,
+    "downloadFile": 10000
   },
   "permission": {
-    "scope.userInfo": {
-      "desc": "用于完善用户资料"
+    "scope.userLocation": {
+      "desc": "您的位置信息将用于提供更精准的汇率数据"
     }
-  }
+  },
+  "requiredBackgroundModes": ["location"]
 }

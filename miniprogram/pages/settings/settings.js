@@ -57,8 +57,9 @@ Page({
   },
 
   onShow: function () {
-    // 页面显示时刷新设置
-    this.loadUserSettings()
+    // 页面显示时刷新设置并同步全局货币数据
+    this.loadUserSettings();
+    this.loadGlobalCurrencySettings();
   },
 
   // 加载用户设置
@@ -80,6 +81,19 @@ Page({
       }
     } catch (error) {
       console.error('加载设置失败:', error)
+    }
+  },
+
+  // 加载全局货币设置
+  loadGlobalCurrencySettings() {
+    try {
+      const settings = wx.getStorageSync('currencySettings');
+      if (settings) {
+        console.log('设置页已加载全局货币设置:', settings);
+        // 设置页不需要显示具体货币，但需要知道全局状态
+      }
+    } catch (error) {
+      console.log('设置页加载全局货币设置失败:', error);
     }
   },
 
@@ -397,13 +411,38 @@ Page({
     }
   },
 
-  // 跳转到汇率详情页设置监控
+  // 跳转到汇率详情页
   goToRateDetail() {
-    wx.navigateTo({
+    wx.switchTab({
       url: '/pages/rate-detail/rate-detail',
       success: () => {
-        console.log('跳转到汇率详情页设置监控');
+        console.log('从设置页跳转到详情页')
+      }
+    })
+  },
+
+  // 开发调试入口
+  openDebugPanel() {
+    wx.navigateTo({
+      url: '/pages/debug/debug',
+      success: () => {
+        console.log('打开功能测试面板');
       }
     });
   },
-}) 
+
+  // 长按头像触发调试模式
+  onAvatarLongPress() {
+    wx.showModal({
+      title: '开发者模式',
+      content: '是否进入功能测试面板？',
+      confirmText: '进入',
+      cancelText: '取消',
+      success: (res) => {
+        if (res.confirm) {
+          this.openDebugPanel();
+        }
+      }
+    });
+  }
+}); 

@@ -45,9 +45,11 @@ Page({
 
   // 页面显示时同步其他页面的变化
   onShow() {
+    console.log('主页onShow - 开始同步数据');
     this.loadSavedSettings();
     this.updateExchangeRate();
     this.generateAdvice();
+    console.log('主页onShow - 数据同步完成');
   },
 
   // 加载保存的设置
@@ -55,14 +57,29 @@ Page({
     try {
       const settings = wx.getStorageSync('currencySettings');
       if (settings) {
+        console.log('主页加载到的全局货币设置:', settings);
+        console.log('当前主页数据:', {
+          fromCurrencyIndex: this.data.fromCurrencyIndex,
+          toCurrencyIndex: this.data.toCurrencyIndex
+        });
+        
+        // 强制更新数据
         this.setData({
           fromCurrencyIndex: settings.fromCurrencyIndex || 1,
           toCurrencyIndex: settings.toCurrencyIndex || 0
         });
-        console.log('已加载保存的货币设置:', settings);
+        
+        console.log('主页数据已更新为:', {
+          fromCurrencyIndex: this.data.fromCurrencyIndex,
+          toCurrencyIndex: this.data.toCurrencyIndex,
+          fromCurrency: this.data.currencies[this.data.fromCurrencyIndex],
+          toCurrency: this.data.currencies[this.data.toCurrencyIndex]
+        });
+      } else {
+        console.log('主页未找到全局货币设置，使用默认值');
       }
     } catch (error) {
-      console.log('加载货币设置失败:', error);
+      console.log('主页加载货币设置失败:', error);
     }
   },
 
@@ -76,9 +93,9 @@ Page({
     
     try {
       wx.setStorageSync('currencySettings', settings);
-      console.log('货币设置已保存:', settings);
+      console.log('主页已保存货币设置:', settings);
     } catch (error) {
-      console.log('保存货币设置失败:', error);
+      console.log('主页保存货币设置失败:', error);
     }
   },
 
