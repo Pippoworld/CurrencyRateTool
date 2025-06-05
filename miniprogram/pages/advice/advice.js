@@ -108,6 +108,7 @@ Page({
 
   async onLoad() {
     console.log('建议页面开始加载...');
+    this.loadGlobalCurrencySettings(); // 加载全局货币设置
     this.loadCurrencyData();
     
     // 记录开始时间
@@ -157,6 +158,44 @@ Page({
         icon: 'none'
       });
     }
+  },
+
+  // 页面显示时同步数据
+  onShow() {
+    this.loadGlobalCurrencySettings();
+    this.loadCurrencyData();
+  },
+
+  // 加载全局货币设置
+  loadGlobalCurrencySettings() {
+    try {
+      const settings = wx.getStorageSync('currencySettings');
+      if (settings) {
+        this.setData({
+          selectedCurrency: {
+            flag: this.getCurrencyInfo(settings.fromCurrencyIndex).flag,
+            name: this.getCurrencyInfo(settings.fromCurrencyIndex).name,
+            code: this.getCurrencyInfo(settings.fromCurrencyIndex).code
+          }
+        });
+        console.log('建议页已加载全局货币设置:', settings);
+      }
+    } catch (error) {
+      console.log('建议页加载全局货币设置失败:', error);
+    }
+  },
+
+  // 获取货币信息
+  getCurrencyInfo(index) {
+    const currencies = [
+      { code: 'CNY', name: '人民币', flag: '🇨🇳' },
+      { code: 'USD', name: '美元', flag: '🇺🇸' },
+      { code: 'EUR', name: '欧元', flag: '🇪🇺' },
+      { code: 'JPY', name: '日元', flag: '🇯🇵' },
+      { code: 'GBP', name: '英镑', flag: '🇬🇧' },
+      { code: 'AUD', name: '澳元', flag: '🇦🇺' }
+    ];
+    return currencies[index] || currencies[1]; // 默认美元
   },
 
   // 加载货币数据

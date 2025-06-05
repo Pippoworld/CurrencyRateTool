@@ -53,7 +53,10 @@ Page({
   },
 
   onLoad(options) {
-    // 接收传入的参数
+    // 优先加载全局货币设置
+    this.loadGlobalCurrencySettings();
+    
+    // 如果有传入参数，使用传入的参数
     if (options.fromIndex) {
       this.setData({
         fromCurrencyIndex: parseInt(options.fromIndex)
@@ -68,6 +71,45 @@ Page({
     this.updateExchangeRate();
     this.loadUserSettings();
     this.generateAdvice();
+  },
+
+  // 页面显示时同步数据
+  onShow() {
+    this.loadGlobalCurrencySettings();
+    this.updateExchangeRate();
+    this.generateAdvice();
+  },
+
+  // 加载全局货币设置
+  loadGlobalCurrencySettings() {
+    try {
+      const settings = wx.getStorageSync('currencySettings');
+      if (settings) {
+        this.setData({
+          fromCurrencyIndex: settings.fromCurrencyIndex || 1,
+          toCurrencyIndex: settings.toCurrencyIndex || 0
+        });
+        console.log('详情页已加载全局货币设置:', settings);
+      }
+    } catch (error) {
+      console.log('加载全局货币设置失败:', error);
+    }
+  },
+
+  // 保存全局货币设置
+  saveGlobalCurrencySettings() {
+    const settings = {
+      fromCurrencyIndex: this.data.fromCurrencyIndex,
+      toCurrencyIndex: this.data.toCurrencyIndex,
+      updateTime: new Date().getTime()
+    };
+    
+    try {
+      wx.setStorageSync('currencySettings', settings);
+      console.log('详情页已保存全局货币设置:', settings);
+    } catch (error) {
+      console.log('保存全局货币设置失败:', error);
+    }
   },
 
   // 更新汇率显示
@@ -192,6 +234,7 @@ Page({
     this.setData({
       fromCurrencyIndex: newIndex
     });
+    this.saveGlobalCurrencySettings(); // 保存全局设置
     this.updateExchangeRate();
     this.generateAdvice();
   },
@@ -202,6 +245,7 @@ Page({
     this.setData({
       toCurrencyIndex: newIndex
     });
+    this.saveGlobalCurrencySettings(); // 保存全局设置
     this.updateExchangeRate();
     this.generateAdvice();
   },

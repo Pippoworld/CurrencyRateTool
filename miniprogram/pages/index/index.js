@@ -38,8 +38,48 @@ Page({
   },
 
   onLoad() {
+    this.loadSavedSettings();
     this.updateExchangeRate();
     this.generateAdvice();
+  },
+
+  // 页面显示时同步其他页面的变化
+  onShow() {
+    this.loadSavedSettings();
+    this.updateExchangeRate();
+    this.generateAdvice();
+  },
+
+  // 加载保存的设置
+  loadSavedSettings() {
+    try {
+      const settings = wx.getStorageSync('currencySettings');
+      if (settings) {
+        this.setData({
+          fromCurrencyIndex: settings.fromCurrencyIndex || 1,
+          toCurrencyIndex: settings.toCurrencyIndex || 0
+        });
+        console.log('已加载保存的货币设置:', settings);
+      }
+    } catch (error) {
+      console.log('加载货币设置失败:', error);
+    }
+  },
+
+  // 保存货币设置
+  saveCurrencySettings() {
+    const settings = {
+      fromCurrencyIndex: this.data.fromCurrencyIndex,
+      toCurrencyIndex: this.data.toCurrencyIndex,
+      updateTime: new Date().getTime()
+    };
+    
+    try {
+      wx.setStorageSync('currencySettings', settings);
+      console.log('货币设置已保存:', settings);
+    } catch (error) {
+      console.log('保存货币设置失败:', error);
+    }
   },
 
   // 更新汇率显示
@@ -68,6 +108,7 @@ Page({
     this.setData({
       fromCurrencyIndex: newIndex
     });
+    this.saveCurrencySettings(); // 保存设置
     this.updateExchangeRate();
     this.calculateToAmount();
     this.generateAdvice();
@@ -79,6 +120,7 @@ Page({
     this.setData({
       toCurrencyIndex: newIndex
     });
+    this.saveCurrencySettings(); // 保存设置
     this.updateExchangeRate();
     this.calculateToAmount();
     this.generateAdvice();
