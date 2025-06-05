@@ -228,19 +228,15 @@ Page({
     });
   },
 
-  // 快捷操作
+  // 快捷操作 - 修复所有功能
   showRateHistory() {
-    wx.showToast({
-      title: '查看汇率走势',
-      icon: 'none'
-    });
+    // 跳转到汇率走势分析
+    this.showRateTrend();
   },
 
   showExchangeMethods() {
-    wx.showToast({
-      title: '换汇渠道对比',
-      icon: 'none'
-    });
+    // 跳转到换汇渠道对比
+    this.showExchangeChannels();
   },
 
   setTargetRate() {
@@ -249,6 +245,12 @@ Page({
       url: `/pages/rate-detail/rate-detail?fromIndex=${this.data.fromCurrencyIndex}&toIndex=${this.data.toCurrencyIndex}`,
       success: () => {
         console.log('跳转到汇率详情页设置目标汇率');
+      },
+      fail: () => {
+        // 如果跳转失败，切换到详情页tab
+        wx.switchTab({
+          url: '/pages/rate-detail/rate-detail'
+        });
       }
     });
   },
@@ -298,7 +300,7 @@ Page({
   },
 
   showRateTrend() {
-    // 显示汇率走势图
+    // 显示汇率走势分析
     const fromCurrency = this.data.currencies[this.data.fromCurrencyIndex];
     const toCurrency = this.data.currencies[this.data.toCurrencyIndex];
     
@@ -306,14 +308,14 @@ Page({
     const trendData = this.generateTrendData();
     
     wx.showModal({
-      title: `${fromCurrency.name}/${toCurrency.name} 走势`,
-      content: `近7日走势：\n${trendData.description}\n\n当前汇率：${this.data.currentRate}\n涨跌：${trendData.change}`,
+      title: `📈 ${fromCurrency.name}/${toCurrency.name} 走势`,
+      content: `近7日走势分析：\n${trendData.description}\n\n📊 当前汇率：${this.data.currentRate}\n📈 近期变化：${trendData.change}\n\n💡 ${trendData.suggestion}`,
       confirmText: '详细分析',
       cancelText: '关闭',
       success: (res) => {
         if (res.confirm) {
           // 跳转到建议页查看详细分析
-          wx.navigateTo({
+          wx.switchTab({
             url: '/pages/advice/advice'
           });
         }
@@ -323,12 +325,33 @@ Page({
 
   // 生成模拟走势数据
   generateTrendData() {
+    const currentRate = parseFloat(this.data.currentRate);
     const trends = [
-      { description: '📈 持续上涨趋势，技术面强势', change: '+2.3%' },
-      { description: '📉 震荡下行走势，存在支撑', change: '-1.8%' },
-      { description: '📊 横盘整理走势，方向待定', change: '+0.2%' },
-      { description: '🚀 突破上行，动能充足', change: '+3.5%' },
-      { description: '⚡ 波动加剧，注意风险', change: '-0.9%' }
+      { 
+        description: '📈 持续上涨趋势，技术面表现强势', 
+        change: '+2.3%',
+        suggestion: '建议适量分批操作，关注回调机会'
+      },
+      { 
+        description: '📉 震荡下行走势，但存在重要支撑', 
+        change: '-1.8%',
+        suggestion: '可关注支撑位附近的反弹机会'
+      },
+      { 
+        description: '📊 横盘整理走势，方向性尚不明确', 
+        change: '+0.2%',
+        suggestion: '建议等待明确方向信号后再操作'
+      },
+      { 
+        description: '🚀 突破上行通道，上涨动能充足', 
+        change: '+3.5%',
+        suggestion: '短期强势，但需注意高位风险'
+      },
+      { 
+        description: '⚡ 波动加剧，市场情绪不稳定', 
+        change: '-0.9%',
+        suggestion: '建议控制风险，关注重要经济数据'
+      }
     ];
     
     return trends[Math.floor(Math.random() * trends.length)];
@@ -337,28 +360,33 @@ Page({
   showExchangeChannels() {
     // 显示换汇渠道选择
     const channels = [
-      '🏛️ 中国银行 - 汇率稳定，网点多',
+      '🏛️ 中国银行 - 汇率稳定，网点覆盖全面',
       '🏦 工商银行 - 服务优质，安全可靠', 
-      '💳 招商银行 - 手续费低，APP便利',
-      '📱 支付宝 - 操作简单，费率优惠',
-      '🌐 专业机构 - 汇率最优，适合大额'
+      '💳 招商银行 - 手续费低，APP操作便利',
+      '📱 支付宝 - 操作简单，费率相对优惠',
+      '🌐 专业机构 - 汇率最优，适合大额换汇'
     ];
     
     wx.showActionSheet({
       itemList: channels,
       success: (res) => {
         const selectedChannel = channels[res.tapIndex];
-        const channelName = selectedChannel.split(' - ')[0];
+        const channelInfo = selectedChannel.split(' - ');
+        const channelName = channelInfo[0];
+        const channelDesc = channelInfo[1];
+        
+        // 生成该渠道的详细信息
+        const channelDetails = this.getChannelDetails(res.tapIndex);
         
         wx.showModal({
-          title: '换汇渠道详情',
-          content: `您选择了：${channelName}\n\n点击"查看详情"了解更多换汇方式和最新汇率对比`,
-          confirmText: '查看详情',
+          title: `${channelName} 详情`,
+          content: `${channelDesc}\n\n💰 当前汇率：${channelDetails.rate}\n💳 手续费：${channelDetails.fee}\n⏰ 到账时间：${channelDetails.time}\n\n${channelDetails.note}`,
+          confirmText: '查看更多',
           cancelText: '关闭',
           success: (modalRes) => {
             if (modalRes.confirm) {
               // 跳转到建议页查看详细的换汇方式对比
-              wx.navigateTo({
+              wx.switchTab({
                 url: '/pages/advice/advice'
               });
             }
@@ -366,5 +394,44 @@ Page({
         });
       }
     });
+  },
+
+  // 获取渠道详细信息
+  getChannelDetails(index) {
+    const currentRate = parseFloat(this.data.currentRate);
+    const channels = [
+      {
+        rate: (currentRate + 0.008).toFixed(3),
+        fee: '0.5%',
+        time: '实时到账',
+        note: '优势：网点多，服务稳定，适合首次换汇用户'
+      },
+      {
+        rate: (currentRate + 0.005).toFixed(3),
+        fee: '0.6%',
+        time: '实时到账',
+        note: '优势：安全性高，大额换汇有优惠'
+      },
+      {
+        rate: (currentRate + 0.010).toFixed(3),
+        fee: '0.4%',
+        time: '实时到账',
+        note: '优势：手续费低，手机操作便利'
+      },
+      {
+        rate: (currentRate + 0.015).toFixed(3),
+        fee: '0.3%',
+        time: '2小时内',
+        note: '优势：操作简单，费率相对优惠'
+      },
+      {
+        rate: (currentRate - 0.005).toFixed(3),
+        fee: '0.2%',
+        time: '1个工作日',
+        note: '优势：汇率最优，适合大额操作'
+      }
+    ];
+    
+    return channels[index] || channels[0];
   },
 }); 
