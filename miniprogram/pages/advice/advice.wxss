@@ -244,7 +244,7 @@ page {
 /* 操作按钮 - 进一步增大尺寸 */
 .action-buttons {
   display: flex;
-  gap: 24rpx; /* 减小间距以适应三个按钮 */
+  gap: 24rpx; /* 减小间距以适应四个按钮 */
   margin-top: 48rpx;
   flex-wrap: wrap; /* 允许换行 */
 }
@@ -262,6 +262,13 @@ page {
   align-items: center;
   justify-content: center;
   text-align: center;
+}
+
+.action-buttons .btn-debug {
+  background: rgba(255, 193, 7, 0.1);
+  color: #FFC107;
+  border: 2rpx solid #FFC107;
+  font-size: 28rpx;
 }
 
 /* 换汇方式样式 - 进一步增大尺寸 */

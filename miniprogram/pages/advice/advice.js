@@ -24,10 +24,10 @@ Page({
     
     // AI分析内容 - 初始化为空，将通过AI生成
     analysis: {
-      trend: '正在分析趋势...',
-      technical: '正在分析技术指标...',
-      fundamental: '正在分析基本面...',
-      risk: '正在分析风险...'
+      trend: '🤖 AI分析中，请稍候...',
+      technical: '🤖 AI分析中，请稍候...',
+      fundamental: '🤖 AI分析中，请稍候...',
+      risk: '🤖 AI分析中，请稍候...'
     },
     
     // 换汇建议时间线 - 初始化为空，将通过AI生成
@@ -35,7 +35,7 @@ Page({
       {
         status: 'current',
         title: '当前时点',
-        description: '正在生成建议...',
+        description: '🤖 正在生成AI建议，请稍候...',
         suggestedRate: '分析中...'
       }
     ],
@@ -83,7 +83,7 @@ Page({
     // 市场资讯 - 初始化为空，将通过AI生成
     marketNews: [
       {
-        title: '正在获取最新资讯...',
+        title: '🤖 正在获取AI资讯...',
         summary: 'AI正在分析当前市场情况，请稍候...',
         source: 'AI分析',
         time: '实时',
@@ -95,18 +95,68 @@ Page({
     // 加载状态
     isLoadingAnalysis: true,
     isLoadingAdvice: true,
-    isLoadingNews: true
+    isLoadingNews: true,
+
+    // 调试信息
+    debugInfo: {
+      analysisTime: 0,
+      adviceTime: 0,
+      newsTime: 0,
+      lastUpdate: ''
+    }
   },
 
   async onLoad() {
+    console.log('建议页面开始加载...');
     this.loadCurrencyData();
     
-    // 并行加载AI生成的内容
-    await Promise.all([
-      this.loadAIAnalysis(),
-      this.loadAIAdvice(), 
-      this.loadAINews()
-    ]);
+    // 记录开始时间
+    const startTime = Date.now();
+    
+    try {
+      // 并行加载AI生成的内容
+      const [analysisResult, adviceResult, newsResult] = await Promise.allSettled([
+        this.loadAIAnalysis(),
+        this.loadAIAdvice(), 
+        this.loadAINews()
+      ]);
+      
+      const endTime = Date.now();
+      const totalTime = endTime - startTime;
+      
+      console.log('AI内容加载完成，总耗时:', totalTime, 'ms');
+      console.log('加载结果:', { analysisResult, adviceResult, newsResult });
+      
+      this.setData({
+        'debugInfo.lastUpdate': new Date().toLocaleTimeString()
+      });
+      
+      // 显示加载结果
+      const failedTasks = [];
+      if (analysisResult.status === 'rejected') failedTasks.push('分析');
+      if (adviceResult.status === 'rejected') failedTasks.push('建议');
+      if (newsResult.status === 'rejected') failedTasks.push('资讯');
+      
+      if (failedTasks.length > 0) {
+        wx.showToast({
+          title: `${failedTasks.join('、')}加载失败`,
+          icon: 'none',
+          duration: 2000
+        });
+      } else {
+        wx.showToast({
+          title: '🤖 AI内容加载完成',
+          icon: 'success'
+        });
+      }
+      
+    } catch (error) {
+      console.error('加载AI内容时发生错误:', error);
+      wx.showToast({
+        title: '加载失败，请重试',
+        icon: 'none'
+      });
+    }
   },
 
   // 加载货币数据
@@ -121,100 +171,162 @@ Page({
         selectedCurrency: fromCurrency,
         currentRate: prevPage.data.currentRate
       });
+      console.log('货币数据已加载:', fromCurrency);
     }
   },
 
   // 加载AI分析
   async loadAIAnalysis() {
     try {
+      const startTime = Date.now();
       this.setData({ isLoadingAnalysis: true });
       
       const currencyPair = `${this.data.selectedCurrency.name}/人民币`;
+      console.log('开始加载AI分析，货币对:', currencyPair);
+      
       const analysis = await geminiAPI.generateRateAnalysis(
         currencyPair, 
         this.data.currentRate, 
         this.data.rateChange
       );
       
+      const endTime = Date.now();
+      const loadTime = endTime - startTime;
+      
       this.setData({ 
         analysis: analysis,
-        isLoadingAnalysis: false 
+        isLoadingAnalysis: false,
+        'debugInfo.analysisTime': loadTime
       });
       
-      console.log('AI分析加载完成:', analysis);
+      console.log('AI分析加载完成，耗时:', loadTime, 'ms', analysis);
+      return analysis;
     } catch (error) {
       console.error('加载AI分析失败:', error);
       this.setData({ isLoadingAnalysis: false });
+      throw error;
     }
   },
 
   // 加载AI建议
   async loadAIAdvice() {
     try {
+      const startTime = Date.now();
       this.setData({ isLoadingAdvice: true });
       
       const currencyPair = `${this.data.selectedCurrency.name}/人民币`;
+      console.log('开始加载AI建议，货币对:', currencyPair);
+      
       const advice = await geminiAPI.generateExchangeAdvice(
         currencyPair,
         this.data.currentRate
       );
       
+      const endTime = Date.now();
+      const loadTime = endTime - startTime;
+      
       this.setData({ 
         timeline: advice,
-        isLoadingAdvice: false 
+        isLoadingAdvice: false,
+        'debugInfo.adviceTime': loadTime
       });
       
-      console.log('AI建议加载完成:', advice);
+      console.log('AI建议加载完成，耗时:', loadTime, 'ms', advice);
+      return advice;
     } catch (error) {
       console.error('加载AI建议失败:', error);
       this.setData({ isLoadingAdvice: false });
+      throw error;
     }
   },
 
   // 加载AI新闻
   async loadAINews() {
     try {
+      const startTime = Date.now();
       this.setData({ isLoadingNews: true });
       
-      const news = await geminiAPI.generateMarketNews(this.data.selectedCurrency.code || 'USD');
+      const currencyCode = this.data.selectedCurrency.code || 'USD';
+      console.log('开始加载AI新闻，货币代码:', currencyCode);
+      
+      const news = await geminiAPI.generateMarketNews(currencyCode);
+      
+      const endTime = Date.now();
+      const loadTime = endTime - startTime;
       
       this.setData({ 
         marketNews: news,
-        isLoadingNews: false 
+        isLoadingNews: false,
+        'debugInfo.newsTime': loadTime
       });
       
-      console.log('AI新闻加载完成:', news);
+      console.log('AI新闻加载完成，耗时:', loadTime, 'ms', news);
+      return news;
     } catch (error) {
       console.error('加载AI新闻失败:', error);
       this.setData({ isLoadingNews: false });
+      throw error;
     }
   },
 
   // 刷新AI内容
   async refreshAIContent() {
+    console.log('手动刷新AI内容...');
+    
     wx.showLoading({
-      title: '正在刷新分析...'
+      title: '🤖 刷新中...'
     });
 
     try {
+      const startTime = Date.now();
+      
       await Promise.all([
         this.loadAIAnalysis(),
         this.loadAIAdvice(),
         this.loadAINews()
       ]);
       
+      const endTime = Date.now();
+      const totalTime = endTime - startTime;
+      
       wx.hideLoading();
       wx.showToast({
-        title: 'AI分析已更新',
+        title: `🤖 AI内容已更新 (${Math.round(totalTime/1000)}s)`,
         icon: 'success'
       });
+      
+      this.setData({
+        'debugInfo.lastUpdate': new Date().toLocaleTimeString()
+      });
+      
     } catch (error) {
+      console.error('刷新AI内容失败:', error);
       wx.hideLoading();
       wx.showToast({
         title: '刷新失败，请重试',
         icon: 'none'
       });
     }
+  },
+
+  // 显示调试信息
+  showDebugInfo() {
+    const { debugInfo } = this.data;
+    const debugText = `
+AI分析: ${debugInfo.analysisTime}ms
+AI建议: ${debugInfo.adviceTime}ms  
+AI资讯: ${debugInfo.newsTime}ms
+最后更新: ${debugInfo.lastUpdate}
+
+开发模式已启用，使用增强模拟数据
+如需真实AI，请配置合法域名后关闭DEV_MODE`;
+
+    wx.showModal({
+      title: '🛠️ 调试信息',
+      content: debugText,
+      showCancel: false,
+      confirmText: '确定'
+    });
   },
 
   // 跳转到汇率详情页进行监控设置

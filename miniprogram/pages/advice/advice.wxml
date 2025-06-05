@@ -87,6 +87,9 @@
         <button class="btn btn-secondary" bindtap="refreshAIContent">
           🤖 刷新AI分析
         </button>
+        <button class="btn btn-debug" bindtap="showDebugInfo">
+          🛠️ 调试信息
+        </button>
       </view>
     </view>
   </view>

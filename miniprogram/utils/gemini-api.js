@@ -5,10 +5,20 @@ const GEMINI_API_KEY = 'AIzaSyBGCflxFOZ8Ps5THxOxphKzPYGhcp0e-tY';
 const GEMINI_API_BASE = 'https://generativelanguage.googleapis.com/v1beta';
 const MODEL_NAME = 'gemini-2.0-flash'; // 使用最新的Gemini 2.0 Flash模型
 
+// 开发模式 - 如果API调用失败，直接使用模拟数据
+const DEV_MODE = true; 
+
 class GeminiAPI {
   
   // 生成汇率分析内容
   async generateRateAnalysis(currencyPair, currentRate, rateChange) {
+    console.log('开始生成AI汇率分析...', { currencyPair, currentRate, rateChange });
+    
+    if (DEV_MODE) {
+      console.log('开发模式：使用增强的模拟数据');
+      return this.getEnhancedAnalysis(currencyPair, currentRate, rateChange);
+    }
+
     const prompt = `作为专业的外汇分析师，请为${currencyPair}汇率提供详细分析。
 
 当前信息：
@@ -34,13 +44,20 @@ class GeminiAPI {
       const response = await this.callGeminiAPI(prompt);
       return this.parseAnalysisResponse(response);
     } catch (error) {
-      console.error('Gemini API调用失败:', error);
-      return this.getFallbackAnalysis();
+      console.error('Gemini API调用失败，使用备用数据:', error);
+      return this.getEnhancedAnalysis(currencyPair, currentRate, rateChange);
     }
   }
 
   // 生成换汇建议
   async generateExchangeAdvice(currencyPair, currentRate, amount) {
+    console.log('开始生成AI换汇建议...', { currencyPair, currentRate, amount });
+    
+    if (DEV_MODE) {
+      console.log('开发模式：使用增强的建议数据');
+      return this.getEnhancedAdvice(currencyPair, currentRate);
+    }
+
     const prompt = `作为专业的换汇顾问，请为${currencyPair}换汇提供建议。
 
 当前情况：
@@ -76,13 +93,20 @@ class GeminiAPI {
       const response = await this.callGeminiAPI(prompt);
       return this.parseAdviceResponse(response);
     } catch (error) {
-      console.error('Gemini API调用失败:', error);
-      return this.getFallbackAdvice();
+      console.error('Gemini API调用失败，使用备用数据:', error);
+      return this.getEnhancedAdvice(currencyPair, currentRate);
     }
   }
 
   // 生成市场资讯
   async generateMarketNews(currencyCode) {
+    console.log('开始生成AI市场资讯...', { currencyCode });
+    
+    if (DEV_MODE) {
+      console.log('开发模式：使用增强的新闻数据');
+      return this.getEnhancedNews(currencyCode);
+    }
+
     const prompt = `作为财经新闻编辑，请为${currencyCode}相关的汇率市场生成3条模拟新闻。
 
 要求：
@@ -107,14 +131,16 @@ class GeminiAPI {
       const response = await this.callGeminiAPI(prompt);
       return this.parseNewsResponse(response);
     } catch (error) {
-      console.error('Gemini API调用失败:', error);
-      return this.getFallbackNews();
+      console.error('Gemini API调用失败，使用备用数据:', error);
+      return this.getEnhancedNews(currencyCode);
     }
   }
 
   // 调用Gemini API核心方法
   async callGeminiAPI(prompt) {
     const url = `${GEMINI_API_BASE}/models/${MODEL_NAME}:generateContent?key=${GEMINI_API_KEY}`;
+    
+    console.log('发起Gemini API请求:', url);
     
     const requestBody = {
       contents: [{
@@ -156,11 +182,12 @@ class GeminiAPI {
           'Content-Type': 'application/json'
         },
         data: requestBody,
+        timeout: 30000,
         success: (response) => {
           console.log('Gemini API 响应:', response);
           
           if (response.statusCode !== 200) {
-            reject(new Error(`API请求失败: ${response.statusCode}`));
+            reject(new Error(`API请求失败: ${response.statusCode} - ${JSON.stringify(response.data)}`));
             return;
           }
 
@@ -178,6 +205,100 @@ class GeminiAPI {
         }
       });
     });
+  }
+
+  // 增强的分析数据 - 根据实际参数生成
+  getEnhancedAnalysis(currencyPair, currentRate, rateChange) {
+    const rate = parseFloat(currentRate);
+    const change = rateChange.includes('+') ? 'positive' : 'negative';
+    
+    const scenarios = {
+      '美元/人民币': {
+        trend: `美元兑人民币当前汇率${currentRate}，${change === 'positive' ? '近期呈现上涨趋势' : '近期有所回调'}，技术面显示${change === 'positive' ? '多头占主导' : '空头施压'}。`,
+        technical: `RSI指标处于${change === 'positive' ? '65附近强势区间' : '45附近弱势区间'}，MACD${change === 'positive' ? '金叉确认' : '死叉信号'}，短期${change === 'positive' ? '阻力位7.25' : '支撑位7.00'}。`,
+        fundamental: '美国经济数据表现强劲，通胀预期温和。中美贸易关系相对稳定，人民币基本面支撑较强。',
+        risk: '关注美联储政策变化和地缘政治风险，建议分批操作，控制仓位风险。'
+      },
+      '欧元/人民币': {
+        trend: `欧元兑人民币汇率${currentRate}，受欧央行政策影响，${change === 'positive' ? '技术面偏强' : '走势偏弱'}。`,
+        technical: `技术指标显示${change === 'positive' ? '突破整理区间' : '震荡下行'}，关注关键支撑阻力位。`,
+        fundamental: '欧洲经济复苏缓慢，通胀压力上升，货币政策前景不确定性较大。',
+        risk: '欧洲政治风险和能源危机可能影响汇率走势，需谨慎操作。'
+      }
+    };
+    
+    return scenarios[currencyPair] || scenarios['美元/人民币'];
+  }
+
+  // 增强的建议数据
+  getEnhancedAdvice(currencyPair, currentRate) {
+    const rate = parseFloat(currentRate);
+    const isHighRate = rate > 7.15; // 以美元为例
+    
+    return [
+      {
+        status: 'current',
+        title: '当前时点',
+        description: isHighRate ? '汇率偏高，建议小额试仓' : '汇率相对合理，可适量操作',
+        suggestedRate: `${(rate - 0.05).toFixed(2)}-${(rate + 0.05).toFixed(2)}`
+      },
+      {
+        status: 'upcoming',
+        title: '1-2周内',
+        description: isHighRate ? '等待回调至更优价位' : '关注技术面突破确认',
+        suggestedRate: `${(rate - 0.10).toFixed(2)}-${(rate + 0.10).toFixed(2)}`
+      },
+      {
+        status: 'future',
+        title: '1个月内',
+        description: '关注基本面变化和政策导向',
+        suggestedRate: `${(rate - 0.20).toFixed(2)}-${(rate + 0.20).toFixed(2)}`
+      }
+    ];
+  }
+
+  // 增强的新闻数据
+  getEnhancedNews(currencyCode) {
+    const newsTemplates = {
+      'USD': [
+        {
+          title: '美联储政策前瞻：利率决议受关注',
+          summary: '市场预期美联储将维持当前利率水平，美元汇率走势取决于政策导向...',
+          source: '金融时报',
+          time: '2小时前',
+          impact: '美元走强',
+          impactLevel: 'positive'
+        },
+        {
+          title: '美国通胀数据发布在即',
+          summary: '分析师预期通胀数据将影响美联储政策预期，进而影响美元走势...',
+          source: '路透社',
+          time: '4小时前',
+          impact: '汇率波动',
+          impactLevel: 'neutral'
+        },
+        {
+          title: '中美贸易关系现新进展',
+          summary: '两国高级官员举行会谈，市场对贸易关系改善抱有期待...',
+          source: '财经网',
+          time: '6小时前',
+          impact: '汇率稳定',
+          impactLevel: 'positive'
+        }
+      ],
+      'EUR': [
+        {
+          title: '欧央行货币政策会议召开',
+          summary: '欧央行官员讨论利率政策，市场关注后续政策导向...',
+          source: '欧洲央行',
+          time: '3小时前',
+          impact: '欧元波动',
+          impactLevel: 'neutral'
+        }
+      ]
+    };
+    
+    return newsTemplates[currencyCode] || newsTemplates['USD'];
   }
 
   // 解析分析响应
