@@ -2,17 +2,17 @@
 page {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   min-height: 100vh;
-  padding-bottom: 160rpx; /* 增加底部间距 */
+  padding-bottom: 180rpx; /* 进一步增加底部间距 */
 }
 
 .container {
-  padding: 40rpx 24rpx; /* 优化左右间距 */
+  padding: 48rpx 28rpx; /* 进一步优化间距 */
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
 }
 
-/* 货币概览样式 - 增大尺寸 */
+/* 货币概览样式 - 进一步增大尺寸 */
 .currency-overview {
-  margin-bottom: 40rpx;
+  margin-bottom: 48rpx;
 }
 
 .rate-summary {
@@ -21,10 +21,10 @@ page {
   align-items: center;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
-  border-radius: 28rpx;
-  padding: 48rpx 36rpx; /* 增大内边距 */
-  margin-bottom: 36rpx;
-  box-shadow: 0 12rpx 40rpx rgba(0,0,0,0.1);
+  border-radius: 32rpx;
+  padding: 60rpx 44rpx; /* 进一步增大内边距 */
+  margin-bottom: 44rpx;
+  box-shadow: 0 16rpx 48rpx rgba(0,0,0,0.12);
 }
 
 .current-rate {
@@ -33,14 +33,14 @@ page {
 }
 
 .rate-label {
-  font-size: 30rpx; /* 增大字体 */
+  font-size: 36rpx; /* 进一步增大字体 */
   color: #666;
-  margin-bottom: 12rpx;
+  margin-bottom: 16rpx;
   font-weight: 500;
 }
 
 .rate-value {
-  font-size: 56rpx; /* 增大主要数字 */
+  font-size: 68rpx; /* 进一步增大主要数字 */
   font-weight: 700;
   color: #1a1a1a;
   line-height: 1.2;
@@ -49,8 +49,8 @@ page {
 .rate-change {
   display: flex;
   align-items: center;
-  padding: 20rpx 28rpx; /* 增大按钮尺寸 */
-  border-radius: 20rpx;
+  padding: 24rpx 32rpx; /* 进一步增大按钮尺寸 */
+  border-radius: 24rpx;
 }
 
 .rate-change.positive {
@@ -69,29 +69,29 @@ page {
 }
 
 .change-icon {
-  font-size: 38rpx; /* 增大图标 */
-  margin-right: 12rpx;
+  font-size: 44rpx; /* 进一步增大图标 */
+  margin-right: 16rpx;
 }
 
 .change-text {
-  font-size: 32rpx; /* 增大变化文字 */
+  font-size: 38rpx; /* 进一步增大变化文字 */
   font-weight: 600;
 }
 
-/* 图表样式 - 增大尺寸 */
+/* 图表样式 - 进一步增大尺寸 */
 .rate-chart {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
-  border-radius: 28rpx;
-  padding: 40rpx 36rpx;
-  box-shadow: 0 12rpx 40rpx rgba(0,0,0,0.08);
+  border-radius: 32rpx;
+  padding: 48rpx 44rpx;
+  box-shadow: 0 16rpx 48rpx rgba(0,0,0,0.1);
 }
 
 .chart-title {
-  font-size: 38rpx; /* 增大标题 */
+  font-size: 44rpx; /* 进一步增大标题 */
   font-weight: 600;
   color: #1a1a1a;
-  margin-bottom: 40rpx;
+  margin-bottom: 48rpx;
   display: block;
 }
 
@@ -99,8 +99,8 @@ page {
   display: flex;
   justify-content: space-between;
   align-items: end;
-  height: 240rpx; /* 增大图表高度 */
-  padding: 24rpx 0;
+  height: 280rpx; /* 进一步增大图表高度 */
+  padding: 28rpx 0;
 }
 
 .chart-line {
@@ -111,73 +111,73 @@ page {
 }
 
 .chart-point {
-  width: 20rpx; /* 增大数据点 */
-  border-radius: 10rpx;
-  margin-bottom: 20rpx;
+  width: 24rpx; /* 进一步增大数据点 */
+  border-radius: 12rpx;
+  margin-bottom: 24rpx;
   transition: all 0.3s ease;
 }
 
 .chart-label {
-  font-size: 24rpx; /* 增大标签字体 */
+  font-size: 28rpx; /* 进一步增大标签字体 */
   color: #999;
   text-align: center;
 }
 
-/* AI分析样式 - 增大间距和字体 */
+/* AI分析样式 - 进一步增大间距和字体 */
 .analysis-section {
-  margin-bottom: 48rpx;
+  margin-bottom: 56rpx;
 }
 
 .analysis-item {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
-  border-radius: 28rpx;
-  padding: 44rpx 36rpx; /* 增大内边距 */
-  margin-bottom: 32rpx;
-  box-shadow: 0 12rpx 40rpx rgba(0,0,0,0.08);
-  border-left: 10rpx solid #667eea; /* 增大边框 */
+  border-radius: 32rpx;
+  padding: 52rpx 44rpx; /* 进一步增大内边距 */
+  margin-bottom: 40rpx;
+  box-shadow: 0 16rpx 48rpx rgba(0,0,0,0.1);
+  border-left: 12rpx solid #667eea; /* 进一步增大边框 */
 }
 
 .analysis-title {
-  font-size: 38rpx; /* 增大标题字体 */
+  font-size: 44rpx; /* 进一步增大标题字体 */
   font-weight: 600;
   color: #667eea;
-  margin-bottom: 20rpx;
+  margin-bottom: 24rpx;
   display: block;
 }
 
 .analysis-content {
-  font-size: 32rpx; /* 增大内容字体 */
-  line-height: 1.7; /* 增大行高 */
+  font-size: 36rpx; /* 进一步增大内容字体 */
+  line-height: 1.8; /* 进一步增大行高 */
   color: #333;
 }
 
-/* 时间线样式 - 增大尺寸 */
+/* 时间线样式 - 进一步增大尺寸 */
 .advice-timeline {
   position: relative;
-  padding-left: 60rpx; /* 增大左边距 */
-  margin-bottom: 56rpx;
+  padding-left: 72rpx; /* 进一步增大左边距 */
+  margin-bottom: 64rpx;
 }
 
 .advice-timeline::before {
   content: '';
   position: absolute;
-  left: 30rpx;
+  left: 36rpx;
   top: 0;
   bottom: 0;
-  width: 6rpx; /* 增大时间线宽度 */
+  width: 8rpx; /* 进一步增大时间线宽度 */
   background: #e0e0e0;
-  border-radius: 3rpx;
+  border-radius: 4rpx;
 }
 
 .timeline-item {
   position: relative;
-  margin-bottom: 56rpx; /* 增大间距 */
-  padding: 40rpx 36rpx; /* 增大内边距 */
+  margin-bottom: 64rpx; /* 进一步增大间距 */
+  padding: 48rpx 44rpx; /* 进一步增大内边距 */
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
-  border-radius: 28rpx;
-  box-shadow: 0 12rpx 40rpx rgba(0,0,0,0.08);
+  border-radius: 32rpx;
+  box-shadow: 0 16rpx 48rpx rgba(0,0,0,0.1);
 }
 
 .timeline-item:last-child {
@@ -186,95 +186,95 @@ page {
 
 .timeline-dot {
   position: absolute;
-  left: -45rpx; /* 调整位置 */
+  left: -54rpx; /* 调整位置 */
   top: 50%;
   transform: translateY(-50%);
-  width: 30rpx; /* 增大圆点 */
-  height: 30rpx;
+  width: 36rpx; /* 进一步增大圆点 */
+  height: 36rpx;
   border-radius: 50%;
   background: #667eea;
-  border: 6rpx solid white;
-  box-shadow: 0 0 0 6rpx #e0e0e0;
+  border: 8rpx solid white;
+  box-shadow: 0 0 0 8rpx #e0e0e0;
 }
 
 .timeline-item.current .timeline-dot {
   background: #4CAF50;
-  box-shadow: 0 0 0 6rpx rgba(76, 175, 80, 0.2);
+  box-shadow: 0 0 0 8rpx rgba(76, 175, 80, 0.2);
 }
 
 .timeline-item.upcoming .timeline-dot {
   background: #FFC107;
-  box-shadow: 0 0 0 6rpx rgba(255, 193, 7, 0.2);
+  box-shadow: 0 0 0 8rpx rgba(255, 193, 7, 0.2);
 }
 
 .timeline-item.future .timeline-dot {
   background: #9E9E9E;
-  box-shadow: 0 0 0 6rpx rgba(158, 158, 158, 0.2);
+  box-shadow: 0 0 0 8rpx rgba(158, 158, 158, 0.2);
 }
 
 .timeline-content {
   display: flex;
   flex-direction: column;
-  gap: 16rpx; /* 增大间距 */
+  gap: 20rpx; /* 进一步增大间距 */
 }
 
 .timeline-title {
-  font-size: 38rpx; /* 增大标题 */
+  font-size: 44rpx; /* 进一步增大标题 */
   font-weight: 600;
   color: #1a1a1a;
 }
 
 .timeline-desc {
-  font-size: 32rpx; /* 增大描述字体 */
+  font-size: 36rpx; /* 进一步增大描述字体 */
   color: #666;
-  line-height: 1.6;
+  line-height: 1.7;
 }
 
 .timeline-rate {
-  font-size: 28rpx; /* 增大汇率字体 */
+  font-size: 32rpx; /* 进一步增大汇率字体 */
   color: #667eea;
   font-weight: 600;
   background: rgba(102,126,234,0.1);
-  padding: 12rpx 20rpx;
-  border-radius: 16rpx;
+  padding: 16rpx 24rpx;
+  border-radius: 20rpx;
   display: inline-block;
-  margin-top: 8rpx;
+  margin-top: 12rpx;
 }
 
-/* 操作按钮 - 增大尺寸 */
+/* 操作按钮 - 进一步增大尺寸 */
 .action-buttons {
   display: flex;
-  gap: 32rpx;
-  margin-top: 40rpx;
+  gap: 40rpx;
+  margin-top: 48rpx;
 }
 
 .action-buttons .btn {
   flex: 1;
   margin: 0;
-  padding: 24rpx 32rpx; /* 增大按钮 */
-  font-size: 32rpx;
+  padding: 28rpx 36rpx; /* 进一步增大按钮 */
+  font-size: 36rpx;
   font-weight: 600;
-  border-radius: 20rpx;
-  min-height: 88rpx;
+  border-radius: 24rpx;
+  min-height: 96rpx;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* 换汇方式样式 - 增大尺寸 */
+/* 换汇方式样式 - 进一步增大尺寸 */
 .exchange-methods {
   display: flex;
   flex-direction: column;
-  gap: 32rpx;
+  gap: 40rpx;
 }
 
 .method-item {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
-  border-radius: 28rpx;
-  padding: 40rpx 36rpx; /* 增大内边距 */
-  box-shadow: 0 12rpx 40rpx rgba(0,0,0,0.08);
-  border: 3rpx solid transparent;
+  border-radius: 32rpx;
+  padding: 48rpx 44rpx; /* 进一步增大内边距 */
+  box-shadow: 0 16rpx 48rpx rgba(0,0,0,0.1);
+  border: 4rpx solid transparent;
   transition: all 0.3s ease;
 }
 
@@ -286,16 +286,16 @@ page {
 .method-header {
   display: flex;
   align-items: center;
-  margin-bottom: 32rpx;
+  margin-bottom: 40rpx;
 }
 
 .method-icon {
-  font-size: 54rpx; /* 增大图标 */
-  margin-right: 20rpx;
+  font-size: 60rpx; /* 进一步增大图标 */
+  margin-right: 24rpx;
 }
 
 .method-name {
-  font-size: 40rpx; /* 增大名称字体 */
+  font-size: 46rpx; /* 进一步增大名称字体 */
   font-weight: 600;
   color: #1a1a1a;
   flex: 1;
@@ -304,19 +304,19 @@ page {
 .recommended-badge {
   background: #667eea;
   color: white;
-  font-size: 24rpx; /* 增大徽章字体 */
-  padding: 12rpx 20rpx;
-  border-radius: 16rpx;
+  font-size: 28rpx; /* 进一步增大徽章字体 */
+  padding: 16rpx 24rpx;
+  border-radius: 20rpx;
   font-weight: 600;
 }
 
 .method-details {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 28rpx;
-  padding: 32rpx; /* 增大内边距 */
+  margin-bottom: 32rpx;
+  padding: 36rpx; /* 进一步增大内边距 */
   background: rgba(102,126,234,0.05);
-  border-radius: 20rpx;
+  border-radius: 24rpx;
 }
 
 .method-rate, .method-fee, .method-time {
@@ -326,13 +326,13 @@ page {
 }
 
 .rate-label, .fee-label, .time-label {
-  font-size: 26rpx; /* 增大标签字体 */
+  font-size: 30rpx; /* 进一步增大标签字体 */
   color: #999;
-  margin-bottom: 10rpx;
+  margin-bottom: 12rpx;
 }
 
 .rate-value, .fee-value, .time-value {
-  font-size: 32rpx; /* 增大数值字体 */
+  font-size: 36rpx; /* 进一步增大数值字体 */
   font-weight: 600;
   color: #1a1a1a;
 }
@@ -340,37 +340,37 @@ page {
 .method-pros {
   display: flex;
   flex-direction: column;
-  gap: 12rpx;
+  gap: 16rpx;
 }
 
 .pros-title {
-  font-size: 32rpx; /* 增大优势标题 */
+  font-size: 36rpx; /* 进一步增大优势标题 */
   font-weight: 600;
   color: #667eea;
 }
 
 .pros-content {
-  font-size: 30rpx; /* 增大优势内容字体 */
+  font-size: 34rpx; /* 进一步增大优势内容字体 */
   color: #666;
-  line-height: 1.6;
+  line-height: 1.7;
 }
 
-/* 市场资讯样式 - 新增 */
+/* 市场资讯样式 - 进一步增大 */
 .news-section {
   display: flex;
   flex-direction: column;
-  gap: 24rpx;
+  gap: 32rpx;
 }
 
 .news-item {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
-  border-radius: 28rpx;
-  padding: 36rpx;
+  border-radius: 32rpx;
+  padding: 44rpx;
   display: flex;
   align-items: center;
-  gap: 24rpx;
-  box-shadow: 0 12rpx 40rpx rgba(0,0,0,0.08);
+  gap: 28rpx;
+  box-shadow: 0 16rpx 48rpx rgba(0,0,0,0.1);
   transition: all 0.3s ease;
 }
 
@@ -383,43 +383,43 @@ page {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 12rpx;
+  gap: 16rpx;
 }
 
 .news-title {
-  font-size: 34rpx; /* 增大新闻标题 */
+  font-size: 40rpx; /* 进一步增大新闻标题 */
   font-weight: 600;
   color: #1a1a1a;
   line-height: 1.4;
 }
 
 .news-summary {
-  font-size: 28rpx; /* 增大摘要字体 */
+  font-size: 32rpx; /* 进一步增大摘要字体 */
   color: #666;
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
 .news-meta {
   display: flex;
   align-items: center;
-  gap: 16rpx;
-  margin-top: 8rpx;
+  gap: 20rpx;
+  margin-top: 12rpx;
 }
 
 .news-source {
-  font-size: 24rpx;
+  font-size: 28rpx;
   color: #999;
 }
 
 .news-time {
-  font-size: 24rpx;
+  font-size: 28rpx;
   color: #999;
 }
 
 .news-impact {
-  font-size: 24rpx;
-  padding: 6rpx 12rpx;
-  border-radius: 12rpx;
+  font-size: 28rpx;
+  padding: 8rpx 16rpx;
+  border-radius: 16rpx;
   font-weight: 500;
 }
 
@@ -439,7 +439,7 @@ page {
 }
 
 .news-arrow {
-  font-size: 32rpx; /* 增大箭头 */
+  font-size: 36rpx; /* 进一步增大箭头 */
   color: #ccc;
   font-weight: 300;
 }
@@ -447,30 +447,47 @@ page {
 /* 响应式设计 - 优化小屏幕 */
 @media (max-width: 600rpx) {
   .container {
-    padding: 32rpx 20rpx;
+    padding: 40rpx 24rpx;
   }
   
   .rate-summary {
     flex-direction: column;
-    gap: 32rpx;
+    gap: 40rpx;
     text-align: center;
+    padding: 48rpx 32rpx;
   }
   
   .method-details {
     flex-direction: column;
-    gap: 24rpx;
+    gap: 28rpx;
   }
   
   .action-buttons {
     flex-direction: column;
-    gap: 20rpx;
+    gap: 24rpx;
   }
   
   .news-item {
-    padding: 28rpx;
+    padding: 36rpx;
   }
   
   .chart-container {
-    height: 200rpx;
+    height: 240rpx;
+  }
+  
+  .method-icon {
+    font-size: 56rpx;
+  }
+  
+  .method-name {
+    font-size: 42rpx;
+  }
+  
+  .timeline-title {
+    font-size: 40rpx;
+  }
+  
+  .timeline-desc {
+    font-size: 32rpx;
   }
 } 
