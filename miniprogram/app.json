@@ -21,27 +21,19 @@
     "list": [
       {
         "pagePath": "pages/index/index",
-        "text": "汇率转换",
-        "iconPath": "images/home.png",
-        "selectedIconPath": "images/home-active.png"
+        "text": "汇率转换"
       },
       {
         "pagePath": "pages/advice/advice",
-        "text": "智能建议",
-        "iconPath": "images/advice.png",
-        "selectedIconPath": "images/advice-active.png"
+        "text": "智能建议"
       },
       {
         "pagePath": "pages/rate-detail/rate-detail",
-        "text": "汇率详情",
-        "iconPath": "images/detail.png",
-        "selectedIconPath": "images/detail-active.png"
+        "text": "汇率详情"
       },
       {
         "pagePath": "pages/settings/settings",
-        "text": "设置",
-        "iconPath": "images/settings.png",
-        "selectedIconPath": "images/settings-active.png"
+        "text": "设置"
       }
     ]
   },
