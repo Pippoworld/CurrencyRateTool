@@ -84,21 +84,21 @@
   <!-- 提醒设置 -->
   <view class="card">
     <view class="card-header">
-      🔔 提醒设置
+      🔔 通知设置
     </view>
     <view class="card-body">
       <view class="reminder-config">
         <view class="setting-item">
           <view class="setting-info">
-            <text class="setting-title">汇率提醒</text>
-            <text class="setting-desc">当汇率达到目标价位时通知</text>
+            <text class="setting-title">汇率提醒总开关</text>
+            <text class="setting-desc">控制所有汇率相关提醒</text>
           </view>
           <switch class="setting-switch" checked="{{notifications.rateAlert}}" bindchange="onRateNotificationChange"/>
         </view>
         
         <view class="setting-item">
           <view class="setting-info">
-            <text class="setting-title">每日分析</text>
+            <text class="setting-title">每日分析报告</text>
             <text class="setting-desc">每天推送汇率分析报告</text>
           </view>
           <switch class="setting-switch" checked="{{notifications.dailyReport}}" bindchange="onDailyReportChange"/>
@@ -106,7 +106,7 @@
         
         <view class="setting-item">
           <view class="setting-info">
-            <text class="setting-title">重要事件</text>
+            <text class="setting-title">重要事件提醒</text>
             <text class="setting-desc">影响汇率的重要经济事件提醒</text>
           </view>
           <switch class="setting-switch" checked="{{notifications.importantEvents}}" bindchange="onEventsNotificationChange"/>
@@ -123,6 +123,17 @@
               <text class="picker-arrow">▼</text>
             </view>
           </picker>
+        </view>
+
+        <view class="setting-item">
+          <view class="setting-info">
+            <text class="setting-title">详细监控设置</text>
+            <text class="setting-desc">设置具体币种的目标汇率和监控</text>
+          </view>
+          <view class="setting-value setting-link" bindtap="goToRateDetail">
+            <text class="link-text">前往设置</text>
+            <text class="picker-arrow">▼</text>
+          </view>
         </view>
       </view>
     </view>

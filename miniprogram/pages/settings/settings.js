@@ -395,5 +395,15 @@ Page({
     if (this.data.vibrationFeedback) {
       wx.vibrateShort()
     }
-  }
+  },
+
+  // 跳转到汇率详情页设置监控
+  goToRateDetail() {
+    wx.navigateTo({
+      url: '/pages/rate-detail/rate-detail',
+      success: () => {
+        console.log('跳转到汇率详情页设置监控');
+      }
+    });
+  },
 }) 

@@ -78,8 +78,8 @@
       </view>
       
       <view class="action-buttons">
-        <button class="btn" bindtap="setTargetRate">
-          设置目标汇率
+        <button class="btn" bindtap="goToRateDetail">
+          汇率监控设置
         </button>
         <button class="btn btn-secondary" bindtap="shareAnalysis">
           分享分析
@@ -124,31 +124,25 @@
     </view>
   </view>
 
-  <!-- 提醒设置 -->
+  <!-- 市场资讯 -->
   <view class="card">
     <view class="card-header">
-      🔔 智能提醒
+      📰 市场资讯
     </view>
     <view class="card-body">
-      <view class="reminder-settings">
-        <view class="setting-item">
-          <text class="setting-label">汇率提醒</text>
-          <switch class="setting-switch" checked="{{reminderSettings.rateAlert}}" bindchange="onRateAlertChange"/>
+      <view class="news-section">
+        <view class="news-item" wx:for="{{marketNews}}" wx:key="index" bindtap="openNewsDetail" data-url="{{item.url}}">
+          <view class="news-content">
+            <text class="news-title">{{item.title}}</text>
+            <text class="news-summary">{{item.summary}}</text>
+            <view class="news-meta">
+              <text class="news-source">{{item.source}}</text>
+              <text class="news-time">{{item.time}}</text>
+              <text class="news-impact {{item.impactLevel}}">{{item.impact}}</text>
+            </view>
+          </view>
+          <text class="news-arrow">›</text>
         </view>
-        <view class="setting-item">
-          <text class="setting-label">每日分析</text>
-          <switch class="setting-switch" checked="{{reminderSettings.dailyAnalysis}}" bindchange="onDailyAnalysisChange"/>
-        </view>
-        <view class="setting-item">
-          <text class="setting-label">重要事件</text>
-          <switch class="setting-switch" checked="{{reminderSettings.eventAlert}}" bindchange="onEventAlertChange"/>
-        </view>
-      </view>
-      
-      <view class="target-rate-setting" wx:if="{{reminderSettings.rateAlert}}">
-        <text class="target-label">目标汇率:</text>
-        <input class="target-input" type="digit" value="{{targetRate}}" bindinput="onTargetRateInput" placeholder="设置目标汇率"/>
-        <button class="btn btn-small" bindtap="saveTargetRate">保存</button>
       </view>
     </view>
   </view>

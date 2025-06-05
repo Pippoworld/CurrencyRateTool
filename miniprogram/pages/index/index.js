@@ -244,16 +244,127 @@ Page({
   },
 
   setTargetRate() {
-    wx.showToast({
-      title: '设置目标汇率',
-      icon: 'none'
+    // 跳转到详情页设置目标汇率
+    wx.navigateTo({
+      url: `/pages/rate-detail/rate-detail?fromIndex=${this.data.fromCurrencyIndex}&toIndex=${this.data.toCurrencyIndex}`,
+      success: () => {
+        console.log('跳转到汇率详情页设置目标汇率');
+      }
     });
   },
 
   showMoreCurrencies() {
-    wx.showToast({
-      title: '更多币种',
-      icon: 'none'
+    // 显示更多币种选择
+    const moreCurrencies = [
+      '🇯🇵 日元 JPY',
+      '🇰🇷 韩元 KRW', 
+      '🇨🇦 加元 CAD',
+      '🇨🇭 瑞郎 CHF',
+      '🇸🇬 新币 SGD',
+      '🇭🇰 港币 HKD',
+      '🇹🇭 泰铢 THB',
+      '🇷🇺 卢布 RUB'
+    ];
+    
+    wx.showActionSheet({
+      itemList: moreCurrencies,
+      success: (res) => {
+        const selectedCurrency = moreCurrencies[res.tapIndex];
+        const currencyInfo = selectedCurrency.split(' ');
+        const flag = currencyInfo[0];
+        const name = currencyInfo[1];
+        const code = currencyInfo[2];
+        
+        wx.showModal({
+          title: '添加新币种',
+          content: `${flag} ${name} (${code})\n\n这个币种将被添加到您的常用列表中，方便下次快速选择。`,
+          confirmText: '添加',
+          cancelText: '取消',
+          success: (modalRes) => {
+            if (modalRes.confirm) {
+              // 添加新币种到列表（这里可以扩展currencies数组）
+              wx.showToast({
+                title: `${name}已添加`,
+                icon: 'success'
+              });
+              
+              // 可以在这里更新currencies数组，添加新币种
+              console.log(`添加新币种：${name} (${code})`);
+            }
+          }
+        });
+      }
     });
-  }
+  },
+
+  showRateTrend() {
+    // 显示汇率走势图
+    const fromCurrency = this.data.currencies[this.data.fromCurrencyIndex];
+    const toCurrency = this.data.currencies[this.data.toCurrencyIndex];
+    
+    // 生成模拟走势数据
+    const trendData = this.generateTrendData();
+    
+    wx.showModal({
+      title: `${fromCurrency.name}/${toCurrency.name} 走势`,
+      content: `近7日走势：\n${trendData.description}\n\n当前汇率：${this.data.currentRate}\n涨跌：${trendData.change}`,
+      confirmText: '详细分析',
+      cancelText: '关闭',
+      success: (res) => {
+        if (res.confirm) {
+          // 跳转到建议页查看详细分析
+          wx.navigateTo({
+            url: '/pages/advice/advice'
+          });
+        }
+      }
+    });
+  },
+
+  // 生成模拟走势数据
+  generateTrendData() {
+    const trends = [
+      { description: '📈 持续上涨趋势，技术面强势', change: '+2.3%' },
+      { description: '📉 震荡下行走势，存在支撑', change: '-1.8%' },
+      { description: '📊 横盘整理走势，方向待定', change: '+0.2%' },
+      { description: '🚀 突破上行，动能充足', change: '+3.5%' },
+      { description: '⚡ 波动加剧，注意风险', change: '-0.9%' }
+    ];
+    
+    return trends[Math.floor(Math.random() * trends.length)];
+  },
+
+  showExchangeChannels() {
+    // 显示换汇渠道选择
+    const channels = [
+      '🏛️ 中国银行 - 汇率稳定，网点多',
+      '🏦 工商银行 - 服务优质，安全可靠', 
+      '💳 招商银行 - 手续费低，APP便利',
+      '📱 支付宝 - 操作简单，费率优惠',
+      '🌐 专业机构 - 汇率最优，适合大额'
+    ];
+    
+    wx.showActionSheet({
+      itemList: channels,
+      success: (res) => {
+        const selectedChannel = channels[res.tapIndex];
+        const channelName = selectedChannel.split(' - ')[0];
+        
+        wx.showModal({
+          title: '换汇渠道详情',
+          content: `您选择了：${channelName}\n\n点击"查看详情"了解更多换汇方式和最新汇率对比`,
+          confirmText: '查看详情',
+          cancelText: '关闭',
+          success: (modalRes) => {
+            if (modalRes.confirm) {
+              // 跳转到建议页查看详细的换汇方式对比
+              wx.navigateTo({
+                url: '/pages/advice/advice'
+              });
+            }
+          }
+        });
+      }
+    });
+  },
 }); 
