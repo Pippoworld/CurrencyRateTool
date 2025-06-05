@@ -261,9 +261,17 @@ Page({
     this.setData({
       fromCurrencyIndex: newIndex
     });
-    this.saveGlobalCurrencySettings(); // 保存全局设置
+    
+    // 立即保存并生效
+    this.saveGlobalCurrencySettings(); 
     this.updateExchangeRate();
     this.generateAdvice();
+    
+    wx.showToast({
+      title: '币种已更新',
+      icon: 'success',
+      duration: 1000
+    });
   },
 
   // 目标币种选择
@@ -273,9 +281,17 @@ Page({
     this.setData({
       toCurrencyIndex: newIndex
     });
-    this.saveGlobalCurrencySettings(); // 保存全局设置
+    
+    // 立即保存并生效
+    this.saveGlobalCurrencySettings(); 
     this.updateExchangeRate();
     this.generateAdvice();
+    
+    wx.showToast({
+      title: '币种已更新',
+      icon: 'success',
+      duration: 1000
+    });
   },
 
   // 目标买入汇率输入

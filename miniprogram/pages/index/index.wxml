@@ -1,12 +1,16 @@
 <!--index.wxml - 使用固定容器放置建议-->
 <view class="container">
-  <!-- 汇率信息卡片 - 右边固定建议容器 -->
+  <!-- 汇率监控卡片 - 右边固定建议容器 -->
   <view class="rate-header" bindtap="goToRateDetail">
     <view class="rate-info">
-      <text class="rate-pair">{{currencies[fromCurrencyIndex].flag}} {{currencies[fromCurrencyIndex].code}} / {{currencies[toCurrencyIndex].flag}} {{currencies[toCurrencyIndex].code}}</text>
+      <view class="rate-pair-with-tip">
+        <text class="rate-pair">{{currencies[cardFromCurrencyIndex].flag}} {{currencies[cardFromCurrencyIndex].code}} / {{currencies[cardToCurrencyIndex].flag}} {{currencies[cardToCurrencyIndex].code}}</text>
+        <text class="monitor-tip">💡 长期监控</text>
+      </view>
       <text class="rate-value">{{currentRate}}</text>
       <text class="rate-change {{rateChangeStatus}}">{{rateChange}}</text>
       <text class="update-time">更新时间：{{updateTime}}</text>
+      <text class="setting-tip">点击进入详情页更改监控币种</text>
     </view>
     
     <!-- 右边固定建议容器 -->
@@ -23,10 +27,11 @@
     </view>
   </view>
 
-  <!-- 正确仿微信计算器 -->
+  <!-- 汇率计算器（独立于监控卡片）-->
   <view class="exchange-calculator">
     <view class="calc-header">
-      <text class="calc-title">汇率计算</text>
+      <text class="calc-title">汇率计算器</text>
+      <text class="calc-subtitle">临时计算，不影响监控设置</text>
     </view>
     
     <view class="calc-horizontal">
@@ -70,8 +75,6 @@
         />
       </view>
     </view>
-    
-    <!-- 汇率显示区域删除 -->
   </view>
 
   <!-- 快捷功能网格 -->

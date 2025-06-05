@@ -190,23 +190,51 @@ Page({
 
   // 更新特定货币的分析
   updateAnalysisForCurrency(currencyCode) {
+    console.log('根据货币更新分析内容:', currencyCode);
+    
     const analysisData = {
       'USD': {
-        trend: '美元兑人民币汇率近期表现强势，技术面和基本面均支持进一步上涨。',
-        technical: 'RSI指标显示超买，但趋势依然向上，关注7.25阻力位。',
-        fundamental: '美联储政策收紧预期和美国经济数据向好支撑美元走强。',
-        risk: '关注中美贸易关系和地缘政治风险对汇率的影响。'
+        trend: '美元兑人民币汇率近期表现强势，美联储政策和经济数据支持美元走强。技术面显示继续上涨潜力。',
+        technical: 'RSI指标显示超买但趋势向上，MACD金叉确认，关注7.25阻力位和7.05支撑位。',
+        fundamental: '美联储政策收紧预期、美国经济数据向好、就业市场强劲，多重因素支撑美元。',
+        risk: '关注中美贸易关系变化、美联储政策转向风险、全球地缘政治因素影响。'
       },
       'EUR': {
-        trend: '欧元兑人民币汇率受欧央行政策和经济数据影响较大。',
-        technical: '技术指标显示震荡整理，短期方向不明确。',
-        fundamental: '欧洲经济复苏缓慢，通胀压力上升，政策前景不确定。',
-        risk: '欧洲政治风险和能源危机可能影响欧元走势。'
+        trend: '欧元兑人民币汇率受欧央行政策影响较大，经济复苏缓慢导致汇率波动加大。',
+        technical: '技术指标显示震荡整理，短期方向不明确，关注7.60-7.80区间突破情况。',
+        fundamental: '欧洲经济复苏缓慢，通胀压力上升，欧央行政策前景存在不确定性。',
+        risk: '欧洲政治风险、能源危机、通胀持续高企等因素可能影响欧元走势。'
+      },
+      'GBP': {
+        trend: '英镑兑人民币汇率波动较大，英国经济政策和央行决策对汇率影响显著。',
+        technical: '技术面显示高位震荡，关注8.80-9.20关键区间，突破方向将决定后续走势。',
+        fundamental: '英国经济增长放缓，通胀压力依然存在，英央行政策立场相对鹰派。',
+        risk: '英国政治不确定性、脱欧后续影响、与欧盟关系变化等风险需要关注。'
+      },
+      'JPY': {
+        trend: '日元兑人民币汇率受日央行超宽松政策影响，长期处于相对弱势地位。',
+        technical: '技术指标显示低位徘徊，短期难有大幅上涨，关注0.045-0.055区间。',
+        fundamental: '日本央行维持超宽松政策，经济复苏缓慢，通胀目标难以达成。',
+        risk: '日央行政策转向风险、日本经济结构性问题、老龄化社会挑战等因素。'
+      },
+      'AUD': {
+        trend: '澳元兑人民币汇率与大宗商品价格关联度高，中澳贸易关系影响显著。',
+        technical: '技术面显示区间震荡，关注4.50-5.00重要区间，商品价格是关键驱动因素。',
+        fundamental: '澳洲经济依赖资源出口，中国需求和铁矿石价格对澳元影响较大。',
+        risk: '中澳关系变化、大宗商品价格波动、澳洲房地产市场调整等风险。'
+      },
+      'CNY': {
+        trend: '人民币作为基准货币，主要关注对其他主要货币的相对强弱变化。',
+        technical: '人民币汇率指数相对稳定，央行政策工具丰富，双向波动特征明显。',
+        fundamental: '中国经济稳健增长，货币政策相对稳健，国际化进程持续推进。',
+        risk: '外部经济环境变化、贸易摩擦、资本流动波动等因素影响汇率稳定。'
       }
-    }
+    };
 
-    const analysis = analysisData[currencyCode] || analysisData['USD']
-    this.setData({ analysis })
+    const analysis = analysisData[currencyCode] || analysisData['USD'];
+    this.setData({ analysis });
+    
+    console.log(`${currencyCode}分析内容已更新:`, analysis.trend.substring(0, 30) + '...');
   },
 
   // 更新换汇方式
@@ -332,10 +360,31 @@ Page({
           }
         });
         console.log('建议页已更新为全局货币设置:', fromCurrency);
+        
+        // 根据新货币更新分析内容
+        this.updateAnalysisForCurrency(fromCurrency.code);
+        this.loadCurrencyData(fromCurrency.code);
       }
     } catch (error) {
       console.log('建议页加载全局货币设置失败:', error);
     }
+  },
+
+  // 获取货币信息
+  getCurrencyInfo(index) {
+    const currencies = [
+      { code: 'CNY', name: '人民币', flag: '🇨🇳' },
+      { code: 'USD', name: '美元', flag: '🇺🇸' },
+      { code: 'EUR', name: '欧元', flag: '🇪🇺' },
+      { code: 'JPY', name: '日元', flag: '🇯🇵' },
+      { code: 'GBP', name: '英镑', flag: '🇬🇧' },
+      { code: 'AUD', name: '澳元', flag: '🇦🇺' },
+      { code: 'CAD', name: '加元', flag: '🇨🇦' },
+      { code: 'CHF', name: '瑞士法郎', flag: '🇨🇭' },
+      { code: 'HKD', name: '港币', flag: '🇭🇰' },
+      { code: 'SGD', name: '新加坡元', flag: '🇸🇬' }
+    ];
+    return currencies[index] || currencies[1]; // 默认美元
   },
 
   // 更新货币显示

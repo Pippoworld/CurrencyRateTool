@@ -1,10 +1,14 @@
 Page({
   data: {
-    // 双币种选择
+    // 计算器的币种选择（临时计算用）
     fromCurrencyIndex: 1, // 默认USD
     toCurrencyIndex: 0,   // 默认CNY
     fromAmount: '',
     toAmount: '',
+    
+    // 卡片监控的币种（长期监控，需要到详情页设置）
+    cardFromCurrencyIndex: 1, // 默认USD
+    cardToCurrencyIndex: 0,   // 默认CNY
     
     // 汇率信息
     currentRate: '7.12',
@@ -40,6 +44,7 @@ Page({
   onLoad() {
     this.loadSavedSettings();
     this.updateExchangeRate();
+    this.updateCardRate(); // 更新卡片汇率
     this.generateAdvice();
   },
 
@@ -48,6 +53,7 @@ Page({
     console.log('主页onShow - 开始同步数据');
     this.loadSavedSettings();
     this.updateExchangeRate();
+    this.updateCardRate(); // 更新卡片汇率
     this.generateAdvice();
     console.log('主页onShow - 数据同步完成');
   },
@@ -55,32 +61,47 @@ Page({
   // 加载保存的设置
   loadSavedSettings() {
     try {
-      const settings = wx.getStorageSync('currencySettings');
-      if (settings) {
-        console.log('主页加载到的全局货币设置:', settings);
-        console.log('当前主页数据:', {
-          fromCurrencyIndex: this.data.fromCurrencyIndex,
-          toCurrencyIndex: this.data.toCurrencyIndex
-        });
-        
-        // 强制更新数据
+      // 加载卡片监控的货币设置
+      const cardSettings = wx.getStorageSync('currencySettings');
+      if (cardSettings) {
+        console.log('主页加载到的卡片货币设置:', cardSettings);
         this.setData({
-          fromCurrencyIndex: settings.fromCurrencyIndex || 1,
-          toCurrencyIndex: settings.toCurrencyIndex || 0
+          cardFromCurrencyIndex: cardSettings.fromCurrencyIndex || 1,
+          cardToCurrencyIndex: cardSettings.toCurrencyIndex || 0
         });
         
-        console.log('主页数据已更新为:', {
-          fromCurrencyIndex: this.data.fromCurrencyIndex,
-          toCurrencyIndex: this.data.toCurrencyIndex,
-          fromCurrency: this.data.currencies[this.data.fromCurrencyIndex],
-          toCurrency: this.data.currencies[this.data.toCurrencyIndex]
+        console.log('卡片货币已更新为:', {
+          cardFromCurrencyIndex: this.data.cardFromCurrencyIndex,
+          cardToCurrencyIndex: this.data.cardToCurrencyIndex,
+          fromCurrency: this.data.currencies[this.data.cardFromCurrencyIndex],
+          toCurrency: this.data.currencies[this.data.cardToCurrencyIndex]
         });
       } else {
-        console.log('主页未找到全局货币设置，使用默认值');
+        console.log('主页未找到卡片货币设置，使用默认值');
       }
     } catch (error) {
       console.log('主页加载货币设置失败:', error);
     }
+  },
+
+  // 更新卡片汇率显示
+  updateCardRate() {
+    const fromCurrency = this.data.currencies[this.data.cardFromCurrencyIndex];
+    const toCurrency = this.data.currencies[this.data.cardToCurrencyIndex];
+    
+    let rate;
+    if (fromCurrency.code === 'CNY') {
+      rate = toCurrency.rate;
+    } else if (toCurrency.code === 'CNY') {
+      rate = (1 / fromCurrency.rate).toFixed(4);
+    } else {
+      rate = (toCurrency.rate / fromCurrency.rate).toFixed(4);
+    }
+    
+    this.setData({
+      currentRate: rate
+    });
+    console.log('卡片汇率已更新:', `${fromCurrency.code}/${toCurrency.code} = ${rate}`);
   },
 
   // 保存货币设置
@@ -213,8 +234,8 @@ Page({
 
   // 生成AI建议
   generateAdvice() {
-    const fromCurrency = this.data.currencies[this.data.fromCurrencyIndex];
-    const toCurrency = this.data.currencies[this.data.toCurrencyIndex];
+    const fromCurrency = this.data.currencies[this.data.cardFromCurrencyIndex]; // 使用卡片货币
+    const toCurrency = this.data.currencies[this.data.cardToCurrencyIndex];     // 使用卡片货币
     
     // 简化为状态指示器 - 专注于快速判断
     const scenarios = [
@@ -252,6 +273,8 @@ Page({
     this.setData({
       advice: randomAdvice
     });
+    
+    console.log('AI建议已根据卡片货币更新:', `${fromCurrency.code}/${toCurrency.code}`);
   },
 
   // 设置快捷提醒
