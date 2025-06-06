@@ -869,4 +869,80 @@ page {
 .rate-header .ai-advice-line {
   background-color: transparent !important;
   background: transparent !important;
+}
+
+/* 隐藏AI建议圆点 */
+.rate-header .advice-icon {
+  display: none !important;
+}
+
+/* AI建议行对齐优化 */
+.rate-header .ai-advice-line {
+  align-items: center !important;
+  gap: 12rpx !important;
+  padding: 8rpx 12rpx !important;
+}
+
+/* 整体文字显示优化 */
+.rate-header {
+  /* 添加轻微的文字阴影提升可读性 */
+  text-shadow: 0 1rpx 3rpx rgba(0, 0, 0, 0.1);
+}
+
+/* 主汇率数字优化 - 增强视觉层次 */
+.rate-header .rate-value {
+  font-weight: 200 !important;
+  text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.15) !important;
+  letter-spacing: -1rpx !important;
+}
+
+/* 汇率前缀优化 */
+.rate-header .rate-prefix {
+  font-weight: 400 !important;
+  opacity: 0.95 !important;
+  letter-spacing: 0.5rpx !important;
+}
+
+/* 汇率单位优化 */
+.rate-header .rate-unit {
+  font-weight: 500 !important;
+  opacity: 0.98 !important;
+  letter-spacing: 0.3rpx !important;
+}
+
+/* 反向汇率优化 */
+.rate-header .secondary-rate-sentence {
+  font-weight: 300 !important;
+  letter-spacing: 0.3rpx !important;
+  opacity: 0.85 !important;
+}
+
+/* 货币对显示优化 */
+.rate-header .rate-pair {
+  font-weight: 400 !important;
+  opacity: 0.92 !important;
+  letter-spacing: 0.8rpx !important;
+}
+
+/* AI建议文字优化 */
+.rate-header .advice-text-brief {
+  font-size: 22rpx !important;
+  font-weight: 500 !important;
+  opacity: 0.95 !important;
+  letter-spacing: 0.4rpx !important;
+  line-height: 1.5 !important;
+}
+
+/* 提示文字优化 */
+.rate-header .click-tip {
+  font-size: 18rpx !important;
+  font-weight: 300 !important;
+  opacity: 0.75 !important;
+  letter-spacing: 0.2rpx !important;
+  line-height: 1.4 !important;
+}
+
+/* 隐藏AI建议圆点 */
+.rate-header .advice-icon {
+  display: none !important;
 } 
