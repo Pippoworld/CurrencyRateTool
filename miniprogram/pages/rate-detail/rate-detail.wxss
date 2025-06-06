@@ -452,6 +452,51 @@ page {
   transform: scale(0.95);
 }
 
+/* 智能提醒按钮样式 */
+.quick-alert-btn.opportunity {
+  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+  color: #059669;
+  border-color: #34d399;
+}
+
+.quick-alert-btn.opportunity:active {
+  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+  border-color: #059669;
+}
+
+.quick-alert-btn.good-price {
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  color: #2563eb;
+  border-color: #60a5fa;
+}
+
+.quick-alert-btn.good-price:active {
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  border-color: #2563eb;
+}
+
+.quick-alert-btn.urgent {
+  background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%);
+  color: #d97706;
+  border-color: #f59e0b;
+}
+
+.quick-alert-btn.urgent:active {
+  background: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%);
+  border-color: #d97706;
+}
+
+.quick-alert-btn.trend {
+  background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
+  color: #7c3aed;
+  border-color: #a78bfa;
+}
+
+.quick-alert-btn.trend:active {
+  background: linear-gradient(135deg, #e9d5ff 0%, #ddd6fe 100%);
+  border-color: #7c3aed;
+}
+
 /* === 我的提醒入口 === */
 .my-alerts-entry {
   margin-top: 20rpx;

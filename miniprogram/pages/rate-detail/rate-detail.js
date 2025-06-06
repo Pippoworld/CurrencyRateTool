@@ -1387,6 +1387,73 @@ Page({
     this.createQuickAlert(type, alertPrice, fromCurrency, toCurrency);
   },
 
+  // 智能提醒设置
+  setSmartAlert(e) {
+    const { type } = e.currentTarget.dataset;
+    const currentRate = parseFloat(this.data.currentRate);
+    const fromCurrency = this.data.currencies[this.data.fromCurrencyIndex];
+    const toCurrency = this.data.currencies[this.data.toCurrencyIndex];
+    const baselines = this.getCurrencyBaselines(toCurrency.code);
+    const isFromChina = fromCurrency.code === 'CNY';
+    
+    let alertPrice, alertType, reason, title;
+    
+    switch (type) {
+      case 'excellent':
+        // 超低价抄底提醒 - 设置到excellent级别
+        alertPrice = baselines.excellent.toFixed(4);
+        alertType = 'buy';
+        reason = isFromChina ? '超级抄底机会，一年难遇！' : '超低价抄底机会';
+        title = '超低价抄底提醒';
+        break;
+        
+      case 'good':
+        // 好价格提醒 - 设置到good级别
+        alertPrice = baselines.good.toFixed(4);
+        alertType = 'buy';
+        reason = isFromChina ? '好价格来了，适合换汇' : '好价格换汇机会';
+        title = '好价格提醒';
+        break;
+        
+      case 'urgent':
+        // 紧急换汇提醒 - 当前价格小幅上涨就提醒
+        alertPrice = (currentRate * 1.01).toFixed(4);
+        alertType = 'sell';
+        reason = isFromChina ? '有紧急需求可以换汇' : '紧急需求换汇';
+        title = '紧急换汇提醒';
+        break;
+        
+      case 'trend':
+        // 趋势变化提醒 - 设置趋势转折点
+        if (currentRate <= baselines.good) {
+          // 当前是好价格，设置上涨趋势提醒
+          alertPrice = (currentRate * 1.015).toFixed(4);
+          alertType = 'sell';
+          reason = isFromChina ? '汇率开始上涨，抓紧机会' : '上涨趋势开始';
+        } else {
+          // 当前是一般或偏高价格，设置下跌趋势提醒
+          alertPrice = (currentRate * 0.98).toFixed(4);
+          alertType = 'buy';
+          reason = isFromChina ? '汇率开始下跌，关注机会' : '下跌趋势开始';
+        }
+        title = '趋势变化提醒';
+        break;
+    }
+    
+    // 显示确认弹窗
+    wx.showModal({
+      title: title,
+      content: `设置提醒价格：${alertPrice}\n${reason}\n\n汇率达到这个价位时会通知您，是否确认设置？`,
+      confirmText: '确认设置',
+      cancelText: '取消',
+      success: (res) => {
+        if (res.confirm) {
+          this.createQuickAlert(alertType, alertPrice, fromCurrency, toCurrency);
+        }
+      }
+    });
+  },
+
   // 创建快速提醒
   createQuickAlert(type, price, fromCurrency, toCurrency) {
     const alertData = {

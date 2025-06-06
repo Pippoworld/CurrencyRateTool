@@ -1,0 +1,63 @@
+<view class="skeleton-container">
+  <!-- 汇率卡片骨架 -->
+  <view class="skeleton-card" wx:if="{{type === 'rate-card'}}">
+    <view class="skeleton-header">
+      <view class="skeleton-text skeleton-title"></view>
+      <view class="skeleton-text skeleton-subtitle"></view>
+    </view>
+    <view class="skeleton-body">
+      <view class="skeleton-rate">
+        <view class="skeleton-circle"></view>
+        <view class="skeleton-text skeleton-large"></view>
+      </view>
+      <view class="skeleton-change">
+        <view class="skeleton-text skeleton-small"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 列表项骨架 -->
+  <view class="skeleton-list" wx:if="{{type === 'list'}}">
+    <view class="skeleton-list-item" wx:for="{{count || 3}}" wx:key="index">
+      <view class="skeleton-circle skeleton-avatar"></view>
+      <view class="skeleton-content">
+        <view class="skeleton-text skeleton-primary"></view>
+        <view class="skeleton-text skeleton-secondary"></view>
+      </view>
+      <view class="skeleton-text skeleton-value"></view>
+    </view>
+  </view>
+
+  <!-- 图表骨架 -->
+  <view class="skeleton-chart" wx:if="{{type === 'chart'}}">
+    <view class="skeleton-chart-header">
+      <view class="skeleton-text skeleton-title"></view>
+    </view>
+    <view class="skeleton-chart-body">
+      <view class="skeleton-bars">
+        <view class="skeleton-bar" wx:for="{{7}}" wx:key="index" style="height: {{(index % 3 + 1) * 30}}rpx;"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 银行卡片骨架 -->
+  <view class="skeleton-bank-card" wx:if="{{type === 'bank-card'}}">
+    <view class="skeleton-bank-header">
+      <view class="skeleton-circle skeleton-bank-icon"></view>
+      <view class="skeleton-content">
+        <view class="skeleton-text skeleton-bank-name"></view>
+        <view class="skeleton-text skeleton-bank-type"></view>
+      </view>
+    </view>
+    <view class="skeleton-bank-rates">
+      <view class="skeleton-rate-item">
+        <view class="skeleton-text skeleton-rate-label"></view>
+        <view class="skeleton-text skeleton-rate-value"></view>
+      </view>
+      <view class="skeleton-rate-item">
+        <view class="skeleton-text skeleton-rate-label"></view>
+        <view class="skeleton-text skeleton-rate-value"></view>
+      </view>
+    </view>
+  </view>
+</view> 

@@ -64,18 +64,18 @@
         <view class="recommendation-card buy-alert">
           <view class="rec-header">
             <text class="rec-icon">📈</text>
-            <view class="rec-content">
-              <text class="rec-title">低位换汇提醒</text>
-              <text class="rec-desc">汇率回落至此价位时提醒换汇</text>
-            </view>
+                      <view class="rec-content">
+            <text class="rec-title">机会换汇提醒</text>
+            <text class="rec-desc">更好价格时提醒，适合多换一些</text>
           </view>
-          <view class="rec-price">
-            <text class="price-value">{{alertSuggestions.buyAlert.price}}</text>
-            <text class="price-reason">{{alertSuggestions.buyAlert.reason}}</text>
-          </view>
-          <button class="set-alert-btn buy" bindtap="quickSetAlert" data-type="buy" data-price="{{alertSuggestions.buyAlert.price}}">
-            设置提醒
-          </button>
+        </view>
+        <view class="rec-price">
+          <text class="price-value">{{alertSuggestions.buyAlert.price}}</text>
+          <text class="price-reason">{{alertSuggestions.buyAlert.reason}}</text>
+        </view>
+        <button class="set-alert-btn buy" bindtap="quickSetAlert" data-type="buy" data-price="{{alertSuggestions.buyAlert.price}}">
+          设置机会提醒
+        </button>
         </view>
 
         <!-- 卖出提醒 -->
@@ -83,8 +83,8 @@
           <view class="rec-header">
             <text class="rec-icon">📉</text>
             <view class="rec-content">
-              <text class="rec-title">高位出手提醒</text>
-              <text class="rec-desc">汇率升至此价位时提醒换汇</text>
+              <text class="rec-title">及时换汇提醒</text>
+              <text class="rec-desc">避免价格更高，有需求时及时换汇</text>
             </view>
           </view>
           <view class="rec-price">
@@ -92,19 +92,19 @@
             <text class="price-reason">{{alertSuggestions.sellAlert.reason}}</text>
           </view>
           <button class="set-alert-btn sell" bindtap="quickSetAlert" data-type="sell" data-price="{{alertSuggestions.sellAlert.price}}">
-            设置提醒
+            设置及时提醒
           </button>
         </view>
       </view>
 
       <!-- 快速设置 -->
       <view class="quick-alerts">
-        <text class="quick-title">快速设置其他提醒：</text>
+        <text class="quick-title">更多换汇提醒选项：</text>
         <view class="quick-buttons-horizontal">
-          <button class="quick-alert-btn" bindtap="setQuickTarget" data-type="buy" data-percent="-1">低1%</button>
-          <button class="quick-alert-btn" bindtap="setQuickTarget" data-type="buy" data-percent="-3">低3%</button>
-          <button class="quick-alert-btn" bindtap="setQuickTarget" data-type="sell" data-percent="1">高1%</button>
-          <button class="quick-alert-btn" bindtap="setQuickTarget" data-type="sell" data-percent="3">高3%</button>
+          <button class="quick-alert-btn opportunity" bindtap="setSmartAlert" data-type="excellent">超低价抄底</button>
+          <button class="quick-alert-btn good-price" bindtap="setSmartAlert" data-type="good">好价格提醒</button>
+          <button class="quick-alert-btn urgent" bindtap="setSmartAlert" data-type="urgent">紧急换汇</button>
+          <button class="quick-alert-btn trend" bindtap="setSmartAlert" data-type="trend">趋势变化</button>
         </view>
       </view>
 
@@ -119,54 +119,7 @@
     </view>
   </view>
 
-  <!-- 目标汇率设置 -->
-  <view class="card target-rate-section">
-    <view class="card-header">
-      <view class="card-icon">🎯</view>
-      <view>
-        <text class="card-title">目标汇率设置</text>
-        <text class="card-desc">设置理想汇率，到达时自动提醒</text>
-      </view>
-    </view>
-    
-    <view class="card-content">
-      <view class="target-inputs">
-        <view class="input-row">
-          <text class="input-label">低位换汇</text>
-          <input 
-            class="target-input" 
-            type="digit" 
-            value="{{targetBuyRate}}" 
-            bindinput="onTargetBuyInput"
-            placeholder="{{currentRate}}"
-          />
-          <text class="input-unit">{{currencies[toCurrencyIndex].code}}</text>
-        </view>
-        
-        <view class="input-row">
-          <text class="input-label">高位提醒</text>
-          <input 
-            class="target-input" 
-            type="digit" 
-            value="{{targetSellRate}}" 
-            bindinput="onTargetSellInput"
-            placeholder="{{currentRate}}"
-          />
-          <text class="input-unit">{{currencies[toCurrencyIndex].code}}</text>
-        </view>
-        
-        <view class="quick-targets">
-          <text class="quick-title">快速设置：</text>
-          <view class="quick-buttons">
-            <button class="quick-btn" bindtap="setQuickTarget" data-type="buy" data-percent="-2">低2%</button>
-            <button class="quick-btn" bindtap="setQuickTarget" data-type="buy" data-percent="-5">低5%</button>
-            <button class="quick-btn" bindtap="setQuickTarget" data-type="sell" data-percent="2">高2%</button>
-            <button class="quick-btn" bindtap="setQuickTarget" data-type="sell" data-percent="5">高5%</button>
-          </view>
-        </view>
-      </view>
-    </view>
-  </view>
+
 
   <!-- 银行汇率对比 -->
   <view class="card" wx:if="{{bankRates.length > 0}}">

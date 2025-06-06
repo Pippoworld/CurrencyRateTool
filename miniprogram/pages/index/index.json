@@ -1,6 +1,12 @@
 {
-  "navigationBarTitleText": "基础能力",
+  "navigationBarTitleText": "汇率助手",
+  "navigationBarBackgroundColor": "#1e40af",
+  "navigationBarTextStyle": "white",
+  "backgroundColor": "#f8fafc",
+  "enablePullDownRefresh": true,
+  "onReachBottomDistance": 50,
   "usingComponents": {
-    "cloud-tip-modal": "/components/cloudTipModal/index"
+    "cloud-tip-modal": "/components/cloudTipModal/index",
+    "skeleton": "/components/skeleton/skeleton"
   }
 }

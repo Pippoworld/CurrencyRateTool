@@ -1,6 +1,7 @@
 {
   "usingComponents": {},
-  "navigationBarTitleText": "智能建议",
+  "navigationBarTitleText": "汇率行情",
   "enablePullDownRefresh": true,
-  "backgroundTextStyle": "dark"
+  "backgroundTextStyle": "dark",
+  "backgroundColor": "#667eea"
 }

@@ -1,0 +1,171 @@
+<view class="alerts-container">
+  <!-- 头部 -->
+  <view class="header">
+    <text class="title">我的提醒</text>
+    <button class="add-btn" bindtap="showCreateAlert">
+      <text class="add-icon">+</text>
+      <text class="add-text">新建提醒</text>
+    </button>
+  </view>
+
+  <!-- 活跃提醒 -->
+  <view class="section active-section">
+    <view class="section-header">
+      <text class="section-title">活跃提醒</text>
+      <text class="section-count">{{activeAlerts.length}}</text>
+    </view>
+    
+    <view class="alerts-list" wx:if="{{activeAlerts.length > 0}}">
+      <view class="alert-item" wx:for="{{activeAlerts}}" wx:key="id">
+        <view class="alert-content">
+          <view class="alert-header">
+            <view class="alert-type {{item.type}}">
+              <text class="type-icon">{{item.type === 'buy' ? '📉' : '📈'}}</text>
+              <text class="type-text">{{item.type === 'buy' ? '低价买入' : '高价卖出'}}</text>
+            </view>
+            <view class="alert-status">
+              <text class="status-dot active"></text>
+              <text class="status-text">监控中</text>
+            </view>
+          </view>
+          
+          <view class="alert-details">
+            <view class="currency-pair">
+              <text class="currency">{{item.fromCurrencyName}}/{{item.toCurrencyName}}</text>
+            </view>
+            <view class="price-info">
+              <text class="target-price">目标: {{item.price}}</text>
+              <text class="trigger-direction">{{item.triggerDirection === 'below' ? '跌破时' : '突破时'}}提醒</text>
+            </view>
+            <view class="create-time">
+              <text class="time-text">创建于 {{formatTime(item.createTime)}}</text>
+            </view>
+          </view>
+        </view>
+        
+        <view class="alert-actions">
+          <button class="action-btn pause" bindtap="toggleAlert" data-id="{{item.id}}">
+            暂停
+          </button>
+          <button class="action-btn delete" bindtap="deleteAlert" data-id="{{item.id}}">
+            删除
+          </button>
+        </view>
+      </view>
+    </view>
+    
+    <view class="empty-state" wx:if="{{activeAlerts.length === 0}}">
+      <text class="empty-icon">📋</text>
+      <text class="empty-text">暂无活跃提醒</text>
+      <text class="empty-desc">点击上方"新建提醒"开始设置价格监控</text>
+    </view>
+  </view>
+
+  <!-- 已触发提醒 -->
+  <view class="section triggered-section" wx:if="{{triggeredAlerts.length > 0}}">
+    <view class="section-header">
+      <text class="section-title">已触发提醒</text>
+      <button class="clear-btn" bindtap="clearTriggeredAlerts">
+        <text class="clear-text">清空</text>
+      </button>
+    </view>
+    
+    <view class="alerts-list">
+      <view class="alert-item triggered" wx:for="{{triggeredAlerts}}" wx:key="id">
+        <view class="alert-content">
+          <view class="alert-header">
+            <view class="alert-type {{item.type}}">
+              <text class="type-icon">{{item.type === 'buy' ? '📉' : '📈'}}</text>
+              <text class="type-text">{{item.type === 'buy' ? '低价买入' : '高价卖出'}}</text>
+            </view>
+            <view class="alert-status triggered">
+              <text class="status-dot triggered"></text>
+              <text class="status-text">已触发</text>
+            </view>
+          </view>
+          
+          <view class="alert-details">
+            <view class="currency-pair">
+              <text class="currency">{{item.fromCurrencyName}}/{{item.toCurrencyName}}</text>
+            </view>
+            <view class="price-info">
+              <text class="target-price">目标: {{item.price}}</text>
+              <text class="trigger-direction">{{item.triggerDirection === 'below' ? '跌破' : '突破'}}已触发</text>
+            </view>
+          </view>
+        </view>
+        
+        <view class="alert-actions">
+          <button class="action-btn reset" bindtap="resetAlert" data-id="{{item.id}}">
+            重新启用
+          </button>
+          <button class="action-btn delete" bindtap="deleteAlert" data-id="{{item.id}}">
+            删除
+          </button>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 创建提醒表单 -->
+  <view class="create-form-mask" wx:if="{{showCreateForm}}" bindtap="hideCreateForm">
+    <view class="create-form" catchtap="">
+      <view class="form-header">
+        <text class="form-title">新建价格提醒</text>
+        <button class="close-btn" bindtap="hideCreateForm">×</button>
+      </view>
+      
+      <view class="form-content">
+        <!-- 提醒类型选择 -->
+        <view class="type-selector">
+          <button 
+            class="type-btn {{formData.type === 'buy' ? 'active' : ''}}" 
+            bindtap="switchAlertType" 
+            data-type="buy"
+          >
+            <text class="type-icon">📉</text>
+            <text class="type-label">低价买入提醒</text>
+          </button>
+          <button 
+            class="type-btn {{formData.type === 'sell' ? 'active' : ''}}" 
+            bindtap="switchAlertType" 
+            data-type="sell"
+          >
+            <text class="type-icon">📈</text>
+            <text class="type-label">高价卖出提醒</text>
+          </button>
+        </view>
+        
+        <!-- 价格输入 -->
+        <view class="price-input-section">
+          <text class="input-label">目标价格</text>
+          <view class="input-row">
+            <input 
+              class="price-input" 
+              type="digit" 
+              value="{{formData.price}}" 
+              bindinput="onFormInput"
+              data-field="price"
+              placeholder="请输入目标价格"
+            />
+            <text class="currency-unit">{{formData.toCurrency}}</text>
+          </view>
+          <text class="input-hint">
+            {{formData.type === 'buy' ? '当汇率跌至此价格时提醒您' : '当汇率涨至此价格时提醒您'}}
+          </text>
+        </view>
+        
+        <!-- 货币对显示 -->
+        <view class="currency-display">
+          <text class="currency-label">监控货币对</text>
+          <text class="currency-pair">{{formData.fromCurrencyName}}/{{formData.toCurrencyName}}</text>
+        </view>
+      </view>
+      
+      <view class="form-actions">
+        <button class="cancel-btn" bindtap="hideCreateForm">取消</button>
+        <button class="save-btn" bindtap="saveAlert">保存提醒</button>
+      </view>
+    </view>
+  </view>
+</view> 

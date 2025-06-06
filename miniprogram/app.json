@@ -4,7 +4,8 @@
     "pages/advice/advice",
     "pages/rate-detail/rate-detail",
     "pages/settings/settings",
-    "pages/debug/debug"
+    "pages/debug/debug",
+    "pages/my-alerts/my-alerts"
   ],
   "window": {
     "backgroundColor": "#f8f9fa",
@@ -22,15 +23,15 @@
     "list": [
       {
         "pagePath": "pages/index/index",
-        "text": "汇率"
+        "text": "首页"
       },
       {
         "pagePath": "pages/advice/advice",
-        "text": "建议"
+        "text": "汇率"
       },
       {
         "pagePath": "pages/rate-detail/rate-detail",
-        "text": "详情"
+        "text": "币种监控"
       },
       {
         "pagePath": "pages/settings/settings",
@@ -42,8 +43,10 @@
   "style": "v2",
   "lazyCodeLoading": "requiredComponents",
   "networkTimeout": {
-    "request": 60000,
-    "downloadFile": 10000
+    "request": 30000,
+    "downloadFile": 10000,
+    "uploadFile": 10000,
+    "connectSocket": 10000
   },
   "permission": {
     "scope.userLocation": {
