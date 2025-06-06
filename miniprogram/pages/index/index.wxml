@@ -30,9 +30,6 @@
     
     <!-- 次汇率（右侧） -->
     <view class="rate-info secondary-rate">
-      <view class="secondary-header">
-        <text class="secondary-label">反向汇率</text>
-      </view>
       <view class="rate-direction">
         <text class="flag">{{secondaryFromCurrency.flag}}</text>
         <text class="arrow">→</text>
