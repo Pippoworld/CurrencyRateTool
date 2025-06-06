@@ -9,15 +9,15 @@ class ExchangeRateAPI {
     this.apiSources = [
       {
         name: 'ExchangeRate-API',
-        baseUrl: 'https://api.exchangerate-api.com/v4/latest',
+        baseUrl: 'https://v6.exchangerate-api.com/v6/6dd11d18251299e0c7b6ecec/latest',
         free: true,
         rateLimit: 1500 // 每月免费请求数
       },
       {
-        name: 'Fixer.io',
-        baseUrl: 'https://api.fixer.io/latest',
+        name: 'ExchangeRate-API-V4',
+        baseUrl: 'https://api.exchangerate-api.com/v4/latest',
         free: true,
-        rateLimit: 100 // 每月免费请求数
+        rateLimit: 1500 // 每月免费请求数
       }
     ];
     
@@ -36,12 +36,12 @@ class ExchangeRateAPI {
     const cacheKey = `rates_${baseCurrency}_${Date.now()}`;
     
     try {
-      console.log(`开始获取 ${baseCurrency} 实时汇率数据...`);
+      console.log(`[汇率API] 开始获取 ${baseCurrency} 实时汇率数据...`);
       
       // 尝试从缓存获取（5分钟内的数据）
       const cachedData = this.getCachedRates(baseCurrency);
       if (cachedData) {
-        console.log('使用缓存的汇率数据');
+        console.log('[汇率API] 使用缓存的汇率数据');
         return cachedData;
       }
 
@@ -51,14 +51,24 @@ class ExchangeRateAPI {
       // 缓存数据
       this.cacheRates(baseCurrency, rateData);
       
-      console.log('实时汇率数据获取成功:', rateData);
+      console.log('[汇率API] 实时汇率数据获取成功:', {
+        source: rateData.source,
+        base: rateData.base,
+        ratesCount: Object.keys(rateData.rates || {}).length,
+        cnyRate: rateData.rates?.CNY
+      });
       return rateData;
       
     } catch (error) {
-      console.error('获取汇率数据失败:', error);
+      console.error('[汇率API] 获取汇率数据失败:', error.message);
       
       // 降级到本地缓存或默认数据
-      return this.getFallbackRates(baseCurrency);
+      const fallbackData = this.getFallbackRates(baseCurrency);
+      console.log('[汇率API] 使用降级数据:', {
+        source: fallbackData.source,
+        cnyRate: fallbackData.rates?.CNY
+      });
+      return fallbackData;
     }
   }
 
@@ -74,16 +84,17 @@ class ExchangeRateAPI {
       for (let sourceIndex = 0; sourceIndex < this.apiSources.length; sourceIndex++) {
         try {
           const source = this.apiSources[sourceIndex];
-          console.log(`尝试数据源 ${source.name} (第${attempt + 1}次尝试)`);
+          console.log(`[汇率API] 尝试数据源 ${source.name} (第${attempt + 1}次尝试)`);
           
           const data = await this.fetchFromSource(source, baseCurrency);
           
           // 成功获取数据，更新当前源
           this.currentSource = sourceIndex;
+          console.log(`[汇率API] 数据源 ${source.name} 获取成功`);
           return data;
           
         } catch (error) {
-          console.warn(`数据源 ${this.apiSources[sourceIndex].name} 失败:`, error.message);
+          console.warn(`[汇率API] 数据源 ${this.apiSources[sourceIndex].name} 失败:`, error.message);
           lastError = error;
           continue;
         }
@@ -122,21 +133,34 @@ class ExchangeRateAPI {
           }
 
           const data = response.data;
-          if (!data.rates) {
-            reject(new Error('API返回数据格式错误'));
+          
+          // 处理V6 API的响应格式
+          if (data.result === 'success' && data.conversion_rates) {
+            const standardizedData = {
+              base: data.base_code || baseCurrency,
+              date: data.time_last_update_utc ? new Date(data.time_last_update_utc).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+              rates: data.conversion_rates,
+              source: source.name,
+              timestamp: Date.now()
+            };
+            resolve(standardizedData);
             return;
           }
-
-          // 标准化数据格式
-          const standardizedData = {
-            base: data.base || baseCurrency,
-            date: data.date || new Date().toISOString().split('T')[0],
-            rates: data.rates,
-            source: source.name,
-            timestamp: Date.now()
-          };
-
-          resolve(standardizedData);
+          
+          // 处理V4 API的响应格式
+          if (data.rates) {
+            const standardizedData = {
+              base: data.base || baseCurrency,
+              date: data.date || new Date().toISOString().split('T')[0],
+              rates: data.rates,
+              source: source.name,
+              timestamp: Date.now()
+            };
+            resolve(standardizedData);
+            return;
+          }
+          
+          reject(new Error('API返回数据格式错误'));
         },
         fail: (error) => {
           reject(new Error(`网络请求失败: ${error.errMsg}`));
@@ -168,7 +192,7 @@ class ExchangeRateAPI {
     ];
 
     // 转换为应用格式（以人民币为基准，显示1外币=?人民币）
-    const cnyRate = rates.CNY || 7.25; // 基准货币对CNY的汇率（如1 USD = 7.25 CNY）
+    const cnyRate = rates.CNY || 7.1785; // 基准货币对CNY的汇率（如1 USD = 7.1785 CNY）
     
     const appFormatData = currencyConfig.map(currency => {
       let rate;
@@ -176,11 +200,16 @@ class ExchangeRateAPI {
       if (currency.code === 'CNY') {
         rate = 1.0000; // 人民币基准：1 CNY = 1 CNY
       } else if (currency.code === base) {
-        rate = parseFloat(cnyRate.toFixed(4)); // 基准货币：1 USD = 7.25 CNY
+        rate = parseFloat(cnyRate.toFixed(4)); // 基准货币：1 USD = 7.1785 CNY
       } else {
-        const currencyToBase = rates[currency.code] || 1; // 如 1 USD = 1.52 AUD
-        // 计算 1 AUD = ? CNY：1 AUD = (1 USD / 1.52 AUD) = (7.25 CNY / 1.52) CNY
-        rate = parseFloat((cnyRate / currencyToBase).toFixed(4));
+        const currencyToBase = rates[currency.code]; // 如 1 USD = 1.52 AUD
+        if (currencyToBase && currencyToBase > 0) {
+          // 计算 1 AUD = ? CNY：1 AUD = (1 USD / 1.52 AUD) = (7.1785 CNY / 1.52) CNY
+          rate = parseFloat((cnyRate / currencyToBase).toFixed(4));
+        } else {
+          // 如果没有该货币的汇率数据，跳过
+          return null;
+        }
       }
       
       return {
@@ -189,7 +218,7 @@ class ExchangeRateAPI {
         flag: currency.flag,
         rate: rate // 现在表示：1该货币 = rate人民币
       };
-    });
+    }).filter(Boolean); // 过滤掉null值
 
     return {
       currencies: appFormatData,
@@ -256,22 +285,22 @@ class ExchangeRateAPI {
   getFallbackRates(baseCurrency) {
     console.log('使用降级汇率数据');
     
-    // 返回备用的静态数据（定期手动更新）
+    // 返回备用的静态数据（基于最新汇率更新）
     // 这些数据表示：1 USD = rates[currency] currency
     const fallbackData = {
       base: baseCurrency,
       date: new Date().toISOString().split('T')[0],
       rates: {
-        CNY: 7.2500,    // 1 USD = 7.25 CNY
+        CNY: 7.1785,    // 1 USD = 7.1785 CNY
         USD: 1.0000,    // 1 USD = 1 USD
-        EUR: 0.9200,    // 1 USD = 0.92 EUR
-        JPY: 149.50,    // 1 USD = 149.5 JPY
-        GBP: 0.8100,    // 1 USD = 0.81 GBP
-        AUD: 1.5200,    // 1 USD = 1.52 AUD
-        CAD: 1.3600,    // 1 USD = 1.36 CAD
-        CHF: 0.9100,    // 1 USD = 0.91 CHF
-        HKD: 7.8000,    // 1 USD = 7.8 HKD
-        SGD: 1.3500     // 1 USD = 1.35 SGD
+        EUR: 0.8740,    // 1 USD = 0.874 EUR
+        JPY: 143.45,    // 1 USD = 143.45 JPY
+        GBP: 0.7370,    // 1 USD = 0.737 GBP
+        AUD: 1.5361,    // 1 USD = 1.5361 AUD
+        CAD: 1.3700,    // 1 USD = 1.37 CAD
+        CHF: 0.8200,    // 1 USD = 0.82 CHF
+        HKD: 7.8500,    // 1 USD = 7.85 HKD
+        SGD: 1.2900     // 1 USD = 1.29 SGD
       },
       source: 'Fallback Data',
       timestamp: Date.now()
