@@ -9,41 +9,33 @@
   <view class="rate-header" bindtap="goToRateDetail">
     <!-- 主汇率（左侧） -->
     <view class="rate-info primary-rate">
-      <view class="rate-direction">
-        <text class="flag">{{primaryFromCurrency.flag}}</text>
-        <text class="arrow">→</text>
-        <text class="flag">{{primaryToCurrency.flag}}</text>
+      <!-- 新增：用于垂直间距控制的 flex 容器 -->
+      <view class="vertical-content-group">
+        <view class="rate-direction">
+          <text class="flag">{{primaryFromCurrency.flag}}</text>
+          <text class="arrow">→</text>
+          <text class="flag">{{primaryToCurrency.flag}}</text>
+        </view>
+        <view class="rate-value-description">
+          <text class="rate-prefix">1 {{primaryFromCurrency.name}} ≈</text>
+        </view>
+        <view class="rate-display">
+          <text class="rate-value">{{primaryRate}}</text>
+          <text class="rate-unit">{{primaryToCurrency.name}}</text>
+        </view>
+        <!-- 反向汇率句子 -->
+        <text class="secondary-rate-sentence">
+          1 {{secondaryFromCurrency.name}} ≈ {{secondaryRate}} {{secondaryToCurrency.name}}
+        </text>
+        <view class="ai-advice-line {{advice.status}}">
+          <text class="advice-icon">{{advice.icon}}</text>
+          <text class="advice-text-brief">{{advice.brief}}</text>
+        </view>
+        <text class="click-tip">* 点击卡片任意位置可查看详细分析</text>
       </view>
-      <view class="rate-value-description">
-        <text class="rate-prefix">1 {{primaryFromCurrency.name}} ≈</text>
-      </view>
-      <view class="rate-display">
-        <text class="rate-value">{{primaryRate}}</text>
-        <text class="rate-unit">{{primaryToCurrency.name}}</text>
-      </view>
-      <view class="ai-advice-line {{advice.status}}">
-        <text class="advice-icon">{{advice.icon}}</text>
-        <text class="advice-text-brief">{{advice.brief}}</text>
-      </view>
-      <text class="click-tip">* 点击卡片任意位置可查看详细分析</text>
     </view>
     
     <!-- 次汇率（右侧） -->
-    <view class="rate-info secondary-rate">
-      <view class="rate-direction">
-        <text class="flag">{{secondaryFromCurrency.flag}}</text>
-        <text class="arrow">→</text>
-        <text class="flag">{{secondaryToCurrency.flag}}</text>
-      </view>
-      <view class="rate-value-description small">
-        <text class="rate-prefix">1 {{secondaryFromCurrency.name}} ≈</text>
-      </view>
-      <view class="rate-display">
-        <text class="rate-value small">{{secondaryRate}}</text>
-        <text class="rate-unit small">{{secondaryToCurrency.name}}</text>
-      </view>
-      <text class="rate-change small {{rateChangeStatus}}">{{rateChange}}</text>
-    </view>
   </view>
 
   <!-- 汇率计算器（独立于监控卡片）-->
