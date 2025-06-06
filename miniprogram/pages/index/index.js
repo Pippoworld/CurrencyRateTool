@@ -1,3 +1,5 @@
+const api = require('../../utils/api.js');
+
 Page({
   data: {
     // 计算器的币种选择（临时计算用）
@@ -16,6 +18,7 @@ Page({
     rateChangeStatus: 'positive',
     exchangeRate: '7.12',
     updateTime: '6月4日 20:14',
+    reverseRate: '',
     
     // 货币列表
     currencies: [
@@ -46,6 +49,7 @@ Page({
     this.updateExchangeRate();
     this.updateCardRate(); // 更新卡片汇率
     this.generateAdvice();
+    this.fetchRates(); // 获取实时汇率
   },
 
   // 页面显示时同步其他页面的变化
@@ -66,8 +70,8 @@ Page({
       if (cardSettings) {
         console.log('主页加载到的卡片货币设置:', cardSettings);
         this.setData({
-          cardFromCurrencyIndex: cardSettings.fromCurrencyIndex || 1,
-          cardToCurrencyIndex: cardSettings.toCurrencyIndex || 0
+          cardFromCurrencyIndex: cardSettings.fromCurrencyIndex || 0,
+          cardToCurrencyIndex: cardSettings.toCurrencyIndex || 1
         });
         
         console.log('卡片货币已更新为:', {
@@ -77,7 +81,18 @@ Page({
           toCurrency: this.data.currencies[this.data.cardToCurrencyIndex]
         });
       } else {
-        console.log('主页未找到卡片货币设置，使用默认值');
+        console.log('主页未找到卡片货币设置，初始化默认设置');
+        // 初始化默认设置：人民币（持有）/ 美元（目标）
+        const defaultSettings = {
+          fromCurrencyIndex: 0, // 人民币
+          toCurrencyIndex: 1    // 美元
+        };
+        wx.setStorageSync('currencySettings', defaultSettings);
+        this.setData({
+          cardFromCurrencyIndex: 0,
+          cardToCurrencyIndex: 1
+        });
+        console.log('已初始化默认货币设置: 人民币/美元');
       }
     } catch (error) {
       console.log('主页加载货币设置失败:', error);
@@ -86,57 +101,40 @@ Page({
 
   // 更新卡片汇率显示
   updateCardRate() {
-    const fromCurrency = this.data.currencies[this.data.cardFromCurrencyIndex];
-    const toCurrency = this.data.currencies[this.data.cardToCurrencyIndex];
+    const fromCurrency = this.data.currencies[this.data.cardFromCurrencyIndex]; // Held
+    const toCurrency = this.data.currencies[this.data.cardToCurrencyIndex];   // Target
     
-    let rate;
-    if (fromCurrency.code === 'CNY') {
-      rate = toCurrency.rate;
-    } else if (toCurrency.code === 'CNY') {
-      rate = (1 / fromCurrency.rate).toFixed(4);
-    } else {
-      rate = (toCurrency.rate / fromCurrency.rate).toFixed(4);
+    if (!fromCurrency || !toCurrency || !fromCurrency.rate || !toCurrency.rate) {
+      console.log('Card currencies not ready for rate calculation');
+      return;
     }
+
+    // Card Rate: 1 Target = ? Held
+    const rate = fromCurrency.rate / toCurrency.rate;
+    const reverseRate = 1 / rate;
     
     this.setData({
-      currentRate: rate
+      currentRate: rate.toFixed(4),
+      reverseRate: reverseRate.toFixed(4)
     });
-    console.log('卡片汇率已更新:', `${fromCurrency.code}/${toCurrency.code} = ${rate}`);
+    console.log(`Card rate updated: 1 ${toCurrency.code} = ${rate.toFixed(4)} ${fromCurrency.code}`);
   },
 
-  // 保存货币设置
-  saveCurrencySettings() {
-    const settings = {
-      fromCurrencyIndex: this.data.fromCurrencyIndex,
-      toCurrencyIndex: this.data.toCurrencyIndex,
-      updateTime: new Date().getTime()
-    };
-    
-    try {
-      wx.setStorageSync('currencySettings', settings);
-      console.log('主页已保存货币设置:', settings);
-    } catch (error) {
-      console.log('主页保存货币设置失败:', error);
-    }
-  },
-
-  // 更新汇率显示
+  // 更新汇率显示 (for calculator)
   updateExchangeRate() {
     const fromCurrency = this.data.currencies[this.data.fromCurrencyIndex];
     const toCurrency = this.data.currencies[this.data.toCurrencyIndex];
     
-    let rate;
-    if (fromCurrency.code === 'CNY') {
-      rate = toCurrency.rate;
-    } else if (toCurrency.code === 'CNY') {
-      rate = (1 / fromCurrency.rate).toFixed(4);
-    } else {
-      rate = (toCurrency.rate / fromCurrency.rate).toFixed(4);
+    if (!fromCurrency || !toCurrency || !fromCurrency.rate || !toCurrency.rate) {
+        console.log('Calculator currencies not ready for rate calculation');
+        return;
     }
+
+    // Calculator rate: 1 From = ? To
+    const rate = toCurrency.rate / fromCurrency.rate;
     
     this.setData({
-      exchangeRate: rate,
-      currentRate: rate
+      exchangeRate: rate.toFixed(4)
     });
   },
 
@@ -146,10 +144,8 @@ Page({
     this.setData({
       fromCurrencyIndex: newIndex
     });
-    this.saveCurrencySettings(); // 保存设置
     this.updateExchangeRate();
     this.calculateToAmount();
-    this.generateAdvice();
   },
 
   // 第二个货币选择  
@@ -158,10 +154,8 @@ Page({
     this.setData({
       toCurrencyIndex: newIndex
     });
-    this.saveCurrencySettings(); // 保存设置
     this.updateExchangeRate();
     this.calculateToAmount();
-    this.generateAdvice();
   },
 
   // 第一个金额输入
@@ -229,7 +223,6 @@ Page({
     });
     
     this.updateExchangeRate();
-    this.generateAdvice();
   },
 
   // 生成AI建议
@@ -516,5 +509,43 @@ Page({
     ];
     
     return channels[index] || channels[0];
+  },
+
+  // 获取实时汇率
+  fetchRates() {
+    api.getExchangeRates('CNY') // 以人民币为基准获取汇率
+      .then(rates => {
+        console.log('实时汇率已获取 (基准: CNY):', rates);
+        
+        // 更新货币列表中的汇率
+        const updatedCurrencies = this.data.currencies.map(currency => {
+          if (rates[currency.code]) {
+            return { ...currency, rate: rates[currency.code] };
+          }
+          return currency;
+        });
+
+        this.setData({
+          currencies: updatedCurrencies,
+          updateTime: new Date().toLocaleString()
+        });
+        
+        // 重新计算汇率
+        this.updateCardRate();
+        this.updateExchangeRate();
+        
+        wx.showToast({
+          title: '汇率已更新',
+          icon: 'success',
+          duration: 1500
+        });
+      })
+      .catch(error => {
+        console.error('更新汇率失败:', error);
+        wx.showToast({
+          title: '汇率更新失败',
+          icon: 'error'
+        });
+      });
   },
 }); 

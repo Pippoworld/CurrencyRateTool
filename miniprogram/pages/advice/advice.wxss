@@ -33,74 +33,7 @@ page {
   color: #334155;
 }
 
-/* 多国汇率对比专用头部样式 */
-.rates-comparison-header {
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
-  text-align: center !important;
-  position: relative !important;
-}
 
-.title-with-info {
-  display: flex;
-  align-items: center;
-  gap: 8rpx;
-  justify-content: center;
-}
-
-.rates-comparison-header .card-title {
-  color: #334155 !important;
-  font-size: 28rpx !important;
-  font-weight: 600 !important;
-  letter-spacing: 1rpx;
-}
-
-.info-btn {
-  background: none;
-  border: none;
-  padding: 0;
-  width: auto;
-  height: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.info-icon {
-  font-size: 24rpx;
-  color: #94a3b8;
-  font-weight: normal;
-}
-
-.rates-comparison-header .refresh-btn {
-  background: #f1f5f9;
-  border: 1rpx solid #e2e8f0;
-  border-radius: 50%;
-  width: 56rpx;
-  height: 56rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  position: absolute;
-  right: 0;
-}
-
-.refresh-icon {
-  font-size: 20rpx;
-  color: #64748b;
-  transition: transform 0.3s ease;
-}
-
-.refresh-icon.spinning {
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
 
 .card-body {
   padding: 24rpx 32rpx 32rpx 32rpx;

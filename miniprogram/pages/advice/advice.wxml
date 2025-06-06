@@ -36,16 +36,8 @@
 
   <!-- 多国汇率对比 -->
   <view class="card">
-    <view class="card-header rates-comparison-header">
-      <view class="title-with-info">
-        <text class="card-title">多国汇率对比</text>
-        <button class="info-btn" bindtap="showUpdateTime">
-          <text class="info-icon">ⓘ</text>
-        </button>
-      </view>
-      <button class="refresh-btn" bindtap="refreshRates" disabled="{{isRefreshing}}">
-        <text class="refresh-icon {{isRefreshing ? 'spinning' : ''}}">⟳</text>
-      </button>
+    <view class="card-header">
+      多国汇率对比
     </view>
     <view class="card-body">
       <!-- 汇率列表 -->

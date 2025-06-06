@@ -1,95 +1,186 @@
 /* settings页面样式 */
 page {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #f5f7fa;
   min-height: 100vh;
   padding-bottom: 120rpx; /* 为底部tabBar留出空间 */
 }
 
 .container {
   padding: 32rpx;
+  max-width: 750rpx;
+  margin: 0 auto;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
 }
 
-/* 设置项样式 */
-.setting-section {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
+/* 卡片通用样式 - 与首页保持一致 */
+.card {
+  background: white;
   border-radius: 24rpx;
   margin-bottom: 24rpx;
   overflow: hidden;
-  box-shadow: 0 8rpx 32rpx rgba(0,0,0,0.06);
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.06);
+  border: 1rpx solid rgba(255, 255, 255, 0.8);
 }
 
-/* 用户信息样式 */
-.user-profile {
+.card-header {
+  background: #f8fafc;
+  padding: 24rpx 32rpx;
+  text-align: center;
+  border-bottom: 1rpx solid #e2e8f0;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #334155;
+}
+
+.card-body {
+  padding: 24rpx 32rpx 32rpx 32rpx;
+}
+
+/* 设置项样式 - 与首页保持一致 */
+.setting-section {
+  background: white;
+  border-radius: 24rpx;
+  margin-bottom: 24rpx;
+  overflow: hidden;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.06);
+  border: 1rpx solid rgba(255, 255, 255, 0.8);
+}
+
+/* 新的用户信息样式 */
+.user-profile-new {
   display: flex;
-  gap: 32rpx;
+  flex-direction: column;
   align-items: center;
+  gap: 32rpx;
+  padding: 24rpx 16rpx;
 }
 
-.avatar-section {
+/* 头像区域 */
+.avatar-section-new {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 16rpx;
 }
 
-.user-avatar {
+.user-avatar-new {
   width: 120rpx;
   height: 120rpx;
   border-radius: 60rpx;
-  background: #f0f0f0;
+  background: #f8fafc;
+  border: 3rpx solid #e2e8f0;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
 }
 
-.avatar-btn {
+.avatar-btn-new {
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 20rpx;
   padding: 12rpx 24rpx;
   font-size: 24rpx;
+  font-weight: 500;
+  box-shadow: 0 2rpx 8rpx rgba(102, 126, 234, 0.3);
+  transition: all 0.2s ease;
 }
 
-.user-details {
-  flex: 1;
+.avatar-btn-new:active {
+  transform: scale(0.95);
+  background: #5a67d8;
+}
+
+/* 基本信息区域 */
+.user-info-section {
+  width: 100%;
+  max-width: 600rpx;
   display: flex;
   flex-direction: column;
   gap: 24rpx;
 }
 
-.detail-item {
+.info-row {
   display: flex;
   align-items: center;
   gap: 16rpx;
+  padding: 20rpx;
+  background: #f8fafc;
+  border-radius: 16rpx;
+  border: 1rpx solid #e2e8f0;
+  transition: all 0.2s ease;
 }
 
-.detail-label {
+.info-row:focus-within {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3rpx rgba(102, 126, 234, 0.1);
+}
+
+.info-label {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  min-width: 140rpx;
+  flex-shrink: 0;
+}
+
+.label-icon {
+  font-size: 28rpx;
+  width: 32rpx;
+  text-align: center;
+}
+
+.label-text {
   font-size: 28rpx;
   font-weight: 500;
-  color: #1a1a1a;
-  min-width: 120rpx;
+  color: #334155;
 }
 
-.detail-input {
+.info-input {
   flex: 1;
   background: white;
-  border: 2rpx solid #f0f0f0;
+  border: 1rpx solid #e2e8f0;
   border-radius: 12rpx;
   padding: 16rpx 20rpx;
   font-size: 28rpx;
+  color: #334155;
+  transition: border-color 0.2s ease;
 }
 
-.detail-picker {
+.info-input:focus {
+  border-color: #667eea;
+  outline: none;
+}
+
+.info-picker {
   flex: 1;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   background: white;
-  border: 2rpx solid #f0f0f0;
+  border: 1rpx solid #e2e8f0;
   border-radius: 12rpx;
   padding: 16rpx 20rpx;
+  transition: all 0.2s ease;
+}
+
+.info-picker:active {
+  background: #f8fafc;
+  border-color: #667eea;
+}
+
+.picker-text {
   font-size: 28rpx;
+  color: #334155;
+  font-weight: 500;
 }
 
 .picker-arrow {
-  color: #999;
+  color: #94a3b8;
   font-size: 20rpx;
+  transition: transform 0.2s ease;
+}
+
+.info-picker:active .picker-arrow {
+  transform: rotate(180deg);
 }
 
 /* 设置列表样式 */
@@ -119,12 +210,12 @@ page {
 .setting-title {
   font-size: 32rpx;
   font-weight: 500;
-  color: #1a1a1a;
+  color: #334155;
 }
 
 .setting-desc {
   font-size: 24rpx;
-  color: #999;
+  color: #64748b;
   line-height: 1.4;
 }
 
@@ -138,19 +229,6 @@ page {
 
 .setting-switch {
   transform: scale(0.8);
-}
-
-/* 数据管理样式 */
-.data-management {
-  display: flex;
-  flex-direction: column;
-  gap: 16rpx;
-}
-
-.data-btn {
-  margin: 0;
-  text-align: left;
-  justify-content: flex-start;
 }
 
 /* 关于应用样式 */
@@ -182,17 +260,17 @@ page {
 .app-name {
   font-size: 36rpx;
   font-weight: 600;
-  color: #1a1a1a;
+  color: #334155;
 }
 
 .app-version {
   font-size: 24rpx;
-  color: #999;
+  color: #64748b;
 }
 
 .app-desc {
   font-size: 28rpx;
-  color: #666;
+  color: #64748b;
   line-height: 1.4;
   margin-top: 8rpx;
 }

@@ -6,6 +6,7 @@ Page({
     },
     
     countries: [
+      { name: '无', code: 'NONE', currency: null },
       { name: '美国', code: 'US', currency: 'USD' },
       { name: '英国', code: 'GB', currency: 'GBP' },
       { name: '澳大利亚', code: 'AU', currency: 'AUD' },
@@ -20,6 +21,7 @@ Page({
     countryIndex: 0,
     
     currencies: [
+      { code: 'CNY', name: '人民币', flag: '🇨🇳' },
       { code: 'USD', name: '美元', flag: '🇺🇸' },
       { code: 'EUR', name: '欧元', flag: '🇪🇺' },
       { code: 'GBP', name: '英镑', flag: '🇬🇧' },
@@ -31,7 +33,7 @@ Page({
       { code: 'SGD', name: '新加坡元', flag: '🇸🇬' },
       { code: 'KRW', name: '韩元', flag: '🇰🇷' }
     ],
-    defaultCurrencyIndex: 0,
+
     
     precisionOptions: [
       { label: '2位小数 (7.12)', value: 2 },
@@ -53,12 +55,83 @@ Page({
   },
 
   onLoad: function () {
-    this.loadUserSettings()
+    this.loadUserSettings();
+    this.checkFirstTimeUser();
   },
 
   onShow: function () {
     // 页面显示时刷新设置
-    this.loadUserSettings()
+    this.loadUserSettings();
+  },
+
+  // 检查是否首次使用，获取微信用户信息
+  checkFirstTimeUser() {
+    try {
+      const userInfo = wx.getStorageSync('userInfo');
+      if (!userInfo || !userInfo.nickname) {
+        // 首次使用，尝试获取微信用户信息
+        wx.getUserProfile({
+          desc: '用于完善个人资料',
+          success: (res) => {
+            this.setData({
+              'userInfo.nickname': res.userInfo.nickName,
+              'userInfo.avatar': res.userInfo.avatarUrl
+            });
+            this.saveSettings();
+            
+            wx.showToast({
+              title: '欢迎使用汇率助手',
+              icon: 'success',
+              duration: 2000
+            });
+          },
+          fail: (error) => {
+            console.log('用户拒绝授权', error);
+            // 用户拒绝授权，使用默认信息
+            this.setData({
+              'userInfo.nickname': '留学生',
+              'userInfo.avatar': ''
+            });
+          }
+        });
+      }
+    } catch (error) {
+      console.error('检查首次用户失败:', error);
+    }
+  },
+
+  // 长按头像显示调试面板
+  onAvatarLongPress() {
+    const debugPath = '/pages/debug/debug';
+    
+    wx.showModal({
+      title: '开发者选项',
+      content: '是否进入调试模式？\n\n调试模式可以查看应用状态、测试功能连通性等。',
+      confirmText: '进入调试',
+      cancelText: '取消',
+      success: (res) => {
+        if (res.confirm) {
+          wx.navigateTo({
+            url: debugPath,
+            success: () => {
+              wx.showToast({
+                title: '进入调试模式',
+                icon: 'success'
+              });
+            },
+            fail: (error) => {
+              console.error('跳转调试页失败:', error);
+              wx.showToast({
+                title: '调试模式暂不可用',
+                icon: 'error'
+              });
+            }
+          });
+        }
+      }
+    });
+    
+    this.vibrate();
   },
 
   // 加载用户设置
@@ -88,7 +161,7 @@ Page({
     try {
       const settings = {
         countryIndex: this.data.countryIndex,
-        defaultCurrencyIndex: this.data.defaultCurrencyIndex,
+
         precisionIndex: this.data.precisionIndex,
         darkMode: this.data.darkMode,
         vibrationFeedback: this.data.vibrationFeedback,
@@ -172,31 +245,100 @@ Page({
 
   // 留学国家变化
   onCountryChange(e) {
-    const countryIndex = parseInt(e.detail.value)
-    this.setData({ countryIndex })
+    const newCountryIndex = parseInt(e.detail.value)
+    const selectedCountry = this.data.countries[newCountryIndex]
+    const oldCountryIndex = this.data.countryIndex
     
-    // 自动设置对应的默认货币
-    const selectedCountry = this.data.countries[countryIndex]
+    // 如果选择的是同一个国家，不做处理
+    if (newCountryIndex === oldCountryIndex) {
+      return
+    }
+    
+    // 先更新UI显示
+    this.setData({ countryIndex: newCountryIndex })
+    
+    // 如果选择的是"无"
+    if (selectedCountry.code === 'NONE') {
+      wx.showModal({
+        title: '留学国家设置',
+        content: '您选择了"无"，系统将不会根据留学国家自动推荐货币。您可以在首页和汇率详情页手动选择关注的货币。',
+        confirmText: '确定',
+        showCancel: false,
+        success: () => {
+          this.saveSettings()
+          this.vibrate()
+        }
+      })
+      return
+    }
+    
+    // 查找对应货币
     const currencyIndex = this.data.currencies.findIndex(
       currency => currency.code === selectedCountry.currency
     )
     
     if (currencyIndex >= 0) {
-      this.setData({ defaultCurrencyIndex: currencyIndex })
+      const targetCurrency = this.data.currencies[currencyIndex]
+      
+      wx.showModal({
+        title: '更新监控货币',
+        content: `您选择了${selectedCountry.name}作为留学国家。\n\n是否要将目标货币更改为${targetCurrency.flag} ${targetCurrency.name}？\n\n持有货币将保持不变，这将影响首页的汇率计算器和监控设置。`,
+        confirmText: '是，同步更改',
+        cancelText: '否，保持原设置',
+        success: (res) => {
+          if (res.confirm) {
+            wx.showToast({
+              title: `已切换到${targetCurrency.name}`,
+              icon: 'success',
+              duration: 2000
+            })
+            
+            // 通知其他页面货币设置已更改
+            this.syncCurrencyToAllPages(currencyIndex)
+          }
+          
+          this.saveSettings()
+          this.vibrate()
+        }
+      })
+    } else {
+      // 没有找到对应货币，只保存国家设置
+      this.saveSettings()
+      this.vibrate()
     }
-    
-    this.saveSettings()
-    this.vibrate()
   },
 
-  // 默认货币变化
-  onDefaultCurrencyChange(e) {
-    this.setData({
-      defaultCurrencyIndex: parseInt(e.detail.value)
-    })
-    this.saveSettings()
-    this.vibrate()
+  // 同步货币设置到所有页面 - 只修改目标货币
+  syncCurrencyToAllPages(currencyIndex) {
+    try {
+      // 获取当前的货币设置
+      const currentSettings = wx.getStorageSync('currencySettings') || {};
+      
+      // 保持持有货币不变，只更改目标货币
+      const fromIndex = currentSettings.fromCurrencyIndex || 0; // 保持原有的持有货币，默认人民币
+      const toIndex = currencyIndex; // 目标货币改为选择的国家货币
+      
+      const globalSettings = {
+        fromCurrencyIndex: fromIndex,
+        toCurrencyIndex: toIndex
+      }
+      
+      wx.setStorageSync('currencySettings', globalSettings)
+      
+      // 通知app.js同步到其他页面
+      const app = getApp()
+      if (app && app.syncCurrencySettings) {
+        app.syncCurrencySettings(globalSettings)
+      }
+      
+      const fromCurrency = this.data.currencies[fromIndex]
+      const toCurrency = this.data.currencies[toIndex]
+      console.log(`已同步货币设置: 持有${fromCurrency.name} → 目标${toCurrency.name}`, globalSettings)
+    } catch (error) {
+      console.error('同步货币设置失败:', error)
+    }
   },
+
 
   // 精度变化
   onPrecisionChange(e) {
@@ -272,132 +414,6 @@ Page({
     this.vibrate()
   },
 
-  // 清理缓存
-  clearCache() {
-    wx.showModal({
-      title: '清理缓存',
-      content: '确定要清理所有缓存数据吗？这将删除汇率数据缓存、API使用统计等临时数据，但不会影响您的个人设置。',
-      confirmText: '确定清理',
-      cancelText: '取消',
-      success: (res) => {
-        if (res.confirm) {
-          wx.showLoading({
-            title: '清理中...'
-          });
-          
-          this.performCacheClear();
-        }
-      }
-    });
-  },
-
-  // 执行真实的缓存清理
-  performCacheClear() {
-    try {
-      // 获取所有存储的key
-      const info = wx.getStorageInfoSync();
-      const allKeys = info.keys;
-      let clearedCount = 0;
-      
-      // 定义需要保留的用户数据key（不清理）
-      const preserveKeys = [
-        'userSettings',
-        'userInfo', 
-        'currencySettings',
-        'rateSettings',
-        'priceAlerts'
-      ];
-      
-      // 清理缓存类数据
-      allKeys.forEach(key => {
-        if (!preserveKeys.includes(key)) {
-          // 清理汇率缓存
-          if (key.startsWith('exchange_rates_') || 
-              key.startsWith('cache_') ||
-              key.startsWith('api_') ||
-              key.startsWith('lastAlert_') ||
-              key.includes('last_update') ||
-              key.includes('market_') ||
-              key === 'api_usage_stats') {
-            try {
-              wx.removeStorageSync(key);
-              clearedCount++;
-              console.log(`已清理缓存: ${key}`);
-            } catch (error) {
-              console.warn(`清理缓存失败: ${key}`, error);
-            }
-          }
-        }
-      });
-      
-      // 模拟清理时间
-      setTimeout(() => {
-        wx.hideLoading();
-        wx.showToast({
-          title: `清理完成，删除${clearedCount}项`,
-          icon: 'success',
-          duration: 2000
-        });
-        this.vibrate();
-      }, 1000);
-      
-    } catch (error) {
-      console.error('清理缓存失败:', error);
-      wx.hideLoading();
-      wx.showToast({
-        title: '清理失败，请重试',
-        icon: 'error'
-      });
-    }
-  },
-
-  // 重置设置
-  resetSettings() {
-    wx.showModal({
-      title: '重置设置',
-      content: '确定要重置所有设置为默认值吗？此操作不可撤销。',
-      confirmText: '确定',
-      cancelText: '取消',
-      confirmColor: '#F44336',
-      success: (res) => {
-        if (res.confirm) {
-          // 清除本地存储
-          try {
-            wx.removeStorageSync('userSettings')
-            
-            // 重置页面数据
-            this.setData({
-              countryIndex: 0,
-              defaultCurrencyIndex: 0,
-              precisionIndex: 0,
-              darkMode: false,
-              vibrationFeedback: true,
-              notifications: {
-                rateAlert: true,
-                dailyReport: false,
-                importantEvents: true
-              },
-              pushTime: '09:00'
-            })
-            
-            wx.showToast({
-              title: '设置已重置',
-              icon: 'success'
-            })
-            
-            this.vibrate()
-          } catch (error) {
-            console.error('重置设置失败:', error)
-            wx.showToast({
-              title: '重置失败',
-              icon: 'error'
-            })
-          }
-        }
-      }
-    })
-  },
-
   // 显示隐私政策
   showPrivacyPolicy() {
     wx.showModal({
@@ -455,5 +471,27 @@ Page({
     if (this.data.vibrationFeedback) {
       wx.vibrateShort()
     }
+  },
+
+  // 跳转到汇率详情页进行监控设置
+  goToRateDetail() {
+    wx.switchTab({
+      url: '/pages/rate-detail/rate-detail',
+      success: () => {
+        console.log('从设置页跳转到汇率详情页');
+        wx.showToast({
+          title: '正在进入监控设置',
+          icon: 'success',
+          duration: 1500
+        });
+      },
+      fail: (error) => {
+        console.error('跳转失败:', error);
+        wx.showToast({
+          title: '跳转失败，请重试',
+          icon: 'error'
+        });
+      }
+    });
   }
 }) 

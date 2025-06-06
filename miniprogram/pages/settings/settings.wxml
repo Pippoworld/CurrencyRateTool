@@ -5,21 +5,31 @@
       👤 个人信息
     </view>
     <view class="card-body">
-      <view class="user-profile">
-        <view class="avatar-section">
-          <image class="user-avatar" src="{{userInfo.avatar || '/images/default-avatar.png'}}" bindlongpress="onAvatarLongPress" />
-          <button class="btn btn-secondary avatar-btn" bindtap="chooseAvatar">更换头像</button>
+      <view class="user-profile-new">
+        <!-- 头像区域 -->
+        <view class="avatar-section-new">
+          <image class="user-avatar-new" src="{{userInfo.avatar || '/images/default-avatar.png'}}" bindlongpress="onAvatarLongPress" />
+          <button class="avatar-btn-new" bindtap="chooseAvatar">更换头像</button>
         </view>
-        <view class="user-details">
-          <view class="detail-item">
-            <text class="detail-label">昵称</text>
-            <input class="detail-input" value="{{userInfo.nickname}}" bindinput="onNicknameInput" placeholder="请输入昵称"/>
+        
+        <!-- 基本信息区域 -->
+        <view class="user-info-section">
+          <view class="info-row">
+            <view class="info-label">
+              <text class="label-icon">👤</text>
+              <text class="label-text">昵称</text>
+            </view>
+            <input class="info-input" value="{{userInfo.nickname}}" bindinput="onNicknameInput" placeholder="请输入昵称"/>
           </view>
-          <view class="detail-item">
-            <text class="detail-label">留学国家</text>
+          
+          <view class="info-row">
+            <view class="info-label">
+              <text class="label-icon">🌍</text>
+              <text class="label-text">留学国家</text>
+            </view>
             <picker bindchange="onCountryChange" value="{{countryIndex}}" range="{{countries}}" range-key="name">
-              <view class="detail-picker">
-                <text>{{countries[countryIndex].name}}</text>
+              <view class="info-picker">
+                <text class="picker-text">{{countries[countryIndex].name}}</text>
                 <text class="picker-arrow">▼</text>
               </view>
             </picker>
@@ -36,19 +46,7 @@
     </view>
     <view class="card-body">
       <view class="settings-list">
-        <view class="setting-item">
-          <view class="setting-info">
-            <text class="setting-title">默认货币</text>
-            <text class="setting-desc">设置首页默认显示的货币</text>
-          </view>
-          <picker bindchange="onDefaultCurrencyChange" value="{{defaultCurrencyIndex}}" range="{{currencies}}" range-key="name">
-            <view class="setting-value">
-              <text>{{currencies[defaultCurrencyIndex].flag}} {{currencies[defaultCurrencyIndex].name}}</text>
-              <text class="picker-arrow">▼</text>
-            </view>
-          </picker>
-        </view>
-        
+
         <view class="setting-item">
           <view class="setting-info">
             <text class="setting-title">汇率精度</text>
@@ -135,23 +133,6 @@
             <text class="picker-arrow">▼</text>
           </view>
         </view>
-      </view>
-    </view>
-  </view>
-
-  <!-- 数据管理 -->
-  <view class="card">
-    <view class="card-header">
-      📊 数据管理
-    </view>
-    <view class="card-body">
-      <view class="data-management">
-        <button class="btn btn-secondary data-btn" bindtap="clearCache">
-          🗑️ 清理缓存
-        </button>
-        <button class="btn btn-secondary data-btn" bindtap="resetSettings">
-          🔄 重置设置
-        </button>
       </view>
     </view>
   </view>
