@@ -57,9 +57,8 @@ Page({
   },
 
   onShow: function () {
-    // 页面显示时刷新设置并同步全局货币数据
-    this.loadUserSettings();
-    this.loadGlobalCurrencySettings();
+    // 页面显示时刷新设置
+    this.loadUserSettings()
   },
 
   // 加载用户设置
@@ -81,19 +80,6 @@ Page({
       }
     } catch (error) {
       console.error('加载设置失败:', error)
-    }
-  },
-
-  // 加载全局货币设置
-  loadGlobalCurrencySettings() {
-    try {
-      const settings = wx.getStorageSync('currencySettings');
-      if (settings) {
-        console.log('设置页已加载全局货币设置:', settings);
-        // 设置页不需要显示具体货币，但需要知道全局状态
-      }
-    } catch (error) {
-      console.log('设置页加载全局货币设置失败:', error);
     }
   },
 
@@ -122,26 +108,53 @@ Page({
 
   // 选择头像
   chooseAvatar() {
-    wx.chooseMedia({
-      count: 1,
-      mediaType: ['image'],
-      sourceType: ['album', 'camera'],
+    // 微信小程序头像选择
+    wx.chooseAvatar({
       success: (res) => {
-        const tempFilePath = res.tempFiles[0].tempFilePath
+        const avatarUrl = res.avatarUrl;
         this.setData({
-          'userInfo.avatar': tempFilePath
-        })
-        this.saveSettings()
+          'userInfo.avatar': avatarUrl
+        });
+        this.saveSettings();
         
         wx.showToast({
           title: '头像更新成功',
           icon: 'success'
-        })
+        });
+        
+        this.vibrate();
       },
       fail: (error) => {
-        console.error('选择头像失败:', error)
+        console.error('选择头像失败:', error);
+        // 降级方案：使用普通图片选择
+        wx.chooseMedia({
+          count: 1,
+          mediaType: ['image'],
+          sourceType: ['album', 'camera'],
+          success: (res) => {
+            const tempFilePath = res.tempFiles[0].tempFilePath;
+            this.setData({
+              'userInfo.avatar': tempFilePath
+            });
+            this.saveSettings();
+            
+            wx.showToast({
+              title: '头像更新成功',
+              icon: 'success'
+            });
+            
+            this.vibrate();
+          },
+          fail: (mediaError) => {
+            console.error('图片选择失败:', mediaError);
+            wx.showToast({
+              title: '头像选择失败',
+              icon: 'error'
+            });
+          }
+        });
       }
-    })
+    });
   },
 
   // 昵称输入
@@ -259,50 +272,83 @@ Page({
     this.vibrate()
   },
 
-  // 导出历史数据
-  exportData() {
-    wx.showLoading({
-      title: '正在导出...'
-    })
-    
-    setTimeout(() => {
-      wx.hideLoading()
-      wx.showModal({
-        title: '导出成功',
-        content: '历史数据已导出到文件，您可以通过微信分享或保存到相册。',
-        confirmText: '确定',
-        showCancel: false
-      })
-    }, 2000)
-    
-    this.vibrate()
-  },
-
   // 清理缓存
   clearCache() {
     wx.showModal({
       title: '清理缓存',
-      content: '确定要清理所有缓存数据吗？这将删除临时文件和缓存的汇率数据。',
-      confirmText: '确定',
+      content: '确定要清理所有缓存数据吗？这将删除汇率数据缓存、API使用统计等临时数据，但不会影响您的个人设置。',
+      confirmText: '确定清理',
       cancelText: '取消',
       success: (res) => {
         if (res.confirm) {
           wx.showLoading({
             title: '清理中...'
-          })
+          });
           
-          setTimeout(() => {
-            wx.hideLoading()
-            wx.showToast({
-              title: '缓存清理完成',
-              icon: 'success'
-            })
-          }, 1500)
-          
-          this.vibrate()
+          this.performCacheClear();
         }
       }
-    })
+    });
+  },
+
+  // 执行真实的缓存清理
+  performCacheClear() {
+    try {
+      // 获取所有存储的key
+      const info = wx.getStorageInfoSync();
+      const allKeys = info.keys;
+      let clearedCount = 0;
+      
+      // 定义需要保留的用户数据key（不清理）
+      const preserveKeys = [
+        'userSettings',
+        'userInfo', 
+        'currencySettings',
+        'rateSettings',
+        'priceAlerts'
+      ];
+      
+      // 清理缓存类数据
+      allKeys.forEach(key => {
+        if (!preserveKeys.includes(key)) {
+          // 清理汇率缓存
+          if (key.startsWith('exchange_rates_') || 
+              key.startsWith('cache_') ||
+              key.startsWith('api_') ||
+              key.startsWith('lastAlert_') ||
+              key.includes('last_update') ||
+              key.includes('market_') ||
+              key === 'api_usage_stats') {
+            try {
+              wx.removeStorageSync(key);
+              clearedCount++;
+              console.log(`已清理缓存: ${key}`);
+            } catch (error) {
+              console.warn(`清理缓存失败: ${key}`, error);
+            }
+          }
+        }
+      });
+      
+      // 模拟清理时间
+      setTimeout(() => {
+        wx.hideLoading();
+        wx.showToast({
+          title: `清理完成，删除${clearedCount}项`,
+          icon: 'success',
+          duration: 2000
+        });
+        this.vibrate();
+      }, 1000);
+      
+    } catch (error) {
+      console.error('清理缓存失败:', error);
+      wx.hideLoading();
+      wx.showToast({
+        title: '清理失败，请重试',
+        icon: 'error'
+      });
+    }
   },
 
   // 重置设置
@@ -409,40 +455,5 @@ Page({
     if (this.data.vibrationFeedback) {
       wx.vibrateShort()
     }
-  },
-
-  // 跳转到汇率详情页
-  goToRateDetail() {
-    wx.switchTab({
-      url: '/pages/rate-detail/rate-detail',
-      success: () => {
-        console.log('从设置页跳转到详情页')
-      }
-    })
-  },
-
-  // 开发调试入口
-  openDebugPanel() {
-    wx.navigateTo({
-      url: '/pages/debug/debug',
-      success: () => {
-        console.log('打开功能测试面板');
-      }
-    });
-  },
-
-  // 长按头像触发调试模式
-  onAvatarLongPress() {
-    wx.showModal({
-      title: '开发者模式',
-      content: '是否进入功能测试面板？',
-      confirmText: '进入',
-      cancelText: '取消',
-      success: (res) => {
-        if (res.confirm) {
-          this.openDebugPanel();
-        }
-      }
-    });
   }
-}); 
+}) 

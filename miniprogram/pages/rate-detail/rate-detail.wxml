@@ -77,7 +77,7 @@
           设置机会提醒
         </button>
         </view>
-
+        
         <!-- 卖出提醒 -->
         <view class="recommendation-card sell-alert">
           <view class="rec-header">
@@ -129,8 +129,8 @@
         <text class="card-title">银行汇率对比</text>
         <text class="card-desc">主要银行{{currencies[toCurrencyIndex].name}}汇率参考</text>
       </view>
-    </view>
-    
+        </view>
+        
     <view class="card-content">
       <view class="bank-rates">
         <view class="bank-item" wx:for="{{bankRates}}" wx:key="name">

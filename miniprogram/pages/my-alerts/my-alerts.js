@@ -134,7 +134,7 @@ Page({
   // 创建提醒
   createAlert(price) {
     const { formData } = this.data;
-    
+
     const alertData = {
       id: Date.now().toString(),
       type: formData.type,
