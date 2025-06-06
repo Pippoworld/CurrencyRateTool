@@ -18,6 +18,13 @@ Page({
     }
   },
 
+  // 返回上一页
+  goBack() {
+    wx.navigateBack({
+      delta: 1
+    });
+  },
+
   onLoad(options) {
     // 处理从详情页跳转的参数
     if (options.action === 'create') {

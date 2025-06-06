@@ -1,6 +1,9 @@
 <view class="alerts-container">
   <!-- 头部 -->
   <view class="header">
+    <button class="back-btn" bindtap="goBack">
+      <text class="back-icon">‹</text>
+    </button>
     <text class="title">我的提醒</text>
     <button class="add-btn" bindtap="showCreateAlert">
       <text class="add-icon">+</text>
