@@ -20,6 +20,14 @@ Page({
     updateTime: '6月4日 20:14',
     reverseRate: '',
     
+    // 新的汇率显示数据结构
+    primaryRate: null,
+    primaryFromCurrency: {},
+    primaryToCurrency: {},
+    secondaryRate: null,
+    secondaryFromCurrency: {},
+    secondaryToCurrency: {},
+    
     // 货币列表
     currencies: [
       { code: 'CNY', name: '人民币', flag: '🇨🇳', rate: 1.0000 },
@@ -99,25 +107,34 @@ Page({
     }
   },
 
-  // 更新卡片汇率显示
+  // 更新卡片汇率显示 - 固定左主右次
   updateCardRate() {
-    const fromCurrency = this.data.currencies[this.data.cardFromCurrencyIndex]; // Held
-    const toCurrency = this.data.currencies[this.data.cardToCurrencyIndex];   // Target
+    const heldCurrency = this.data.currencies[this.data.cardFromCurrencyIndex];
+    const targetCurrency = this.data.currencies[this.data.cardToCurrencyIndex];
     
-    if (!fromCurrency || !toCurrency || !fromCurrency.rate || !toCurrency.rate) {
+    if (!heldCurrency || !targetCurrency || !heldCurrency.rate || !targetCurrency.rate) {
       console.log('Card currencies not ready for rate calculation');
       return;
     }
 
-    // Card Rate: 1 Target = ? Held
-    const rate = fromCurrency.rate / toCurrency.rate;
-    const reverseRate = 1 / rate;
+    // 左侧（主）：1 目标货币 = ? 持有货币
+    const primaryRate = heldCurrency.rate / targetCurrency.rate;
     
+    // 右侧（次）：1 持有货币 = ? 目标货币
+    const secondaryRate = targetCurrency.rate / heldCurrency.rate;
+
     this.setData({
-      currentRate: rate.toFixed(4),
-      reverseRate: reverseRate.toFixed(4)
+      // 主汇率：目标 -> 持有
+      primaryRate: primaryRate.toFixed(4),
+      primaryFromCurrency: targetCurrency,
+      primaryToCurrency: heldCurrency,
+      
+      // 次汇率：持有 -> 目标
+      secondaryRate: secondaryRate.toFixed(4),
+      secondaryFromCurrency: heldCurrency,
+      secondaryToCurrency: targetCurrency,
     });
-    console.log(`Card rate updated: 1 ${toCurrency.code} = ${rate.toFixed(4)} ${fromCurrency.code}`);
+    console.log(`Card rate updated: 1 ${targetCurrency.code} = ${primaryRate.toFixed(4)} ${heldCurrency.code}`);
   },
 
   // 更新汇率显示 (for calculator)
@@ -227,47 +244,37 @@ Page({
 
   // 生成AI建议
   generateAdvice() {
-    const fromCurrency = this.data.currencies[this.data.cardFromCurrencyIndex]; // 使用卡片货币
-    const toCurrency = this.data.currencies[this.data.cardToCurrencyIndex];     // 使用卡片货币
-    
-    // 简化为状态指示器 - 专注于快速判断
     const scenarios = [
       {
-        icon: '●',
-        title: '汇率正常',
-        status: 'good',
-        brief: '适合换汇',
-        quickTip: '当前价位合理'
-      },
-      {
-        icon: '●', 
-        title: '略显偏高',
-        status: 'warning',
-        brief: '建议观望',
-        quickTip: '可等待回调'
-      },
-      {
-        icon: '●',
-        title: '相对偏低',
+        icon: '🟢',
         status: 'excellent',
-        brief: '抓紧换汇',
-        quickTip: '较好时机'
+        brief: '处于近期低位，建议分批买入'
       },
       {
-        icon: '●',
-        title: '明显偏高',
+        icon: '🔵',
+        status: 'good',
+        brief: '走势平稳，可按需兑换'
+      },
+      {
+        icon: '🟠',
+        status: 'warning',
+        brief: '处于近期高位，建议谨慎观望'
+      },
+      {
+        icon: '🔴',
         status: 'danger',
-        brief: '暂缓操作',
-        quickTip: '等待更佳价位'
+        brief: '近期波动较大，建议暂缓操作'
       }
     ];
     
+    // 随机选择一个场景作为当前建议
     const randomAdvice = scenarios[Math.floor(Math.random() * scenarios.length)];
+    
     this.setData({
       advice: randomAdvice
     });
     
-    console.log('AI建议已根据卡片货币更新:', `${fromCurrency.code}/${toCurrency.code}`);
+    console.log('AI建议已更新:', randomAdvice.brief);
   },
 
   // 设置快捷提醒
@@ -533,6 +540,7 @@ Page({
         // 重新计算汇率
         this.updateCardRate();
         this.updateExchangeRate();
+        this.generateAdvice(); // 在汇率更新后生成建议
         
         wx.showToast({
           title: '汇率已更新',

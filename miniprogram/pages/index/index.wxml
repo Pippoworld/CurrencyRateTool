@@ -1,24 +1,48 @@
 <!--index.wxml - 使用固定容器放置建议-->
 <view class="container">
+  <!-- 更新时间 -->
+  <view class="update-time-container">
+    <text class="update-time-text">数据更新于: {{updateTime}}</text>
+  </view>
+
   <!-- 汇率监控卡片 -->
   <view class="rate-header" bindtap="goToRateDetail">
-    <view class="rate-info">
-      <view class="rate-pair-with-tip">
-        <text class="rate-pair">{{currencies[cardToCurrencyIndex].flag}} {{currencies[cardToCurrencyIndex].code}} / {{currencies[cardFromCurrencyIndex].flag}} {{currencies[cardFromCurrencyIndex].code}}</text>
-        <text class="monitor-tip">💡 长期监控</text>
+    <!-- 主汇率（左侧） -->
+    <view class="rate-info primary-rate">
+      <view class="rate-direction">
+        <text class="flag">{{primaryFromCurrency.flag}}</text>
+        <text class="arrow">→</text>
+        <text class="flag">{{primaryToCurrency.flag}}</text>
       </view>
-      <text class="rate-value">{{currentRate}}</text>
+      <view class="rate-value-description">
+        <text class="rate-prefix">1 {{primaryFromCurrency.name}} ≈</text>
+      </view>
+      <view class="rate-display">
+        <text class="rate-value">{{primaryRate}}</text>
+        <text class="rate-unit">{{primaryToCurrency.name}}</text>
+      </view>
       <text class="rate-change {{rateChangeStatus}}">{{rateChange}}</text>
-      <text class="update-time">更新时间：{{updateTime}}</text>
-      <text class="setting-tip">点击进入详情页更改监控币种</text>
+      <!-- AI建议行 -->
+      <view class="ai-advice-line {{advice.status}}">
+        <text class="advice-icon">{{advice.icon}}</text>
+        <text class="advice-text-brief">{{advice.brief}}</text>
+      </view>
+      <text class="click-tip">* 点击卡片任意位置可查看详细分析</text>
     </view>
     
-    <!-- 右边改为显示反向汇率 -->
-    <view class="reverse-rate-container">
-      <view class="reverse-rate-content">
-        <text class="reverse-rate-title">反向汇率</text>
-        <text class="reverse-rate-pair">{{currencies[cardFromCurrencyIndex].code}} / {{currencies[cardToCurrencyIndex].code}}</text>
-        <text class="reverse-rate-value">{{reverseRate}}</text>
+    <!-- 次汇率（右侧） -->
+    <view class="rate-info secondary-rate">
+      <view class="rate-direction">
+        <text class="flag">{{secondaryFromCurrency.flag}}</text>
+        <text class="arrow">→</text>
+        <text class="flag">{{secondaryToCurrency.flag}}</text>
+      </view>
+      <view class="rate-value-description small">
+        <text class="rate-prefix">1 {{secondaryFromCurrency.name}} ≈</text>
+      </view>
+      <view class="rate-display">
+        <text class="rate-value small">{{secondaryRate}}</text>
+        <text class="rate-unit small">{{secondaryToCurrency.name}}</text>
       </view>
     </view>
   </view>
