@@ -1,12 +1,9 @@
-/* 全新的样式将从这里开始 */
-
 /* index.wxss - 优化汇率建议设计 */
 
 page {
-  background-color: #F7F8FA; /* 柔和的页面背景色 */
+  background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
   min-height: 100vh;
   padding-bottom: 120rpx;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
 .container {
@@ -15,38 +12,22 @@ page {
   min-height: 100vh;
   max-width: 750rpx;
   margin: 0 auto;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
 }
 
-/* 汇率信息卡片 - 强制应用紫色渐变 */
+/* 汇率信息卡片 - 使用绝对定位固定右边建议 */
 .rate-header {
-  background-color: #FFFFFF; /* 纯白卡片 */
-  border-radius: 28rpx; /* 更圆润的边角 */
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
   padding: 32rpx;
+  background-color: #ffffff;
+  border-radius: 24rpx;
+  box-shadow: 0 8rpx 16rpx rgba(0, 0, 0, 0.05);
   margin-bottom: 32rpx;
-  box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.06); /* 柔和的阴影 */
-  border: 1rpx solid #F3F4F6; /* 非常细微的边框 */
-}
-
-/* 强制清除所有装饰伪元素 */
-.rate-header::before,
-.rate-header::after {
-  display: none !important;
-}
-
-/* 强制清除背景图 */
-.rate-header {
-  background-image: none !important;
-}
-
-/* --- 强制设置所有内部文字为白色 --- */
-.flag, .arrow, .rate-prefix, .rate-value, .rate-unit, .secondary-rate-sentence {
-  color: #ffffff !important;
-  text-shadow: none !important;
-}
-
-.arrow {
-  color: #9CA3AF;
-  font-size: 32rpx;
+  gap: 24rpx;
+  color: #64748b;
+  padding-top: 8rpx;
 }
 
 .rate-info {
@@ -61,49 +42,41 @@ page {
 .rate-direction {
   display: flex;
   align-items: center;
-  gap: 16rpx;
-  font-size: 32rpx;
-  font-weight: 500;
-  color: #4B5563; /* 深灰色 */
+  gap: 12rpx;
 }
 
 .rate-value-description {
   margin-top: 8rpx;
 }
 
-/* 汇率前缀 - 移除阴影，确保清晰 */
 .rate-prefix {
-  font-size: 28rpx;
-  color: #6B7280; /* 中等灰色 */
+  font-size: 26rpx;
+  color: #64748b;
   font-weight: 500;
-  margin: 0;
-  text-shadow: none;
 }
 
 .rate-display {
   display: flex;
   align-items: baseline;
-  gap: 12rpx;
+  gap: 8rpx;
   margin-top: 4rpx;
 }
 
-/* 汇率单位 - 移除阴影，确保清晰 */
 .rate-unit {
   font-size: 32rpx;
-  font-weight: 500;
-  color: #4B5563; /* 深灰色 */
+  color: #334155;
+  font-weight: 600;
 }
 
 .rate-unit.small {
   font-size: 24rpx;
 }
 
-/* 主汇率数字 - 移除阴影，确保清晰 */
 .rate-value {
-  font-size: 88rpx;
-  font-weight: 600; /* 加粗以突出 */
-  color: #1F2937; /* 最深的灰色 */
+  font-size: 80rpx;
+  font-weight: 300;
   letter-spacing: -2rpx;
+  margin: 0;
   line-height: 1;
 }
 
@@ -647,22 +620,22 @@ page {
   text-align: left;
 }
 
-/* 建议状态颜色 - 更柔和的配色 */
+/* 建议状态颜色 */
 .ai-advice-line.excellent {
-  background-color: #f0fdf7;
-  color: #047857;
+  background-color: #ecfdf5;
+  color: #059669;
 }
 .ai-advice-line.good {
-  background-color: #f3f9f4;
-  color: #166534;
+  background-color: #f0fdf4;
+  color: #4ade80;
 }
 .ai-advice-line.warning {
-  background-color: #fefbf3;
-  color: #ca8a04;
+  background-color: #fffbeb;
+  color: #f59e0b;
 }
 .ai-advice-line.danger {
-  background-color: #fef7f7;
-  color: #dc2626;
+  background-color: #fef2f2;
+  color: #ef4444;
 }
 
 /* 更新时间容器 */
@@ -673,16 +646,24 @@ page {
 
 .update-time-text {
   font-size: 24rpx;
-  color: #9CA3AF; /* 中等灰色 */
+  color: #64748b;
 }
 
-/* 反向汇率句子 - 移除阴影，确保清晰 */
+/* 反向汇率句子样式 */
 .secondary-rate-sentence {
-  font-size: 24rpx;
-  color: #6B7280; /* 中等灰色 */
-  padding-top: 8rpx;
-  border-top: 1rpx solid #F3F4F6; /* 分隔线 */
-  margin-top: 8rpx;
+  display: block;
+  font-size: 22rpx; /* 稍微调大字体，保持可读性 */
+  color: #64748b; /* 颜色也调浅一些 */
+  font-weight: 400; /* 字重也减轻 */
+  margin-top: 4rpx;
+  margin-bottom: 18rpx;
+  padding: 8rpx 12rpx; /* 内边距也相应调小 */
+  background-color: #f8fafc;
+  border-radius: 8rpx; /* 圆角也相应调小 */
+  text-align: center;
+  width: fit-content;
+  align-self: flex-start;
+  margin-left: 0;
 }
 
 .rate-pair {
@@ -736,7 +717,7 @@ page {
 .vertical-content-group {
   display: flex;
   flex-direction: column;
-  gap: 12rpx; /* 统一的垂直间距 */
+  gap: 4rpx; /* 减小间距，让布局更紧凑 */
 }
 
 /* 移除所有子元素的独立垂直 margin，由父容器的 gap 控制 */
@@ -750,6 +731,8 @@ page {
   margin-bottom: 0;
 }
 
+
+
 .click-tip {
   margin: 0;
   /* 其他样式保持不变 */
@@ -759,128 +742,4 @@ page {
   margin: 0;
   padding: 10rpx 16rpx;
   /* 其他样式保持不变 */
-}
-
-.arrow {
-  font-size: 32rpx;
-  color: #94a3b8; /* 恢复中性灰色 */
-}
-
-/* AI建议文字也要调整 */
-.ai-advice text {
-  color: #ffffff;
-  font-size: 22rpx;
-  font-weight: 400;
-  text-shadow: none;
-}
-
-/* AI建议整体容器 - 移除白色背景 */
-.ai-advice {
-  display: flex;
-  align-items: center;
-  gap: 12rpx;
-  padding: 16rpx 20rpx;
-  border-radius: 12rpx;
-  background: rgba(255, 255, 255, 0.1); /* 半透明白色背景 */
-  backdrop-filter: blur(10rpx); /* 玻璃态效果 */
-  border: 1rpx solid rgba(255, 255, 255, 0.2);
-  margin-top: 16rpx;
-}
-
-/* AI建议圆点指示器 - 更清晰的颜色 */
-.advice-indicator {
-  width: 12rpx;
-  height: 12rpx;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-/* 优秀状态 - 绿色 */
-.advice-excellent .advice-indicator {
-  background-color: #10b981;
-}
-
-/* 良好状态 - 蓝色 */
-.advice-good .advice-indicator {
-  background-color: #3b82f6;
-}
-
-/* 警告状态 - 橙色 */
-.advice-warning .advice-indicator {
-  background-color: #f59e0b;
-}
-
-/* 危险状态 - 红色 */
-.advice-danger .advice-indicator {
-  background-color: #ef4444;
-}
-
-/* --- AI 建议和提示 --- */
-/* 新的容器，移除模糊效果 */
-.ai-advice-container {
-  padding: 20rpx;
-  border-radius: 16rpx;
-  margin-top: 12rpx;
-}
-
-.ai-advice-line {
-  display: flex;
-  align-items: center;
-  gap: 16rpx;
-}
-
-.advice-icon {
-  width: 16rpx;
-  height: 16rpx;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.advice-text-brief {
-  font-size: 26rpx;
-  font-weight: 500;
-  flex: 1;
-}
-
-.click-tip {
-  font-size: 22rpx;
-  color: #9CA3AF;
-  margin-top: 12rpx;
-  padding-left: 32rpx; /* 与图标对齐 */
-}
-
-/* AI 建议状态颜色 */
-.ai-advice-container.advice-excellent {
-  background-color: #F0FDF4; /* 淡绿色背景 */
-}
-.ai-advice-container.advice-excellent .advice-icon {
-  background-color: #22C55E; /* 绿色 */
-}
-.ai-advice-container.advice-excellent .advice-text-brief {
-  color: #15803D; /* 深绿色文字 */
-}
-
-.ai-advice-container.advice-warning {
-  background-color: #FFFBEB; /* 淡黄色背景 */
-}
-.ai-advice-container.advice-warning .advice-icon {
-  background-color: #F59E0B; /* 黄色 */
-}
-.ai-advice-container.advice-warning .advice-text-brief {
-  color: #B45309; /* 深黄色文字 */
-}
-
-.ai-advice-container.advice-danger {
-  background-color: #FEF2F2; /* 淡红色背景 */
-}
-.ai-advice-container.advice-danger .advice-icon {
-  background-color: #EF4444; /* 红色 */
-}
-.ai-advice-container.advice-danger .advice-text-brief {
-  color: #B91C1C; /* 深红色文字 */
-}
-
-/* 清理掉旧的、可能冲突的样式 */
-.ai-advice, .advice-indicator, .ai-advice-container .advice-icon {
-  background: none;
 } 

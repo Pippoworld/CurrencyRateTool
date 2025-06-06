@@ -27,15 +27,11 @@
         <text class="secondary-rate-sentence">
           1 {{secondaryFromCurrency.name}} ≈ {{secondaryRate}} {{secondaryToCurrency.name}}
         </text>
-        
-        <!-- 新增: AI建议和提示的容器 -->
-        <view class="ai-advice-container {{advice.status}}">
-          <view class="ai-advice-line">
-            <text class="advice-icon">{{advice.icon}}</text>
-            <text class="advice-text-brief">{{advice.brief}}</text>
-          </view>
-          <text class="click-tip">* 点击卡片任意位置可查看详细分析</text>
+        <view class="ai-advice-line {{advice.status}}">
+          <text class="advice-icon">{{advice.icon}}</text>
+          <text class="advice-text-brief">{{advice.brief}}</text>
         </view>
+        <text class="click-tip">* 点击卡片任意位置可查看详细分析</text>
       </view>
     </view>
     
