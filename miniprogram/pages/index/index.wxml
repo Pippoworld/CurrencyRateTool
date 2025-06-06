@@ -1,10 +1,10 @@
 <!--index.wxml - 使用固定容器放置建议-->
 <view class="container">
-  <!-- 汇率监控卡片 - 右边固定建议容器 -->
+  <!-- 汇率监控卡片 -->
   <view class="rate-header" bindtap="goToRateDetail">
     <view class="rate-info">
       <view class="rate-pair-with-tip">
-        <text class="rate-pair">{{currencies[cardFromCurrencyIndex].flag}} {{currencies[cardFromCurrencyIndex].code}} / {{currencies[cardToCurrencyIndex].flag}} {{currencies[cardToCurrencyIndex].code}}</text>
+        <text class="rate-pair">{{currencies[cardToCurrencyIndex].flag}} {{currencies[cardToCurrencyIndex].code}} / {{currencies[cardFromCurrencyIndex].flag}} {{currencies[cardFromCurrencyIndex].code}}</text>
         <text class="monitor-tip">💡 长期监控</text>
       </view>
       <text class="rate-value">{{currentRate}}</text>
@@ -13,16 +13,12 @@
       <text class="setting-tip">点击进入详情页更改监控币种</text>
     </view>
     
-    <!-- 右边固定建议容器 -->
-    <view class="rate-advice-fixed">
-      <view class="rate-advice" bindtap="goToRateDetail">
-        <view class="advice-status-dot"></view>
-        <view class="advice-content-mobile">
-          <text class="advice-title-main">{{advice.title}}</text>
-          <text class="advice-brief">{{advice.brief}}</text>
-          <text class="advice-quick-tip">{{advice.quickTip}}</text>
-        </view>
-        <text class="advice-more">详细分析</text>
+    <!-- 右边改为显示反向汇率 -->
+    <view class="reverse-rate-container">
+      <view class="reverse-rate-content">
+        <text class="reverse-rate-title">反向汇率</text>
+        <text class="reverse-rate-pair">{{currencies[cardFromCurrencyIndex].code}} / {{currencies[cardToCurrencyIndex].code}}</text>
+        <text class="reverse-rate-value">{{reverseRate}}</text>
       </view>
     </view>
   </view>
