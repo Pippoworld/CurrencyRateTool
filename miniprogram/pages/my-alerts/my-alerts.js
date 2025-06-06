@@ -105,7 +105,8 @@ Page({
   saveAlert() {
     const { formData } = this.data;
     
-    if (!formData.price || parseFloat(formData.price) <= 0) {
+    const price = parseFloat(formData.price);
+    if (!formData.price || isNaN(price) || price <= 0) {
       wx.showToast({
         title: '请输入有效价格',
         icon: 'error'
@@ -113,10 +114,31 @@ Page({
       return;
     }
 
+    // 价格合理性检查
+    if (price > 1000) {
+      wx.showModal({
+        title: '价格确认',
+        content: `输入的价格 ${price} 较高，确认是否正确？`,
+        success: (res) => {
+          if (res.confirm) {
+            this.createAlert(price);
+          }
+        }
+      });
+      return;
+    }
+
+    this.createAlert(price);
+  },
+
+  // 创建提醒
+  createAlert(price) {
+    const { formData } = this.data;
+    
     const alertData = {
       id: Date.now().toString(),
       type: formData.type,
-      price: parseFloat(formData.price).toFixed(4),
+      price: price.toFixed(4),
       fromCurrency: formData.fromCurrency,
       toCurrency: formData.toCurrency,
       fromCurrencyName: formData.fromCurrencyName,
