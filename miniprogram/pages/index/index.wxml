@@ -21,8 +21,6 @@
         <text class="rate-value">{{primaryRate}}</text>
         <text class="rate-unit">{{primaryToCurrency.name}}</text>
       </view>
-      <text class="rate-change {{rateChangeStatus}}">{{rateChange}}</text>
-      <!-- AI建议行 -->
       <view class="ai-advice-line {{advice.status}}">
         <text class="advice-icon">{{advice.icon}}</text>
         <text class="advice-text-brief">{{advice.brief}}</text>
@@ -44,6 +42,7 @@
         <text class="rate-value small">{{secondaryRate}}</text>
         <text class="rate-unit small">{{secondaryToCurrency.name}}</text>
       </view>
+      <text class="rate-change small {{rateChangeStatus}}">{{rateChange}}</text>
     </view>
   </view>
 

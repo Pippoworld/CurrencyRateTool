@@ -37,17 +37,21 @@ page {
 }
 
 .primary-rate {
-  flex-basis: 60%;
+  flex-basis: 58%;
+  padding-right: 0;
 }
 
 .secondary-rate {
-  flex-basis: 40%;
-  background-color: #f8fafc;
-  border-radius: 18rpx;
-  padding: 16rpx;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+  flex-basis: 42%;
+  border-left: none;
+  padding-left: 0;
+  background-color: transparent;
+  padding-top: 0;
+  padding-bottom: 0;
+  border-radius: 0;
+  justify-content: flex-start;
+  align-items: flex-start;
+  text-align: left;
 }
 
 .rate-direction {
@@ -85,7 +89,7 @@ page {
 
 .secondary-rate .rate-direction,
 .secondary-rate .rate-display {
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 .flag {
@@ -167,13 +171,14 @@ page {
 }
 
 .rate-change {
-  font-size: 24rpx;
+  font-size: 26rpx;
+  margin-top: 16rpx;
   font-weight: 500;
-  padding: 8rpx 16rpx;
-  border-radius: 20rpx;
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(10px);
-  align-self: flex-start;
+}
+
+.rate-change.small {
+  margin-top: 12rpx;
+  font-size: 24rpx;
 }
 
 /* 右边固定建议容器 */
