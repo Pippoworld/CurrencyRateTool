@@ -2,7 +2,7 @@
   <!-- 汇率计算器 -->
   <view class="card">
     <view class="card-header">
-      🧮 汇率计算器
+      汇率计算器
     </view>
     <view class="card-body">
       <view class="calculator-section">
@@ -38,13 +38,13 @@
   <view class="card">
     <view class="card-header rates-comparison-header">
       <view class="title-with-info">
-        <text class="card-title">💱 多国汇率对比</text>
+        <text class="card-title">多国汇率对比</text>
         <button class="info-btn" bindtap="showUpdateTime">
           <text class="info-icon">ⓘ</text>
         </button>
       </view>
       <button class="refresh-btn" bindtap="refreshRates" disabled="{{isRefreshing}}">
-        <text class="refresh-icon {{isRefreshing ? 'spinning' : ''}}">🔄</text>
+        <text class="refresh-icon {{isRefreshing ? 'spinning' : ''}}">⟳</text>
       </button>
     </view>
     <view class="card-body">
@@ -74,7 +74,7 @@
       <!-- 添加更多货币 -->
       <view class="add-currency-section">
         <button class="add-currency-btn" bindtap="showCurrencySelector">
-          <text class="add-icon">➕</text>
+          <text class="add-icon">+</text>
           <text class="add-text">添加更多货币对比</text>
         </button>
       </view>
@@ -84,7 +84,7 @@
   <!-- 汇率走势（简化版） -->
   <view class="card" wx:if="{{selectedCurrency}}">
     <view class="card-header">
-      📈 {{selectedCurrency.flag}} {{selectedCurrency.name}} 走势
+      {{selectedCurrency.flag}} {{selectedCurrency.name}} 走势
     </view>
     <view class="card-body">
       <view class="chart-container">
