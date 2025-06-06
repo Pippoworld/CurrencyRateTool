@@ -666,20 +666,47 @@ Page({
 
   // 获取货币汇率基准线
   getCurrencyBaselines(currencyCode) {
-    // 基于近期真实汇率波动范围的合理区间
+    // 基于留学生实际能遇到的汇率范围（更贴近现实的6个月-1年波动区间）
     const baselines = {
-      'USD': { min: 6.95, max: 7.35 },  // 美元
-      'EUR': { min: 7.45, max: 7.95 },  // 欧元
-      'JPY': { min: 0.045, max: 0.052 }, // 日元
-      'GBP': { min: 8.65, max: 9.25 },  // 英镑
-      'AUD': { min: 4.45, max: 4.85 },  // 澳元
-      'CAD': { min: 5.05, max: 5.45 },  // 加元
-      'CHF': { min: 7.65, max: 8.05 },  // 瑞郎
-      'HKD': { min: 0.88, max: 0.95 },  // 港币
-      'SGD': { min: 5.05, max: 5.45 }   // 新币
+      'USD': { 
+        min: 7.05, max: 7.30,        // 美元常见区间
+        excellent: 7.00, good: 7.10, fair: 7.20, poor: 7.30 
+      },
+      'EUR': { 
+        min: 7.60, max: 7.90,        // 欧元常见区间
+        excellent: 7.50, good: 7.65, fair: 7.75, poor: 7.85 
+      },
+      'JPY': { 
+        min: 0.047, max: 0.051,      // 日元常见区间
+        excellent: 0.046, good: 0.048, fair: 0.050, poor: 0.051 
+      },
+      'GBP': { 
+        min: 8.80, max: 9.20,        // 英镑常见区间
+        excellent: 8.70, good: 8.90, fair: 9.05, poor: 9.15 
+      },
+      'AUD': { 
+        min: 4.55, max: 4.80,        // 澳元常见区间（调整为更现实的范围）
+        excellent: 4.50, good: 4.60, fair: 4.70, poor: 4.75 
+      },
+      'CAD': { 
+        min: 5.15, max: 5.40,        // 加元常见区间
+        excellent: 5.10, good: 5.20, fair: 5.30, poor: 5.35 
+      },
+      'CHF': { 
+        min: 7.75, max: 8.00,        // 瑞郎常见区间
+        excellent: 7.70, good: 7.80, fair: 7.90, poor: 7.95 
+      },
+      'HKD': { 
+        min: 0.90, max: 0.94,        // 港币常见区间
+        excellent: 0.89, good: 0.91, fair: 0.92, poor: 0.93 
+      },
+      'SGD': { 
+        min: 5.20, max: 5.40,        // 新币常见区间
+        excellent: 5.15, good: 5.25, fair: 5.32, poor: 5.38 
+      }
     };
     
-    return baselines[currencyCode] || { min: 1, max: 10 };
+    return baselines[currencyCode] || { min: 1, max: 10, excellent: 1, good: 3, fair: 7, poor: 9 };
   },
 
   // 加载用户设置
@@ -1254,7 +1281,7 @@ Page({
     });
   },
 
-  // 生成AI提醒建议 - 留学生换汇场景
+  // 生成AI提醒建议 - 基于留学生实际需求的智能算法
   generateAlertSuggestions() {
     const currentRate = parseFloat(this.data.currentRate);
     const fromCurrency = this.data.currencies[this.data.fromCurrencyIndex];
@@ -1264,41 +1291,69 @@ Page({
       return;
     }
     
-    // 基于汇率位置为留学生生成换汇建议价位
     const baselines = this.getCurrencyBaselines(toCurrency.code);
-    const position = (currentRate - baselines.min) / (baselines.max - baselines.min);
     const isFromChina = fromCurrency.code === 'CNY';
     
-    // 换汇机会提醒建议（汇率变好时提醒）
-    let buyAlertPrice, buyReason;
-    if (position > 0.7) {
-      // 当前汇率较高，建议等待大幅回调
-      buyAlertPrice = (currentRate * 0.90).toFixed(4); // 低10%
-      buyReason = isFromChina ? '汇率大幅回调，换汇很划算' : '汇率大幅下降，换汇好时机';
-    } else if (position > 0.4) {
-      // 当前汇率中等，建议等待适度回调
-      buyAlertPrice = (currentRate * 0.95).toFixed(4); // 低5%
-      buyReason = isFromChina ? '汇率回调到位，可以换汇了' : '汇率适度下降，换汇时机较好';
+    // 判断当前汇率的等级
+    let rateLevel;
+    if (currentRate <= baselines.excellent) {
+      rateLevel = 'excellent'; // 超优惠（一年难遇）
+    } else if (currentRate <= baselines.good) {
+      rateLevel = 'good';      // 很好（2-3个月遇一次）
+    } else if (currentRate <= baselines.fair) {
+      rateLevel = 'fair';      // 一般（常见价格）
     } else {
-      // 当前汇率较低，建议再低一点多换
-      buyAlertPrice = (currentRate * 0.97).toFixed(4); // 低3%
-      buyReason = isFromChina ? '汇率继续下探，可多换些备用' : '汇率进一步下降，多换一些';
+      rateLevel = 'poor';      // 偏高（应该等等）
     }
     
-    // 及时换汇提醒建议（汇率可能变差时提醒）
+    // 机会换汇提醒（等待更好价格）
+    let buyAlertPrice, buyReason;
+    switch (rateLevel) {
+      case 'excellent':
+        // 已经是超优惠，设置抄底提醒（再低1-2%）
+        buyAlertPrice = (currentRate * 0.98).toFixed(4);
+        buyReason = isFromChina ? '超级抄底机会！可大量换汇' : '抄底机会，大量换汇';
+        break;
+      case 'good':
+        // 很好的价格，设置小幅下跌提醒（再低2-3%）
+        buyAlertPrice = (currentRate * 0.97).toFixed(4);
+        buyReason = isFromChina ? '汇率继续下跌，多换些备用' : '价格更优，适合多换';
+        break;
+      case 'fair':
+        // 一般价格，等待较好机会（低3-5%）
+        buyAlertPrice = baselines.good.toFixed(4);
+        buyReason = isFromChina ? '等到好价格再换汇' : '等到更好价格';
+        break;
+      case 'poor':
+        // 偏高价格，等待明显回调（低5-8%）
+        buyAlertPrice = baselines.fair.toFixed(4);
+        buyReason = isFromChina ? '汇率偏高，等等再换' : '价格偏高，建议等待';
+        break;
+    }
+    
+    // 及时换汇提醒（避免错过当前机会或更高价格）
     let sellAlertPrice, sellReason;
-    if (position < 0.3) {
-      // 当前汇率较低，建议在上涨前换汇
-      sellAlertPrice = (currentRate * 1.05).toFixed(4); // 高5%
-      sellReason = isFromChina ? '汇率开始反弹，该换汇了' : '汇率上涨，抓紧换汇';
-    } else if (position < 0.6) {
-      // 当前汇率中等，建议适度上涨时换汇
-      sellAlertPrice = (currentRate * 1.03).toFixed(4); // 高3%
-      sellReason = isFromChina ? '汇率小幅上涨，及时换汇' : '汇率温和上涨，考虑换汇';
-    } else {
-      // 当前汇率较高，建议任何上涨都要换汇
-      sellAlertPrice = (currentRate * 1.02).toFixed(4); // 高2%
-      sellReason = isFromChina ? '汇率继续走高，赶紧换汇' : '汇率高位上涨，立即换汇';
+    switch (rateLevel) {
+      case 'excellent':
+        // 超优惠价，小幅上涨就要抓住（高1-2%）
+        sellAlertPrice = (currentRate * 1.015).toFixed(4);
+        sellReason = isFromChina ? '超低价开始反弹，抓紧换！' : '超低价反弹，立即换汇';
+        break;
+      case 'good':
+        // 好价格，适度上涨时换汇（高2-3%）
+        sellAlertPrice = (currentRate * 1.02).toFixed(4);
+        sellReason = isFromChina ? '好价格开始上涨，该换了' : '好价格上涨，及时换汇';
+        break;
+      case 'fair':
+        // 一般价格，如果有短期需求（高1-2%）
+        sellAlertPrice = (currentRate * 1.015).toFixed(4);
+        sellReason = isFromChina ? '短期需求可以换汇' : '短期需求，可以换汇';
+        break;
+      case 'poor':
+        // 偏高价格，避免更高（高0.5-1%）
+        sellAlertPrice = (currentRate * 1.005).toFixed(4);
+        sellReason = isFromChina ? '避免价格更高，有急需可换' : '避免更高价格，急需可换';
+        break;
     }
     
     this.setData({
