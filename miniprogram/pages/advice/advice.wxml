@@ -1,313 +1,150 @@
 <view class="container">
-  <!-- 实时汇率概览 -->
-  <view class="card overview-card">
-    <view class="card-header">
-      <view class="header-info">
-        <text class="card-title">💰 实时汇率</text>
-        <text class="update-time">更新时间: {{lastUpdateTime}}</text>
-      </view>
-      <button class="refresh-btn" bindtap="refreshAllData">
-        <text class="refresh-icon">🔄</text>
-      </button>
-    </view>
-    <view class="card-body">
-      <view class="market-overview">
-        <view class="overview-stats">
-          <view class="stat-item up">
-            <text class="stat-value">{{marketStats.up}}</text>
-            <text class="stat-label">上涨</text>
-          </view>
-          <view class="stat-item down">
-            <text class="stat-value">{{marketStats.down}}</text>
-            <text class="stat-label">下跌</text>
-          </view>
-          <view class="stat-item flat">
-            <text class="stat-value">{{marketStats.flat}}</text>
-            <text class="stat-label">平盘</text>
-          </view>
-          <view class="stat-item">
-            <text class="stat-value">{{marketStats.total}}</text>
-            <text class="stat-label">总币种</text>
-          </view>
-        </view>
-      </view>
-    </view>
-  </view>
-
-  <!-- 快速汇率计算器 -->
-  <view class="card calculator-card">
+  <!-- 汇率计算器 -->
+  <view class="card">
     <view class="card-header">
       🧮 汇率计算器
     </view>
     <view class="card-body">
       <view class="calculator-section">
-        <view class="calc-row">
-          <view class="calc-input-group">
-            <input class="calc-input" type="digit" value="{{calcFrom.amount}}" bindinput="onCalcFromInput" placeholder="0.00" />
-            <picker bindchange="onCalcFromCurrencyChange" value="{{calcFrom.currencyIndex}}" range="{{currencies}}" range-key="name">
-              <view class="calc-currency-picker">
-                <text class="calc-flag">{{currencies[calcFrom.currencyIndex].flag}}</text>
-                <text class="calc-code">{{currencies[calcFrom.currencyIndex].code}}</text>
-                <text class="picker-arrow">▼</text>
-              </view>
-            </picker>
-          </view>
+        <!-- 基础货币输入 -->
+        <view class="currency-input-row">
+          <picker bindchange="onBaseCurrencyChange" value="{{baseCurrencyIndex}}" range="{{currencies}}" range-key="name">
+            <view class="currency-selector">
+              <text class="currency-flag">{{currencies[baseCurrencyIndex].flag}}</text>
+              <text class="currency-code">{{currencies[baseCurrencyIndex].code}}</text>
+              <text class="currency-name">{{currencies[baseCurrencyIndex].name}}</text>
+              <text class="selector-arrow">▼</text>
+            </view>
+          </picker>
+          <input 
+            class="amount-input" 
+            type="digit" 
+            value="{{baseAmount}}" 
+            bindinput="onBaseAmountInput"
+            placeholder="100"
+            maxlength="15"
+          />
         </view>
         
-        <view class="calc-swap">
-          <button class="swap-btn" bindtap="swapCalcCurrencies">
-            <text class="swap-icon">⇅</text>
-          </button>
-        </view>
-        
-        <view class="calc-row">
-          <view class="calc-input-group">
-            <input class="calc-input" type="digit" value="{{calcTo.amount}}" bindinput="onCalcToInput" placeholder="0.00" />
-            <picker bindchange="onCalcToCurrencyChange" value="{{calcTo.currencyIndex}}" range="{{currencies}}" range-key="name">
-              <view class="calc-currency-picker">
-                <text class="calc-flag">{{currencies[calcTo.currencyIndex].flag}}</text>
-                <text class="calc-code">{{currencies[calcTo.currencyIndex].code}}</text>
-                <text class="picker-arrow">▼</text>
-              </view>
-            </picker>
-          </view>
-        </view>
-        
-        <view class="calc-info">
-          <text class="calc-rate">汇率: 1 {{currencies[calcFrom.currencyIndex].code}} = {{calcRate}} {{currencies[calcTo.currencyIndex].code}}</text>
+        <!-- 计算结果提示 -->
+        <view class="calc-tip" wx:if="{{baseAmount}}">
+          <text class="tip-text">{{baseAmount}} {{currencies[baseCurrencyIndex].code}} 可以兑换：</text>
         </view>
       </view>
     </view>
   </view>
 
-  <!-- 主要货币汇率看板 -->
-  <view class="card rates-board">
-    <view class="card-header">
-      <text class="card-title">📊 主要货币</text>
-      <view class="sort-controls">
-        <button class="sort-btn {{sortBy === 'name' ? 'active' : ''}}" bindtap="changeSortBy" data-sort="name">名称</button>
-        <button class="sort-btn {{sortBy === 'rate' ? 'active' : ''}}" bindtap="changeSortBy" data-sort="rate">汇率</button>
-        <button class="sort-btn {{sortBy === 'change' ? 'active' : ''}}" bindtap="changeSortBy" data-sort="change">涨跌</button>
+  <!-- 多国汇率对比 -->
+  <view class="card">
+    <view class="card-header rates-comparison-header">
+      <view class="title-with-info">
+        <text class="card-title">💱 多国汇率对比</text>
+        <button class="info-btn" bindtap="showUpdateTime">
+          <text class="info-icon">ⓘ</text>
+        </button>
       </view>
+      <button class="refresh-btn" bindtap="refreshRates" disabled="{{isRefreshing}}">
+        <text class="refresh-icon {{isRefreshing ? 'spinning' : ''}}">🔄</text>
+      </button>
     </view>
     <view class="card-body">
-      <view class="currency-list">
-        <view class="currency-item" wx:for="{{currencyRates}}" wx:key="code" bindtap="selectCurrency" data-currency="{{item}}">
-          <view class="currency-basic">
-            <text class="currency-flag">{{item.flag}}</text>
-            <view class="currency-detail">
-              <text class="currency-name">{{item.name}}</text>
-              <text class="currency-code">{{item.code}}</text>
+      <!-- 汇率列表 -->
+      <view class="rates-list">
+        <view class="rate-item" wx:for="{{ratesList}}" wx:key="code" wx:if="{{item.code !== currencies[baseCurrencyIndex].code}}">
+          <view class="rate-info">
+            <view class="currency-basic">
+              <text class="rate-flag">{{item.flag}}</text>
+              <view class="currency-detail">
+                <text class="rate-code">{{item.code}}</text>
+                <text class="rate-name">{{item.name}}</text>
+              </view>
+            </view>
+            <view class="rate-values">
+              <text class="rate-value">{{item.displayRate}}</text>
+              <text class="calculated-amount" wx:if="{{baseAmount}}">{{item.calculatedAmount}}</text>
             </view>
           </view>
-          <view class="currency-data">
-            <text class="current-rate">{{item.rate}}</text>
-            <view class="rate-change {{item.changeStatus}}">
-              <text class="change-icon">{{item.changeIcon}}</text>
-              <text class="change-value">{{item.change}}</text>
-              <text class="change-percent">({{item.changePercent}}%)</text>
-            </view>
-          </view>
-          <view class="currency-actions">
-            <button class="action-btn monitor" bindtap="addToMonitor" data-currency="{{item}}" catchtap="">
-              <text class="action-icon">👁</text>
-            </button>
-            <button class="action-btn alert" bindtap="setAlert" data-currency="{{item}}" catchtap="">
-              <text class="action-icon">🔔</text>
-            </button>
+          <view class="rate-change {{item.trend}}">
+            <text class="change-icon">{{item.changeIcon}}</text>
+            <text class="change-percent">{{item.changePercent}}%</text>
           </view>
         </view>
-      </view>
-    </view>
-  </view>
-
-  <!-- 银行汇率对比 -->
-  <view class="card bank-rates">
-    <view class="card-header">
-      🏦 银行汇率对比
-    </view>
-    <view class="card-body">
-      <view class="bank-selector">
-        <picker bindchange="onBankCurrencyChange" value="{{bankCurrencyIndex}}" range="{{currencies}}" range-key="name">
-          <view class="bank-currency-picker">
-            <text class="picker-label">选择货币:</text>
-            <text class="picker-currency">{{currencies[bankCurrencyIndex].flag}} {{currencies[bankCurrencyIndex].name}}</text>
-            <text class="picker-arrow">▼</text>
-          </view>
-        </picker>
       </view>
       
-      <view class="bank-list">
-        <view class="bank-header">
-          <text class="bank-col-name">银行</text>
-          <text class="bank-col-buy">买入价</text>
-          <text class="bank-col-sell">卖出价</text>
-          <text class="bank-col-spread">价差</text>
-        </view>
-        <view class="bank-item" wx:for="{{bankRates}}" wx:key="name">
-          <view class="bank-info">
-            <text class="bank-icon">{{item.icon}}</text>
-            <text class="bank-name">{{item.name}}</text>
-          </view>
-          <text class="bank-buy">{{item.buyRate}}</text>
-          <text class="bank-sell">{{item.sellRate}}</text>
-          <text class="bank-spread {{item.spreadStatus}}">{{item.spread}}</text>
-        </view>
+      <!-- 添加更多货币 -->
+      <view class="add-currency-section">
+        <button class="add-currency-btn" bindtap="showCurrencySelector">
+          <text class="add-icon">➕</text>
+          <text class="add-text">添加更多货币对比</text>
+        </button>
       </view>
     </view>
   </view>
 
-  <!-- 汇率走势图表 -->
-  <view class="card chart-card">
+  <!-- 汇率走势（简化版） -->
+  <view class="card" wx:if="{{selectedCurrency}}">
     <view class="card-header">
-      <text class="card-title">📈 {{selectedCurrency.flag}} {{selectedCurrency.name}} 走势</text>
-      <view class="chart-controls">
-        <text class="time-tab {{timeRange === '1D' ? 'active' : ''}}" bindtap="changeTimeRange" data-range="1D">1日</text>
-        <text class="time-tab {{timeRange === '7D' ? 'active' : ''}}" bindtap="changeTimeRange" data-range="7D">7日</text>
-        <text class="time-tab {{timeRange === '30D' ? 'active' : ''}}" bindtap="changeTimeRange" data-range="30D">30日</text>
-      </view>
+      📈 {{selectedCurrency.flag}} {{selectedCurrency.name}} 走势
     </view>
     <view class="card-body">
       <view class="chart-container">
         <view class="chart-wrapper">
-          <view class="chart-line" wx:for="{{chartData}}" wx:key="index">
-            <view class="chart-point" 
-                  style="height: {{item.height}}%; background: {{item.color}};" 
-                  bindtap="showChartPoint" 
-                  data-point="{{item}}">
-            </view>
-            <text class="chart-label">{{item.label}}</text>
+          <view class="chart-bar" wx:for="{{chartData}}" wx:key="index"
+                style="height: {{item.height}}%; background: {{item.color}};" 
+                bindtap="showRateDetail" data-point="{{item}}">
           </view>
+        </view>
+        <view class="chart-labels">
+          <text class="chart-label" wx:for="{{chartLabels}}" wx:key="index">{{item}}</text>
         </view>
       </view>
       
-      <view class="chart-summary">
-        <view class="summary-item">
-          <text class="summary-label">最高</text>
-          <text class="summary-value high">{{chartSummary.high}}</text>
+      <view class="chart-stats">
+        <view class="stat-item">
+          <text class="stat-label">最高</text>
+          <text class="stat-value high">{{chartStats.high}}</text>
         </view>
-        <view class="summary-item">
-          <text class="summary-label">最低</text>
-          <text class="summary-value low">{{chartSummary.low}}</text>
+        <view class="stat-item">
+          <text class="stat-label">最低</text>
+          <text class="stat-value low">{{chartStats.low}}</text>
         </view>
-        <view class="summary-item">
-          <text class="summary-label">波幅</text>
-          <text class="summary-value">{{chartSummary.range}}%</text>
-        </view>
-        <view class="summary-item">
-          <text class="summary-label">均价</text>
-          <text class="summary-value">{{chartSummary.average}}</text>
+        <view class="stat-item">
+          <text class="stat-label">当前</text>
+          <text class="stat-value current">{{chartStats.current}}</text>
         </view>
       </view>
     </view>
   </view>
+</view>
 
-  <!-- 换汇成本计算 -->
-  <view class="card cost-calculator">
-    <view class="card-header">
-      💳 换汇成本计算
-    </view>
-    <view class="card-body">
-      <view class="cost-inputs">
-        <view class="cost-input-row">
-          <text class="input-label">换汇金额:</text>
-          <input class="cost-input" type="digit" value="{{costCalc.amount}}" bindinput="onCostAmountInput" placeholder="输入金额" />
-          <text class="input-currency">{{currencies[calcFrom.currencyIndex].code}}</text>
-        </view>
-        
-        <view class="cost-input-row">
-          <text class="input-label">手续费率:</text>
-          <input class="cost-input" type="digit" value="{{costCalc.feeRate}}" bindinput="onCostFeeInput" placeholder="0.5" />
-          <text class="input-unit">%</text>
-        </view>
-      </view>
-      
-      <view class="cost-result">
-        <view class="cost-breakdown">
-          <view class="cost-item">
-            <text class="cost-label">换汇金额</text>
-            <text class="cost-value">{{costCalc.baseAmount}}</text>
-          </view>
-          <view class="cost-item">
-            <text class="cost-label">手续费</text>
-            <text class="cost-value fee">{{costCalc.fee}}</text>
-          </view>
-          <view class="cost-item total">
-            <text class="cost-label">总成本</text>
-            <text class="cost-value">{{costCalc.totalCost}}</text>
-          </view>
-          <view class="cost-item">
-            <text class="cost-label">实际到账</text>
-            <text class="cost-value received">{{costCalc.received}}</text>
-          </view>
-        </view>
-      </view>
-    </view>
+<!-- 时间信息弹窗 -->
+<view class="time-modal" wx:if="{{showTimeModal}}" bindtap="hideTimeModal">
+  <view class="time-modal-content" catchtap="">
+    <view class="time-modal-title">数据更新时间</view>
+    <view class="time-modal-text">{{lastUpdateTime}}</view>
+    <button class="time-modal-close" bindtap="hideTimeModal">确定</button>
   </view>
+</view>
 
-  <!-- 汇率提醒快速设置 -->
-  <view class="card alerts-quick">
-    <view class="card-header">
-      🔔 快速设置提醒
+<!-- 货币选择弹窗 -->
+<view class="currency-modal" wx:if="{{showCurrencyModal}}" bindtap="hideCurrencySelector">
+  <view class="modal-content" catchtap="">
+    <view class="modal-header">
+      <text class="modal-title">选择货币</text>
+      <button class="modal-close" bindtap="hideCurrencySelector">✕</button>
     </view>
-    <view class="card-body">
-      <view class="quick-alerts">
-        <view class="alert-preset" wx:for="{{alertPresets}}" wx:key="id" bindtap="setQuickAlert" data-preset="{{item}}">
-          <view class="preset-content">
-            <text class="preset-icon">{{item.icon}}</text>
-            <view class="preset-info">
-              <text class="preset-title">{{item.title}}</text>
-              <text class="preset-desc">{{item.description}}</text>
-            </view>
-          </view>
-          <text class="preset-arrow">→</text>
+    <view class="modal-body">
+      <view class="currency-grid">
+        <view class="currency-option" 
+              wx:for="{{allCurrencies}}" 
+              wx:key="code"
+              wx:if="{{!selectedCurrencies[item.code]}}"
+              bindtap="addCurrency" 
+              data-currency="{{item}}">
+          <text class="option-flag">{{item.flag}}</text>
+          <text class="option-code">{{item.code}}</text>
+          <text class="option-name">{{item.name}}</text>
         </view>
-      </view>
-    </view>
-  </view>
-
-  <!-- 实用工具集 -->
-  <view class="card tools-card">
-    <view class="card-header">
-      🛠 实用工具
-    </view>
-    <view class="card-body">
-      <view class="tools-grid">
-        <button class="tool-item" bindtap="goToRateHistory">
-          <text class="tool-icon">📊</text>
-          <text class="tool-name">历史汇率</text>
-          <text class="tool-desc">查看历史走势</text>
-        </button>
-        
-        <button class="tool-item" bindtap="goToRateAlerts">
-          <text class="tool-icon">⏰</text>
-          <text class="tool-name">我的提醒</text>
-          <text class="tool-desc">管理汇率提醒</text>
-        </button>
-        
-        <button class="tool-item" bindtap="showRateComparison">
-          <text class="tool-icon">⚖️</text>
-          <text class="tool-name">多币种对比</text>
-          <text class="tool-desc">横向对比分析</text>
-        </button>
-        
-        <button class="tool-item" bindtap="showExchangeTips">
-          <text class="tool-icon">💡</text>
-          <text class="tool-name">换汇技巧</text>
-          <text class="tool-desc">省钱小贴士</text>
-        </button>
-        
-        <button class="tool-item" bindtap="showBestTiming">
-          <text class="tool-icon">🎯</text>
-          <text class="tool-name">最佳时机</text>
-          <text class="tool-desc">换汇时机分析</text>
-        </button>
-        
-        <button class="tool-item" bindtap="exportRateData">
-          <text class="tool-icon">📤</text>
-          <text class="tool-name">数据导出</text>
-          <text class="tool-desc">导出汇率记录</text>
-        </button>
       </view>
     </view>
   </view>
