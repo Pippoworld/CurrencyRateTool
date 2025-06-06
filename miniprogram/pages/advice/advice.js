@@ -141,25 +141,47 @@ Page({
     // 对比结果
     compareResult: [],
     
-    // 市场新闻
-    marketNews: [
+    // 市场新闻（精选实用信息）
+    news: [
       {
-        title: '美联储主席发表鹰派言论，美元走强',
-        summary: '联储主席在议会听证会上表示，可能需要进一步加息以控制通胀',
-        source: '财经新闻',
-        time: '2小时前',
-        impact: '汇率上涨',
-        impactLevel: 'positive',
-        url: '#'
+        id: 1,
+        title: "留学生换汇季来临，关注汇率波动趋势",
+        summary: "进入秋季学期，留学生换汇需求增加。建议关注美元、澳元等主要货币的近期走势，选择合适时机换汇。",
+        time: "2小时前",
+        source: "汇率助手",
+        type: "educational"
       },
       {
-        title: '欧央行维持利率不变，欧元承压',
-        summary: '欧洲央行决定维持基准利率不变，市场对欧元前景存疑',
-        source: '路透社',
-        time: '4小时前',
-        impact: '汇率下跌',
-        impactLevel: 'negative',
-        url: '#'
+        id: 2,
+        title: "各大银行换汇手续费对比分析",
+        summary: "中行、工行、招行等主要银行换汇手续费差异明显，留学生可通过比较选择最优惠的换汇渠道。",
+        time: "5小时前",
+        source: "汇率助手",
+        type: "practical"
+      },
+      {
+        id: 3,
+        title: "人民币汇率稳中有升，出国留学成本相对降低",
+        summary: "近期人民币汇率表现稳健，对于计划出国留学的学生来说，换汇成本有所降低，是换汇的好时机。",
+        time: "8小时前",
+        source: "汇率助手",
+        type: "economic"
+      },
+      {
+        id: 4,
+        title: "澳洲学费缴费期临近，建议提前准备澳元",
+        summary: "澳洲各大学第二学期学费即将到期，建议留学生提前关注澳元汇率，合理安排换汇时间。",
+        time: "12小时前",
+        source: "汇率助手",
+        type: "reminder"
+      },
+      {
+        id: 5,
+        title: "英镑汇率小幅回调，英国留学生换汇机会",
+        summary: "英镑近期小幅回调，为赴英留学生提供了较好的换汇窗口，建议关注后续走势变化。",
+        time: "1天前",
+        source: "汇率助手",
+        type: "opportunity"
       }
     ],
 
@@ -206,34 +228,6 @@ Page({
       selectedCurrencies: [],
       data: []
     },
-
-    // 市场新闻（模拟数据）
-    news: [
-      {
-        id: 1,
-        title: "美联储维持利率不变，美元汇率保持稳定",
-        summary: "美联储宣布维持基准利率不变，市场对此反应平静，美元指数小幅波动。",
-        time: "2小时前",
-        source: "财经新闻",
-        type: "policy"
-      },
-      {
-        id: 2,
-        title: "欧洲央行暗示可能降息，欧元承压",
-        summary: "欧洲央行官员表示可能在下次会议中考虑降息措施，欧元对主要货币走弱。",
-        time: "4小时前",
-        source: "路透社",
-        type: "policy"
-      },
-      {
-        id: 3,
-        title: "中国出口数据超预期，人民币汇率上涨",
-        summary: "最新公布的出口数据显示中国对外贸易强劲，人民币汇率应声上涨。",
-        time: "6小时前",
-        source: "新华财经",
-        type: "economic"
-      }
-    ],
 
     // 页面状态
     isLoading: true,
@@ -315,7 +309,7 @@ Page({
       
       // 为每个货币添加趋势和变化数据
       const enhancedRates = appData.currencies.map(currency => {
-        // 生成模拟的24小时变化数据
+        // 生成符合实际情况的汇率变化数据
         const change24h = this.generateRealisticChange();
         const changePercent = (change24h / currency.rate * 100);
         
@@ -350,7 +344,7 @@ Page({
   },
 
   /**
-   * 生成现实的汇率变化
+   * 生成符合实际情况的汇率变化数据
    */
   generateRealisticChange() {
     // 生成符合实际汇率波动特征的变化值

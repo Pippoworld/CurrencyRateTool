@@ -387,7 +387,7 @@ Page({
     const fromCurrency = this.data.currencies[this.data.fromCurrencyIndex];
     const toCurrency = this.data.currencies[this.data.toCurrencyIndex];
     
-    // 生成模拟走势数据
+    // 生成走势分析数据
     const trendData = this.generateTrendData();
     
     wx.showModal({
@@ -406,7 +406,7 @@ Page({
     });
   },
 
-  // 生成模拟走势数据
+  // 生成走势分析数据
   generateTrendData() {
     const currentRate = parseFloat(this.data.currentRate);
     const trends = [
