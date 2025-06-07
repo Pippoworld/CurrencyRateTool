@@ -136,9 +136,34 @@ class ExchangeRateAPI {
           
           // 处理V6 API的响应格式
           if (data.result === 'success' && data.conversion_rates) {
+            // 兼容性修复：将 "Sat, 07 Jun 2025 00:00:01 +0000" 这样的RFC 2822格式转换为iOS兼容的 "yyyy/MM/dd HH:mm:ss" 格式
+            let dateStr = data.time_last_update_utc;
+            if (dateStr) {
+              try {
+                // 移除星期几部分, e.g., "07 Jun 2025 00:00:01 +0000"
+                let parts = dateStr.split(' ');
+                if (parts.length > 4) {
+                  let day = parts[1];
+                  let monthStr = parts[2];
+                  let year = parts[3];
+                  let time = parts[4];
+                  const months = { 'Jan':'01', 'Feb':'02', 'Mar':'03', 'Apr':'04', 'May':'05', 'Jun':'06', 'Jul':'07', 'Aug':'08', 'Sep':'09', 'Oct':'10', 'Nov':'11', 'Dec':'12' };
+                  let month = months[monthStr];
+                  // 构造成 '2025/06/07 00:00:01'
+                  dateStr = `${year}/${month}/${day} ${time}`;
+                }
+              } catch(e) {
+                // 如果解析失败，则使用当前时间作为备用
+                console.error("解析V6 API日期失败, 使用当前时间", e);
+                dateStr = new Date().toLocaleString('sv-SE').replace(/-/g, '/');
+              }
+            } else {
+              dateStr = new Date().toLocaleString('sv-SE').replace(/-/g, '/');
+            }
+
             const standardizedData = {
               base: data.base_code || baseCurrency,
-              date: data.time_last_update_utc ? new Date(data.time_last_update_utc).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+              date: new Date(dateStr).toISOString().split('T')[0],
               rates: data.conversion_rates,
               source: source.name,
               timestamp: Date.now()

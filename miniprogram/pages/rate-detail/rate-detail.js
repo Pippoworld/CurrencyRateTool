@@ -113,9 +113,9 @@ Page({
     this.updateExchangeRate();
     this.loadUserSettings();
     this.updateTargetStatus(); // 初始化目标状态
-    this.generateAdvice();
-    this.generateAlertSuggestions(); // 生成智能提醒建议
-    this.generateBankRates();
+    await this.generateAdvice(); // 已改造
+    await this.generateAlertSuggestions(); // 已改造
+    await this.generateBankRates(); // 已改造
     
     console.log('=== 详情页onLoad完成 ===');
   },
@@ -137,9 +137,9 @@ Page({
     
     this.updateExchangeRate();
     this.updateTargetStatus(); // 更新目标状态
-    this.generateAdvice();
-    this.generateAlertSuggestions(); // 生成智能提醒建议
-    this.generateBankRates();
+    await this.generateAdvice(); // 已改造
+    await this.generateAlertSuggestions(); // 已改造
+    await this.generateBankRates(); // 已改造
     
     console.log('onShow - 更新后状态:', {
       fromCurrencyIndex: this.data.fromCurrencyIndex,
@@ -512,142 +512,47 @@ Page({
     }
   },
 
-  // 生成AI建议 - 基于真实汇率数据
-  generateAdvice() {
-    const fromCurrency = this.data.currencies[this.data.fromCurrencyIndex];
-    const toCurrency = this.data.currencies[this.data.toCurrencyIndex];
-    
-    if (!fromCurrency || !toCurrency) {
-      console.warn('货币数据不完整，无法生成建议');
-      return;
-    }
-    
-    // 🔍 详细调试日志 - 验证数据来源
-    console.log('=== AI 建议生成调试信息 ===');
-    console.log('数据来源:', this.data.rateDataSource);
-    console.log('数据更新时间:', this.data.lastUpdate);
-    console.log('原始汇率数据:', {
-      fromCurrency: `${fromCurrency.code} (${fromCurrency.name})`,
-      fromRate: fromCurrency.rate,
-      toCurrency: `${toCurrency.code} (${toCurrency.name})`,
-      toRate: toCurrency.rate
-    });
-    
-    // 基于真实汇率生成专业分析
-    const currentRate = parseFloat(this.data.currentRate);
-    console.log('计算出的当前汇率:', currentRate);
-    console.log('汇率计算公式 (目标币种→持有币种):', toCurrency.code === 'CNY' ? 
-      `1 ${toCurrency.code} = ${currentRate} ${fromCurrency.code}` :
-      fromCurrency.code === 'CNY' ? 
-      `1 ${toCurrency.code} = ${currentRate} ${fromCurrency.code}` :
-      `1 ${toCurrency.code} = ${currentRate} ${fromCurrency.code}`
-    );
-    
-    const advice = this.generateDetailedAnalysis(fromCurrency, toCurrency, currentRate);
-    
-    console.log('生成的AI建议:', {
-      status: advice.status,
-      title: advice.title,
-      confidence: advice.confidence,
-      currentRate: currentRate,
-      dataTimestamp: this.data.lastUpdate
-    });
-    console.log('=== AI 建议生成完成 ===');
-    
+  // 生成AI建议 - 【已改造】改为调用云函数
+  async generateAdvice() {
     this.setData({
-      aiAnalysis: advice
+      'aiAnalysis.status': 'loading',
+      'aiAnalysis.title': '正在获取AI分析...'
     });
-    
-    console.log('专业AI分析已基于真实汇率生成:', `${toCurrency.code}/${fromCurrency.code} = ${currentRate}`);
-  },
+    try {
+      const fromCurrency = this.data.currencies[this.data.fromCurrencyIndex];
+      const toCurrency = this.data.currencies[this.data.toCurrencyIndex];
+      const currentRate = this.data.currentRate;
 
-  // 生成详细分析 - 留学生换汇建议
-  generateDetailedAnalysis(fromCurrency, toCurrency, currentRate) {
-    const baselines = this.getCurrencyBaselines(toCurrency.code);
-    const position = (currentRate - baselines.min) / (baselines.max - baselines.min);
-    const rateRange = this.generateRateRange(currentRate, position);
-    
-    // 判断用户是否持有人民币（通常是从国内换汇到国外）
-    const isFromChina = fromCurrency.code === 'CNY';
-    const isToChina = toCurrency.code === 'CNY';
-    
-    // 基于汇率位置生成留学生换汇建议
-    if (position <= 0.3) {
-      return {
-        status: 'good',
-        title: '汇率低位，换汇性价比很高',
-        confidence: 88,
-        summary: isFromChina ? 
-          `${toCurrency.name}现在处于相对低价，1${toCurrency.name}只需${currentRate}${fromCurrency.name}，是近期换汇的好时机。建议有条件的同学可以多换一些备用。` :
-          `${toCurrency.name}汇率较低，现在是换汇的好时机，可以考虑适当多换一些。`,
-        factors: [
-          `当前汇率${currentRate}处于近期低位，换汇成本较低`,
-          isFromChina ? '相比前期高点，每万元能多换不少外币' : '相比前期，换汇成本明显下降',
-          '短期内汇率反弹可能性较大',
-          '适合有提前换汇需求的同学抓住机会',
-          '建议有闲置资金的情况下可以多换一些'
-        ],
-        suggestion: isFromChina ?
-          `建议：1）如果有下个月的学费生活费需求，现在换汇很划算 2）如果经济允许，可以多换1-2个月的费用备用 3）建议分2-3次换汇，避免一次性风险` :
-          `建议在当前汇率水平适当多换一些${toCurrency.name}，为未来1-2个月的开销做准备。`
-      };
-    } else if (position <= 0.5) {
-      return {
-        status: 'good',
-        title: '汇率适中，正常换汇即可',
-        confidence: 85,
-        summary: isFromChina ?
-          `当前${toCurrency.name}汇率${currentRate}处于合理区间，没有明显的换汇时机优势。按正常需求换汇即可，不必刻意囤汇。` :
-          `汇率处于正常水平，按需换汇即可。`,
-        factors: [
-          `汇率${currentRate}位于正常波动区间`,
-          '短期内大幅波动的可能性不大',
-          '适合按月按需进行常规换汇',
-          '无需特别等待或抢换',
-          '风险和收益相对平衡'
-        ],
-        suggestion: isFromChina ?
-          `建议：1）按正常节奏换汇，每月换下月开销即可 2）无需大量囤汇，保持正常节奏 3）关注汇率变化，如有较大波动再调整策略` :
-          `按照正常需求进行换汇即可，无需特别囤积或等待。`
-      };
-    } else if (position <= 0.8) {
-      return {
-        status: 'warning',
-        title: '汇率偏高，建议适当等等',
-        confidence: 82,
-        summary: isFromChina ?
-          `${toCurrency.name}当前汇率${currentRate}偏高，换汇成本较大。如果不是急用，建议适当等待汇率回落。` :
-          `汇率偏高，如非急需建议等待更好时机。`,
-        factors: [
-          `汇率${currentRate}处于相对高位，换汇成本偏高`,
-          '短期内有回调的可能性',
-          '非紧急开销可以适当延后换汇',
-          '建议保持观望，等待更好时机',
-          '如有急用可少量换汇，大额换汇建议等等'
-        ],
-        suggestion: isFromChina ?
-          `建议：1）紧急开销（如下周要交学费）正常换汇 2）非紧急开销建议等1-2周看情况 3）大额换汇（如一次性换几个月生活费）建议暂缓` :
-          `如非紧急需求，建议等待汇率回落后再进行大额换汇。紧急开销可少量换汇。`
-      };
-    } else {
-      return {
-        status: 'danger',
-        title: '汇率高位，建议暂缓换汇',
-        confidence: 90,
-        summary: isFromChina ?
-          `${toCurrency.name}汇率${currentRate}处于明显高位，换汇成本很高。除非特别紧急，强烈建议等待汇率回落后再换汇。` :
-          `汇率处于高位，强烈建议等待更好时机再换汇。`,
-        factors: [
-          `汇率${currentRate}处于明显高位，换汇成本很高`,
-          '与低点相比，同样金额能换到的外币明显减少',
-          '技术面显示有较大回调压力',
-          '耐心等待可能节省不少换汇成本',
-          '除非特别紧急，不建议大额换汇'
-        ],
-        suggestion: isFromChina ?
-          `建议：1）只换最紧急的开销（如本周必须交的费用）2）大额换汇强烈建议等等，可能等1-2周就能省不少钱 3）如果可能，尝试借用朋友的外币先应急` :
-          `强烈建议等待汇率回落后再进行换汇，当前成本过高。紧急需求可极少量换汇。`
-      };
+      console.log('[分析] 准备调用云函数 getRateAnalysis...');
+      const res = await wx.cloud.callFunction({
+        name: 'getRateAnalysis',
+        data: {
+          from: fromCurrency.code,
+          to: toCurrency.code,
+          rate: currentRate
+        }
+      });
+
+      if (res.result && res.result.success) {
+        this.setData({
+          aiAnalysis: res.result.analysis
+        });
+        console.log('[分析] 云函数返回成功:', res.result.analysis);
+      } else {
+        throw new Error(res.result.message || '云函数返回错误');
+      }
+    } catch (error) {
+      console.error('[分析] 调用云函数 getRateAnalysis 失败:', error);
+      this.setData({
+        aiAnalysis: {
+          status: 'danger',
+          title: 'AI分析服务暂时不可用',
+          confidence: 0,
+          summary: '无法连接到分析服务器，请检查您的网络连接或稍后重试。',
+          factors: [],
+          suggestion: '请尝试手动刷新页面。'
+        }
+      });
     }
   },
 
@@ -1070,174 +975,33 @@ Page({
     });
   },
 
-  // 生成银行汇率数据
-  generateBankRates() {
-    const fromCurrency = this.data.currencies[this.data.fromCurrencyIndex];
-    const currentRate = parseFloat(this.data.currentRate);
-    
-    // 根据不同货币生成对应国家的主要银行汇率
-    let bankRates = [];
-    
-    switch (fromCurrency.code) {
-      case 'USD':
-        bankRates = [
-          {
-            name: 'JP摩根大通银行',
-            type: '商业银行',
-            buyRate: (currentRate * 0.985).toFixed(4),
-            sellRate: (currentRate * 1.015).toFixed(4)
-          },
-          {
-            name: '美国银行',
-            type: '商业银行',
-            buyRate: (currentRate * 0.982).toFixed(4),
-            sellRate: (currentRate * 1.018).toFixed(4)
-          },
-          {
-            name: '富国银行',
-            type: '商业银行',
-            buyRate: (currentRate * 0.987).toFixed(4),
-            sellRate: (currentRate * 1.013).toFixed(4)
-          }
-        ];
-        break;
-      case 'EUR':
-        bankRates = [
-          {
-            name: '德意志银行',
-            type: '投资银行',
-            buyRate: (currentRate * 0.983).toFixed(4),
-            sellRate: (currentRate * 1.017).toFixed(4)
-          },
-          {
-            name: '法国巴黎银行',
-            type: '商业银行',
-            buyRate: (currentRate * 0.980).toFixed(4),
-            sellRate: (currentRate * 1.020).toFixed(4)
-          },
-          {
-            name: '意大利联合信贷银行',
-            type: '商业银行',
-            buyRate: (currentRate * 0.986).toFixed(4),
-            sellRate: (currentRate * 1.014).toFixed(4)
-          }
-        ];
-        break;
-      case 'GBP':
-        bankRates = [
-          {
-            name: '汇丰银行',
-            type: '国际银行',
-            buyRate: (currentRate * 0.984).toFixed(4),
-            sellRate: (currentRate * 1.016).toFixed(4)
-          },
-          {
-            name: '巴克莱银行',
-            type: '投资银行',
-            buyRate: (currentRate * 0.981).toFixed(4),
-            sellRate: (currentRate * 1.019).toFixed(4)
-          },
-          {
-            name: '劳埃德银行',
-            type: '商业银行',
-            buyRate: (currentRate * 0.988).toFixed(4),
-            sellRate: (currentRate * 1.012).toFixed(4)
-          }
-        ];
-        break;
-      case 'AUD':
-        bankRates = [
-          {
-            name: '澳洲联邦银行',
-            type: '国有银行',
-            buyRate: (currentRate * 0.985).toFixed(4),
-            sellRate: (currentRate * 1.015).toFixed(4)
-          },
-          {
-            name: '澳新银行',
-            type: '商业银行',
-            buyRate: (currentRate * 0.982).toFixed(4),
-            sellRate: (currentRate * 1.018).toFixed(4)
-          },
-          {
-            name: '西太平洋银行',
-            type: '商业银行',
-            buyRate: (currentRate * 0.987).toFixed(4),
-            sellRate: (currentRate * 1.013).toFixed(4)
-          }
-        ];
-        break;
-      case 'JPY':
-        bankRates = [
-          {
-            name: '三菱UFJ银行',
-            type: '商业银行',
-            buyRate: (currentRate * 0.985).toFixed(4),
-            sellRate: (currentRate * 1.015).toFixed(4)
-          },
-          {
-            name: '三井住友银行',
-            type: '商业银行',
-            buyRate: (currentRate * 0.983).toFixed(4),
-            sellRate: (currentRate * 1.017).toFixed(4)
-          },
-          {
-            name: '瑞穗银行',
-            type: '商业银行',
-            buyRate: (currentRate * 0.986).toFixed(4),
-            sellRate: (currentRate * 1.014).toFixed(4)
-          }
-        ];
-        break;
-      case 'CAD':
-        bankRates = [
-          {
-            name: '加拿大皇家银行',
-            type: '国有银行',
-            buyRate: (currentRate * 0.984).toFixed(4),
-            sellRate: (currentRate * 1.016).toFixed(4)
-          },
-          {
-            name: '多伦多道明银行',
-            type: '商业银行',
-            buyRate: (currentRate * 0.981).toFixed(4),
-            sellRate: (currentRate * 1.019).toFixed(4)
-          },
-          {
-            name: '加拿大帝国商业银行',
-            type: '商业银行',
-            buyRate: (currentRate * 0.987).toFixed(4),
-            sellRate: (currentRate * 1.013).toFixed(4)
-          }
-        ];
-        break;
-      default:
-        // 默认显示中国主要银行
-        bankRates = [
-          {
-            name: '中国银行',
-            type: '国有银行',
-            buyRate: (currentRate * 0.985).toFixed(4),
-            sellRate: (currentRate * 1.015).toFixed(4)
-          },
-          {
-            name: '工商银行',
-            type: '国有银行',
-            buyRate: (currentRate * 0.983).toFixed(4),
-            sellRate: (currentRate * 1.017).toFixed(4)
-          },
-          {
-            name: '招商银行',
-            type: '股份制银行',
-            buyRate: (currentRate * 0.987).toFixed(4),
-            sellRate: (currentRate * 1.013).toFixed(4)
-          }
-        ];
+  // 生成银行汇率对比 - 【已改造】改为调用云函数
+  async generateBankRates() {
+    this.setData({ bankRates: [] }); // 先清空
+    try {
+      const toCurrency = this.data.currencies[this.data.toCurrencyIndex];
+
+      console.log('[银行汇率] 准备调用云函数 getBankRates...');
+      const res = await wx.cloud.callFunction({
+        name: 'getBankRates',
+        data: {
+          currencyCode: toCurrency.code
+        }
+      });
+
+      if (res.result && res.result.success) {
+        this.setData({
+          bankRates: res.result.rates
+        });
+        console.log('[银行汇率] 云函数返回成功:', res.result.rates);
+      } else {
+        throw new Error(res.result.message || '云函数返回错误');
+      }
+    } catch (error) {
+      console.error('[银行汇率] 调用云函数 getBankRates 失败:', error);
+      // 调用失败时，可以不显示此板块，或显示错误提示
+      this.setData({ bankRates: [] });
     }
-    
-    this.setData({
-      bankRates: bankRates
-    });
   },
 
   // 🔍 验证AI建议是否基于实时数据
@@ -1258,8 +1022,8 @@ Page({
     }
     
     console.log('3. AI建议分析:');
-    console.log('   - 建议状态:', this.data.advice.status);
-    console.log('   - 建议标题:', this.data.advice.title);
+    console.log('   - 建议状态:', this.data.aiAnalysis.status);
+    console.log('   - 建议标题:', this.data.aiAnalysis.title);
     console.log('   - 分析基础:', '实时汇率 + 历史基准线');
     
     console.log('4. 数据新鲜度:');
@@ -1281,90 +1045,43 @@ Page({
     });
   },
 
-  // 生成AI提醒建议 - 基于留学生实际需求的智能算法
-  generateAlertSuggestions() {
-    const currentRate = parseFloat(this.data.currentRate);
-    const fromCurrency = this.data.currencies[this.data.fromCurrencyIndex];
-    const toCurrency = this.data.currencies[this.data.toCurrencyIndex];
-    
-    if (!fromCurrency || !toCurrency || isNaN(currentRate)) {
-      return;
+  // 生成智能提醒建议 - 【已改造】改为调用云函数
+  async generateAlertSuggestions() {
+    try {
+      const fromCurrency = this.data.currencies[this.data.fromCurrencyIndex];
+      const toCurrency = this.data.currencies[this.data.toCurrencyIndex];
+
+      console.log('[提醒建议] 准备调用云函数 getAlertSuggestions...');
+      const res = await wx.cloud.callFunction({
+        name: 'getAlertSuggestions',
+        data: {
+          from: fromCurrency.code,
+          to: toCurrency.code,
+          rate: this.data.currentRate
+        }
+      });
+
+      if (res.result && res.result.success) {
+        this.setData({
+          alertSuggestions: res.result.suggestions
+        });
+        console.log('[提醒建议] 云函数返回成功:', res.result.suggestions);
+      } else {
+        throw new Error(res.result.message || '云函数返回错误');
+      }
+    } catch (error) {
+      console.error('[提醒建议] 调用云函数 getAlertSuggestions 失败:', error);
+      // 调用失败时，提供一个默认的、不可操作的建议
+      this.setData({
+        alertSuggestions: {
+          buyAlert: { price: '-', reason: '服务不可用' },
+          sellAlert: { price: '-', reason: '服务不可用' }
+        }
+      });
     }
-    
-    const baselines = this.getCurrencyBaselines(toCurrency.code);
-    const isFromChina = fromCurrency.code === 'CNY';
-    
-    // 判断当前汇率的等级
-    let rateLevel;
-    if (currentRate <= baselines.excellent) {
-      rateLevel = 'excellent'; // 超优惠（一年难遇）
-    } else if (currentRate <= baselines.good) {
-      rateLevel = 'good';      // 很好（2-3个月遇一次）
-    } else if (currentRate <= baselines.fair) {
-      rateLevel = 'fair';      // 一般（常见价格）
-    } else {
-      rateLevel = 'poor';      // 偏高（应该等等）
-    }
-    
-    // 机会换汇提醒（等待更好价格）
-    let buyAlertPrice, buyReason;
-    switch (rateLevel) {
-      case 'excellent':
-        // 已经是超优惠，设置抄底提醒（再低1-2%）
-        buyAlertPrice = (currentRate * 0.98).toFixed(4);
-        buyReason = isFromChina ? '超级抄底机会！可大量换汇' : '抄底机会，大量换汇';
-        break;
-      case 'good':
-        // 很好的价格，设置小幅下跌提醒（再低2-3%）
-        buyAlertPrice = (currentRate * 0.97).toFixed(4);
-        buyReason = isFromChina ? '汇率继续下跌，多换些备用' : '价格更优，适合多换';
-        break;
-      case 'fair':
-        // 一般价格，等待较好机会（低3-5%）
-        buyAlertPrice = baselines.good.toFixed(4);
-        buyReason = isFromChina ? '等到好价格再换汇' : '等到更好价格';
-        break;
-      case 'poor':
-        // 偏高价格，等待明显回调（低5-8%）
-        buyAlertPrice = baselines.fair.toFixed(4);
-        buyReason = isFromChina ? '汇率偏高，等等再换' : '价格偏高，建议等待';
-        break;
-    }
-    
-    // 及时换汇提醒（避免错过当前机会或更高价格）
-    let sellAlertPrice, sellReason;
-    switch (rateLevel) {
-      case 'excellent':
-        // 超优惠价，小幅上涨就要抓住（高1-2%）
-        sellAlertPrice = (currentRate * 1.015).toFixed(4);
-        sellReason = isFromChina ? '超低价开始反弹，抓紧换！' : '超低价反弹，立即换汇';
-        break;
-      case 'good':
-        // 好价格，适度上涨时换汇（高2-3%）
-        sellAlertPrice = (currentRate * 1.02).toFixed(4);
-        sellReason = isFromChina ? '好价格开始上涨，该换了' : '好价格上涨，及时换汇';
-        break;
-      case 'fair':
-        // 一般价格，如果有短期需求（高1-2%）
-        sellAlertPrice = (currentRate * 1.015).toFixed(4);
-        sellReason = isFromChina ? '短期需求可以换汇' : '短期需求，可以换汇';
-        break;
-      case 'poor':
-        // 偏高价格，避免更高（高0.5-1%）
-        sellAlertPrice = (currentRate * 1.005).toFixed(4);
-        sellReason = isFromChina ? '避免价格更高，有急需可换' : '避免更高价格，急需可换';
-        break;
-    }
-    
-    this.setData({
-      'alertSuggestions.buyAlert.price': buyAlertPrice,
-      'alertSuggestions.buyAlert.reason': buyReason,
-      'alertSuggestions.sellAlert.price': sellAlertPrice,
-      'alertSuggestions.sellAlert.reason': sellReason
-    });
   },
 
-  // 打开提醒设置页面
+  // 打开提醒设置
   openAlertSetting(e) {
     const { type, price } = e.currentTarget.dataset;
     const fromCurrency = this.data.currencies[this.data.fromCurrencyIndex];

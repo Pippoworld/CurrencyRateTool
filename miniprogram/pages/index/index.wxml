@@ -1,110 +1,120 @@
 <!--index.wxml - 使用固定容器放置建议-->
 <view class="container">
-  <!-- 更新时间 -->
-  <view class="update-time-container">
-    <text class="update-time-text">数据更新于: {{updateTime}}</text>
-  </view>
+  <!-- 骨架屏 -->
+  <skeleton wx:if="{{isLoading}}"></skeleton>
 
-  <!-- 汇率监控卡片 -->
-  <view class="rate-header" bindtap="goToRateDetail">
-    <!-- 主汇率（左侧） -->
-    <view class="rate-info primary-rate">
-      <!-- 新增：用于垂直间距控制的 flex 容器 -->
-      <view class="vertical-content-group">
-        <view class="rate-direction">
-          <text class="flag">{{primaryFromCurrency.flag}}</text>
-          <text class="arrow">→</text>
-          <text class="flag">{{primaryToCurrency.flag}}</text>
-        </view>
-        <view class="rate-value-description">
-          <text class="rate-prefix">1 {{primaryFromCurrency.name}} ≈</text>
-        </view>
-        <view class="rate-display">
-          <text class="rate-value">{{primaryRate}}</text>
-          <text class="rate-unit">{{primaryToCurrency.name}}</text>
-        </view>
-        <!-- 反向汇率句子 -->
-        <text class="secondary-rate-sentence">
-          1 {{secondaryFromCurrency.name}} ≈ {{secondaryRate}} {{secondaryToCurrency.name}}
-        </text>
-        <view class="ai-advice-line {{advice.status}}">
-          <text class="advice-icon">{{advice.icon}}</text>
-          <text class="advice-text-brief">{{advice.brief}}</text>
-        </view>
-        <text class="click-tip">* 点击卡片任意位置可查看详细分析</text>
-      </view>
+  <!-- 页面主内容 -->
+  <block wx:if="{{!isLoading}}">
+    <!-- 更新时间 -->
+    <view class="update-time-container">
+      <text class="update-time-text">数据更新于: {{updateTime}}</text>
     </view>
-    
-    <!-- 次汇率（右侧） -->
-  </view>
 
-  <!-- 汇率计算器（独立于监控卡片）-->
-  <view class="exchange-calculator">
-    <view class="calc-header">
-      <text class="calc-title">汇率计算器</text>
-      <text class="calc-subtitle">临时计算，不影响监控设置</text>
-    </view>
-    
-    <view class="calc-horizontal">
-      <!-- 第一个货币输入行 -->
-      <view class="currency-input-row">
-        <picker bindchange="onFromCurrencyChange" value="{{fromCurrencyIndex}}" range="{{currencies}}" range-key="name">
-          <view class="currency-selector-left">
-            <text class="currency-flag">{{currencies[fromCurrencyIndex].flag}}</text>
-            <text class="currency-code">{{currencies[fromCurrencyIndex].code}}</text>
-            <text class="selector-arrow">></text>
+    <!-- 汇率监控卡片 -->
+    <view class="rate-header" bindtap="goToRateDetail">
+      <!-- 主汇率（左侧） -->
+      <view class="rate-info primary-rate">
+        <!-- 新增：用于垂直间距控制的 flex 容器 -->
+        <view class="vertical-content-group">
+          <view class="rate-direction">
+            <text class="flag">{{primaryFromCurrency.flag}}</text>
+            <text class="arrow">→</text>
+            <text class="flag">{{primaryToCurrency.flag}}</text>
           </view>
-        </picker>
-        <input 
-          class="amount-input-right" 
-          type="digit" 
-          value="{{fromAmount}}" 
-          bindinput="onFromAmountInput"
-          placeholder="100"
-          maxlength="15"
-          placeholder-style="color: #94a3b8; font-size: 56rpx; font-weight: 300;"
-        />
+          <view class="rate-value-description">
+            <text class="rate-prefix">1 {{primaryFromCurrency.name}} ≈</text>
+          </view>
+          <view class="rate-display">
+            <text class="rate-value">{{primaryRate}}</text>
+            <text class="rate-unit">{{primaryToCurrency.name}}</text>
+          </view>
+          <!-- 反向汇率句子 -->
+          <text class="secondary-rate-sentence">
+            1 {{secondaryFromCurrency.name}} ≈ {{secondaryRate}} {{secondaryToCurrency.name}}
+          </text>
+          <view class="ai-advice-line {{advice.status}}">
+            <text class="advice-icon">{{advice.icon}}</text>
+            <text class="advice-text-brief">{{advice.brief}}</text>
+          </view>
+          <text class="click-tip">* 点击卡片任意位置可查看详细分析</text>
+        </view>
       </view>
       
-      <!-- 第二个货币输入行 -->
-      <view class="currency-input-row">
-        <picker bindchange="onToCurrencyChange" value="{{toCurrencyIndex}}" range="{{currencies}}" range-key="name">
-          <view class="currency-selector-left">
-            <text class="currency-flag">{{currencies[toCurrencyIndex].flag}}</text>
-            <text class="currency-code">{{currencies[toCurrencyIndex].code}}</text>
-            <text class="selector-arrow">></text>
-          </view>
-        </picker>
-        <input 
-          class="amount-input-right" 
-          type="digit" 
-          value="{{toAmount}}" 
-          bindinput="onToAmountInput"
-          placeholder="0.00"
-          maxlength="15"
-          placeholder-style="color: #94a3b8; font-size: 56rpx; font-weight: 300;"
-        />
+      <!-- 次汇率（右侧） -->
+    </view>
+
+    <!-- 汇率计算器（独立于监控卡片）-->
+    <view class="exchange-calculator">
+      <view class="calc-header">
+        <text class="calc-title">汇率计算器</text>
+        <text class="calc-subtitle">临时计算，不影响监控设置</text>
+      </view>
+      
+      <view class="calc-horizontal">
+        <!-- 第一个货币输入行 -->
+        <view class="currency-input-row">
+          <picker bindchange="onFromCurrencyChange" value="{{fromCurrencyIndex}}" range="{{currencies}}" range-key="name">
+            <view class="currency-selector-left">
+              <text class="currency-flag">{{currencies[fromCurrencyIndex].flag}}</text>
+              <text class="currency-code">{{currencies[fromCurrencyIndex].code}}</text>
+              <text class="selector-arrow">></text>
+            </view>
+          </picker>
+          <input 
+            class="amount-input-right" 
+            type="digit" 
+            value="{{fromAmount}}" 
+            bindinput="onFromAmountInput"
+            placeholder="100"
+            maxlength="15"
+            placeholder-style="color: #94a3b8; font-size: 56rpx; font-weight: 300;"
+          />
+        </view>
+        
+        <!-- 第二个货币输入行 -->
+        <view class="currency-input-row">
+          <picker bindchange="onToCurrencyChange" value="{{toCurrencyIndex}}" range="{{currencies}}" range-key="name">
+            <view class="currency-selector-left">
+              <text class="currency-flag">{{currencies[toCurrencyIndex].flag}}</text>
+              <text class="currency-code">{{currencies[toCurrencyIndex].code}}</text>
+              <text class="selector-arrow">></text>
+            </view>
+          </picker>
+          <input 
+            class="amount-input-right" 
+            type="digit" 
+            value="{{toAmount}}" 
+            bindinput="onToAmountInput"
+            placeholder="0.00"
+            maxlength="15"
+            placeholder-style="color: #94a3b8; font-size: 56rpx; font-weight: 300;"
+          />
+        </view>
       </view>
     </view>
-  </view>
 
-  <!-- 快捷功能网格 -->
-  <view class="quick-actions">
-    <view class="action-item" bindtap="showRateHistory">
-      <text class="action-icon">📈</text>
-      <text class="action-label">汇率走势</text>
+    <!-- 快捷功能网格 -->
+    <view class="quick-actions">
+      <view class="action-item" bindtap="showRateHistory">
+        <text class="action-icon">📈</text>
+        <text class="action-label">汇率走势</text>
+      </view>
+      <view class="action-item" bindtap="showExchangeMethods">
+        <text class="action-icon">🏦</text>
+        <text class="action-label">换汇渠道</text>
+      </view>
+      <view class="action-item" bindtap="setTargetRate">
+        <text class="action-icon">🎯</text>
+        <text class="action-label">目标汇率</text>
+      </view>
+      <view class="action-item" bindtap="showMoreCurrencies">
+        <text class="action-icon">💱</text>
+        <text class="action-label">更多币种</text>
+      </view>
+      <view class="action-item" bindtap="showReminderSettings">
+        <text class="action-icon">🔔</text>
+        <text class="action-label">提醒设置</text>
+      </view>
     </view>
-    <view class="action-item" bindtap="showExchangeMethods">
-      <text class="action-icon">🏦</text>
-      <text class="action-label">换汇渠道</text>
-    </view>
-    <view class="action-item" bindtap="setTargetRate">
-      <text class="action-icon">🎯</text>
-      <text class="action-label">目标汇率</text>
-    </view>
-    <view class="action-item" bindtap="showMoreCurrencies">
-      <text class="action-icon">💱</text>
-      <text class="action-label">更多币种</text>
-    </view>
-  </view>
+  </block>
 </view>
